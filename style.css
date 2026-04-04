@@ -1293,3 +1293,185 @@ footer {
     font-size: 1.5rem;
     color: var(--live);
 }
+
+/* TRADER INTELLIGENCE HUB */
+.trader-intelligence-hub {
+    max-width: 1400px;
+    margin: 4rem auto;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, rgba(16, 20, 24, 0.8), rgba(10, 15, 20, 0.95));
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+}
+
+.hub-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.hub-badge {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+    padding: 8px 20px;
+    border-radius: 30px;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.hub-header h2 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hub-header h2 span {
+    color: #10B981;
+    background: linear-gradient(90deg, #10B981, #3B82F6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hub-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.hub-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+}
+
+.hub-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2.5rem;
+    border-radius: 24px;
+    transition: var(--transition);
+}
+
+.hub-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(16, 185, 129, 0.3);
+    transform: translateY(-10px);
+}
+
+.hub-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.hub-card h3 span {
+    color: #10B981;
+}
+
+/* SENTIMENT METER */
+.sentiment-meter {
+    height: 12px;
+    width: 100%;
+    background: linear-gradient(90deg, #EF4444, #F59E0B, #10B981);
+    border-radius: 10px;
+    position: relative;
+    margin: 3rem 0;
+}
+
+.meter-pointer {
+    position: absolute;
+    top: -10px;
+    left: 75%; /* BULLISH default */
+    width: 4px;
+    height: 32px;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 0 15px white;
+    transition: left 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.meter-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+.sentiment-status {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.sentiment-status p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+#market-direction {
+    font-size: 1.5rem;
+    color: #10B981;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+/* STRATEGY LIST */
+.strategy-tips {
+    list-style: none;
+    margin-top: 2rem;
+}
+
+.strategy-tips li {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-left: 3px solid #10B981;
+}
+
+/* ASSET LIST */
+.assets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.asset-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.asset-name {
+    font-weight: 700;
+}
+
+.asset-trend {
+    font-weight: 800;
+    color: #10B981;
+}
+
+.asset-trend.down {
+    color: #EF4444;
+}
+
+@media (max-width: 1024px) {
+    .hub-grid {
+        grid-template-columns: 1fr;
+    }
+    .trader-intelligence-hub {
+        border-radius: 0;
+        margin: 2rem 0;
+    }
+}

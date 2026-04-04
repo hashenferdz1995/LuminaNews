@@ -26,24 +26,29 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 
-    // 3. LIVE WEATHER GEOLOCATION (REAL-TIME)
+    // 3. LIVE WEATHER & GEO-CACHING (ANTI-PROMPT LOGIC)
     const weatherIcon = document.getElementById('weather-icon');
     const weatherTemp = document.getElementById('weather-temp');
     const weatherLoc = document.getElementById('weather-location');
 
     function getWeatherIcon(code) {
-        if (code <= 1) return '☀️'; // Clear
-        if (code <= 3) return '⛅'; // Part Cloudy
-        if (code <= 48) return '🌫️'; // Fog
-        if (code <= 67) return '🌧️'; // Rain
-        if (code <= 77) return '❄️'; // Snow
-        if (code <= 82) return '🚿'; // Showers
-        if (code <= 99) return '⛈️'; // Thunder
+        if (code <= 1) return '☀️'; 
+        if (code <= 3) return '⛅'; 
+        if (code <= 48) return '🌫️'; 
+        if (code <= 67) return '🌧️'; 
+        if (code <= 77) return '❄️'; 
+        if (code <= 82) return '🚿'; 
+        if (code <= 99) return '⛈️'; 
         return '☁️';
     }
 
     async function fetchWeather(lat, lon) {
         try {
+            // Cache the location to avoid repeated prompts
+            localStorage.setItem('lumina_lat', lat);
+            localStorage.setItem('lumina_lon', lon);
+            localStorage.setItem('lumina_geo_time', new Date().getTime());
+
             const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
             const data = await res.json();
             const temp = Math.round(data.current_weather.temperature);
@@ -51,51 +56,110 @@ document.addEventListener('DOMContentLoaded', () => {
             
             weatherTemp.textContent = `${temp}°C`;
             weatherIcon.textContent = getWeatherIcon(code);
-            weatherLoc.textContent = "Live Update"; 
+            weatherLoc.textContent = "Synced"; 
         } catch (err) {
             weatherLoc.textContent = "Offline";
         }
     }
 
-    if (navigator.geolocation) {
+    // Smart Geolocation Logic: Check cache first
+    const cachedLat = localStorage.getItem('lumina_lat');
+    const cachedLon = localStorage.getItem('lumina_lon');
+    const cacheAge = new Date().getTime() - (localStorage.getItem('lumina_geo_time') || 0);
+
+    // If we have data less than 1 hour old, use it and don't prompt
+    if (cachedLat && cachedLon && cacheAge < 3600000) {
+        fetchWeather(cachedLat, cachedLon);
+    } else if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (pos) => fetchWeather(pos.coords.latitude, pos.coords.longitude),
             () => fetchWeather(7.8731, 80.7718) // Sri Lanka fallback
         );
     }
 
+    // 4. AI TRADER HUB ENGINE
+    function updateTraderHub() {
+        const sentimentPointer = document.getElementById('sentiment-pointer');
+        const marketDirection = document.getElementById('market-direction');
+        const topPicksContainer = document.getElementById('ai-top-picks');
+        
+        if (!sentimentPointer) return;
+
+        // Simulate Live AI Analysis
+        const odds = Math.random();
+        let sentiment = "BULLISH";
+        let color = "#10B981";
+        let position = "78%";
+
+        if (odds < 0.3) {
+            sentiment = "BEARISH";
+            color = "#EF4444";
+            position = "20%";
+        } else if (odds < 0.5) {
+            sentiment = "NEUTRAL";
+            color = "#F59E0B";
+            position = "50%";
+        }
+
+        sentimentPointer.style.left = position;
+        marketDirection.textContent = `${sentiment} BIAS ${sentiment === 'BULLISH' ? '🚀' : sentiment === 'BEARISH' ? '📉' : '⚖️'}`;
+        marketDirection.style.color = color;
+
+        // Dynamic Assets
+        const assets = [
+            { name: "BTC/USD", trend: "+4.2%", up: true },
+            { name: "GOLD", trend: "-0.8%", up: false },
+            { name: "NVDA", trend: "+1.5%", up: true },
+            { name: "ETH/USD", trend: "+2.8%", up: true }
+        ];
+
+        topPicksContainer.innerHTML = assets.map(a => `
+            <div class="asset-item">
+                <span class="asset-name">${a.name}</span>
+                <span class="asset-trend ${a.up ? '' : 'down'}">${a.trend}</span>
+            </div>
+        `).join('');
+    }
+
     // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED)
     const newsGrid = document.getElementById('real-time-news-grid');
-    let allNewsItems = []; // Store items for filtering
+    let allNewsItems = []; 
+    
     function getPremiumImage(item, categoryLabel) {
-        let imageUrl = item.thumbnail || '';
+        let imageUrl = '';
         
-        // 1. Smart Source Upgrading (for providers like BBC and CNBC)
-        if (imageUrl.includes('http')) {
-            // Upgrade low-res thumbnail paths to HD
-            imageUrl = imageUrl.replace('/120/', '/1024/')
-                             .replace('/240/', '/1024/')
-                             .replace('/480/', '/1024/')
-                             .replace('width=120', 'width=1024')
-                             .replace('width=240', 'width=1024');
+        // Try all possible image locations in the RSS item
+        if (item.thumbnail) imageUrl = item.thumbnail;
+        else if (item.enclosure && item.enclosure.link) imageUrl = item.enclosure.link;
+        else if (item.content && item.content.match(/src="([^"]+)"/)) imageUrl = item.content.match(/src="([^"]+)"/)[1];
+
+        // 1. Smart Source Upgrading & Fixing
+        if (imageUrl && imageUrl.includes('http')) {
+            // Specific fix for CNBC and Financial sources
+            if (imageUrl.includes('cnbc.com')) {
+                imageUrl = imageUrl.replace(/width=\d+/, 'width=1024').replace(/&height=\d+/, '');
+            }
+            // Standard HD upgrade
+            imageUrl = imageUrl.replace('/120/', '/1024/').replace('/240/', '/1024/').replace('width=240', 'width=1024');
             return imageUrl;
         }
 
-        // 2. High-Quality Fallbacks based on category if original is missing/invalid
+        // 2. High-Quality Professional Fallbacks
         const fallbacks = {
             'sports': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1200',
-            'crypto': 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&q=80&w=1200',
+            'crypto': 'https://images.unsplash.com/photo-1542340358-19642050965e?auto=format&fit=crop&q=80&w=1200',
             'markets': 'https://images.unsplash.com/photo-1611974717482-48a4a390e8c6?auto=format&fit=crop&q=80&w=1200',
             'economy': 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200',
             'tech': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
             'global': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1200'
         };
 
-        const key = categoryLabel.toLowerCase().includes('sport') ? 'sports' :
-                    categoryLabel.toLowerCase().includes('crypto') ? 'crypto' :
-                    categoryLabel.toLowerCase().includes('market') ? 'markets' :
-                    categoryLabel.toLowerCase().includes('economy') ? 'economy' :
-                    categoryLabel.toLowerCase().includes('tech') ? 'tech' : 'global';
+        const labelLow = categoryLabel.toLowerCase();
+        const key = labelLow.includes('sport') ? 'sports' :
+                    labelLow.includes('crypto') ? 'crypto' :
+                    labelLow.includes('market') ? 'markets' :
+                    labelLow.includes('economy') ? 'economy' :
+                    labelLow.includes('tech') ? 'tech' : 'global';
 
         return fallbacks[key];
     }
@@ -381,5 +445,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Load
     loadRealTimeNews();
-    setInterval(loadRealTimeNews, 60000); // Updated to 1 minute frequency for faster refreshes
+    updateTraderHub();
+    setInterval(() => {
+        loadRealTimeNews();
+        updateTraderHub();
+    }, 60000); // Updated to 1 minute frequency for faster refreshes
 });
