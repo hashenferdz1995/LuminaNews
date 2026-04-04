@@ -64,25 +64,68 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
-    // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED BY PAGE)
+    // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED)
     const newsGrid = document.getElementById('real-time-news-grid');
+    let allNewsItems = []; // Store items for filtering
+
+    function renderNews(items, categoryLabel) {
+        if (!newsGrid) return;
+        newsGrid.innerHTML = '';
+        
+        if (items.length === 0) {
+            newsGrid.innerHTML = '<div class="error-state">🔍 No matching news found.</div>';
+            return;
+        }
+
+        items.forEach((item, index) => {
+            const card = document.createElement('article');
+            card.className = 'news-card';
+            card.innerHTML = `
+                <div class="card-img">
+                     <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1586339949916-3e9457bef6a3?auto=format&fit=crop&q=80&w=800'}" alt="News Image">
+                     <span class="category-tag">${categoryLabel}</span>
+                </div>
+                <div class="card-content">
+                    <h3>${item.title}</h3>
+                    <p>${item.description.substring(0, 100).replace(/<[^>]*>?/gm, '')}...</p>
+                    
+                    <div class="veracity-meter">
+                        <div class="meter-track">
+                            <div class="meter-fill" style="width: ${Math.floor(Math.random() * 15) + 85}%"></div>
+                        </div>
+                        <span class="meter-label">⚡ ${Math.floor(Math.random() * 15) + 85}% AI TRUTH SCORE</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <span>${new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                        <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(item.thumbnail || '')}&time=${encodeURIComponent(new Date(item.pubDate).toLocaleTimeString())}" class="arrow-link">→</a>
+                    </div>
+                </div>
+            `;
+            newsGrid.appendChild(card);
+
+            if (index === 2 || index === 7) {
+                const ad = document.createElement('div');
+                ad.className = 'ad-placement in-feed-ad';
+                ad.innerHTML = '<span>SPONSORED REAL-TIME AD</span>';
+                newsGrid.appendChild(ad);
+            }
+        });
+    }
 
     async function loadRealTimeNews() {
         const path = window.location.pathname;
-        let RSS_URL = 'https://feeds.bbci.co.uk/news/world/rss.xml'; // Default Home
+        let RSS_URL = 'https://feeds.bbci.co.uk/news/world/rss.xml';
         let categoryLabel = 'Global Feed';
 
-        // Categorize based on file name
         if (path.includes('sports.html')) {
             RSS_URL = 'https://feeds.bbci.co.uk/sport/rss.xml';
             categoryLabel = 'Live Sports';
         } else if (path.includes('markets.html')) {
-            RSS_URL = 'https://www.cnbc.com/id/100003114/device/rss/rss.html'; // Business
+            RSS_URL = 'https://www.cnbc.com/id/100003114/device/rss/rss.html';
             categoryLabel = 'Markets Info';
         } else if (path.includes('economy.html')) {
-            RSS_URL = 'https://feeds.reuters.com/news/wealth';
-            // If Reuters fails or CORS, fallback to a reliable one
-            RSS_URL = 'https://www.cnbc.com/id/10001147/device/rss/rss.html'; // Economy
+            RSS_URL = 'https://www.cnbc.com/id/10001147/device/rss/rss.html';
             categoryLabel = 'Global Economy';
         } else if (path.includes('crypto.html')) {
             RSS_URL = 'https://www.coindesk.com/arc/outboundfeeds/rss/';
@@ -96,46 +139,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             
             if (data.status === 'ok') {
-                newsGrid.innerHTML = ''; 
-                
-                data.items.slice(0, 12).forEach((item, index) => {
-                    const card = document.createElement('article');
-                    card.className = 'news-card';
-                    card.innerHTML = `
-                        <div class="card-img">
-                             <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1586339949916-3e9457bef6a3?auto=format&fit=crop&q=80&w=800'}" alt="News Image">
-                             <span class="category-tag">${categoryLabel}</span>
-                        </div>
-                        <div class="card-content">
-                            <h3>${item.title}</h3>
-                            <p>${item.description.substring(0, 100).replace(/<[^>]*>?/gm, '')}...</p>
-                            
-                            <div class="veracity-meter">
-                                <div class="meter-track">
-                                    <div class="meter-fill" style="width: ${Math.floor(Math.random() * 15) + 85}%"></div>
-                                </div>
-                                <span class="meter-label">⚡ ${Math.floor(Math.random() * 15) + 85}% AI TRUTH SCORE</span>
-                            </div>
-
-                            <div class="card-footer">
-                                <span>${new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-                                <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(item.thumbnail || '')}&time=${encodeURIComponent(new Date(item.pubDate).toLocaleTimeString())}" class="arrow-link">→</a>
-                            </div>
-                        </div>
-                    `;
-                    newsGrid.appendChild(card);
-
-                    if (index === 2 || index === 7) {
-                        const ad = document.createElement('div');
-                        ad.className = 'ad-placement in-feed-ad';
-                        ad.innerHTML = '<span>SPONSORED REAL-TIME AD</span>';
-                        newsGrid.appendChild(ad);
-                    }
-                });
+                allNewsItems = data.items;
+                renderNews(allNewsItems.slice(0, 12), categoryLabel);
             }
         } catch (err) {
-            newsGrid.innerHTML = '<div class="error-state">⚠️ Failed to connect to live server.</div>';
+            if (newsGrid) newsGrid.innerHTML = '<div class="error-state">⚠️ Failed to connect to live server.</div>';
         }
+    }
+
+    // 9. SEARCH FUNCTIONALITY
+    const searchInput = document.querySelector('.search-bar input');
+    const searchBtn = document.querySelector('.search-btn');
+
+    function handleSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        const path = window.location.pathname;
+        let categoryLabel = 'Results';
+
+        if (path.includes('sports.html')) categoryLabel = 'Live Sports';
+        else if (path.includes('markets.html')) categoryLabel = 'Markets Info';
+        else if (path.includes('economy.html')) categoryLabel = 'Global Economy';
+        else if (path.includes('crypto.html')) categoryLabel = 'Digital Assets';
+        else categoryLabel = 'Global Feed';
+
+        const filtered = allNewsItems.filter(item => 
+            item.title.toLowerCase().includes(query) || 
+            item.description.toLowerCase().includes(query)
+        );
+        renderNews(filtered, categoryLabel);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', handleSearch);
+    }
+    if (searchBtn) {
+        searchBtn.addEventListener('click', handleSearch);
     }
 
     // 8. LIVE NEWS CONSOLE CHANNEL SWITCHER
@@ -146,10 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         channelButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const videoId = btn.getAttribute('data-video');
-                // Set new URL and autoplay
                 newsPlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                
-                // Active Button handling
                 channelButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
             });
