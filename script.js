@@ -361,7 +361,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (path.includes('local')) categoryKey = 'local';
 
         try {
-            const url = `http://localhost:3000/api/news?date=${dateStr}&category=${categoryKey === 'global' ? 'all' : categoryKey}`;
+            // Priority: Cloudflare Worker API (Change this URL after deployment)
+            const CF_WORKER = 'https://lumina-news-worker.hashenferdz1995.workers.dev'; 
+            const url = `${CF_WORKER}/api/news?date=${dateStr}&category=${categoryKey === 'global' ? 'all' : categoryKey}`;
+            
             const response = await fetch(url);
             const data = await response.json();
             
