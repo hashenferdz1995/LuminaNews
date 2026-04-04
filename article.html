@@ -12,6 +12,9 @@
     
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1214676344881133" crossorigin="anonymous"></script>
+    
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="dark-theme article-page">
     <header class="scrolled">
@@ -58,6 +61,20 @@
 
         <div class="art-hero-container">
             <img id="art-img" src="" alt="Article Banner">
+        </div>
+
+        <!-- SHARE & DOWNLOAD HUB -->
+        <div class="article-actions-hub">
+            <div class="share-group">
+                <span class="share-label">SHARE INTEL:</span>
+                <button class="share-btn x-btn" id="share-x" title="Share on X (Twitter)">𝕏</button>
+                <button class="share-btn tg-btn" id="share-tg" title="Share on Telegram">✈</button>
+                <button class="share-btn wa-btn" id="share-wa" title="Share on WhatsApp">💬</button>
+                <button class="share-btn fb-btn" id="share-fb" title="Share on Facebook">f</button>
+            </div>
+            <button class="download-pdf-btn" id="btn-download-pdf">
+                <span class="icon">📄</span> DOWNLOAD INTEL REPORT (PDF)
+            </button>
         </div>
 
         <div class="art-content">
@@ -228,6 +245,69 @@
                 aura.classList.remove('active');
                 playBtn.style.display = 'block';
                 pauseBtn.style.display = 'none';
+            };
+
+            // --- SHARING ENGINE ---
+            const currentUrl = encodeURIComponent(window.location.href);
+            const rawTitle = title;
+            const encodedTitle = encodeURIComponent(rawTitle);
+
+            document.getElementById('share-x').onclick = () => {
+                window.open(`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${currentUrl}`, '_blank');
+            };
+            document.getElementById('share-tg').onclick = () => {
+                window.open(`https://t.me/share/url?url=${currentUrl}&text=${encodedTitle}`, '_blank');
+            };
+            document.getElementById('share-wa').onclick = () => {
+                window.open(`https://api.whatsapp.com/send?text=${encodedTitle}%20${currentUrl}`, '_blank');
+            };
+            document.getElementById('share-fb').onclick = () => {
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank');
+            };
+
+            // --- PDF GENERATION ENGINE ---
+            const downloadBtn = document.getElementById('btn-download-pdf');
+            downloadBtn.onclick = () => {
+                downloadBtn.innerHTML = '⚙ Generating PDF...';
+                downloadBtn.disabled = true;
+
+                // Create a temporary hidden container for PDF layout
+                const pdfElement = document.createElement('div');
+                pdfElement.className = 'pdf-export-layout';
+                pdfElement.innerHTML = `
+                    <div style="padding: 40px; font-family: 'Inter', sans-serif; color: #000; background: #fff;">
+                        <div style="border-bottom: 2px solid #E63946; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                            <h1 style="color: #0A0F14; font-family: 'Outfit'; font-size: 24px; margin:0;">Lumina<span style="color:#E63946">News</span> Intelligence Report</h1>
+                            <span style="font-size: 12px; color: #666;">Generated on ${new Date().toLocaleDateString()}</span>
+                        </div>
+                        <h2 style="font-size: 32px; color: #0A0F14; margin-bottom: 10px; font-family: 'Outfit';">${rawTitle}</h2>
+                        <p style="color: #E63946; font-weight: bold; font-size: 14px; margin-bottom: 20px;">SECURITY CLASSIFICATION: GLOBAL PUBLIC RELEASE</p>
+                        <img src="${document.getElementById('art-img').src}" style="width: 100%; border-radius: 12px; margin-bottom: 30px;">
+                        <div style="background: #f8f9fa; border-left: 4px solid #E63946; padding: 20px; margin-bottom: 30px;">
+                            <h3 style="margin-top:0; font-size: 18px;">Executive Summary</h3>
+                            <p style="font-size: 15px; color: #333; line-height: 1.6;">${document.getElementById('art-summary').textContent}</p>
+                        </div>
+                        <div style="font-size: 16px; color: #111; line-height: 1.8;">
+                            ${document.getElementById('art-body').innerHTML}
+                        </div>
+                        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; font-size: 12px; color: #999;">
+                            © 2026 LuminaNews. Powered by Lumina Intelligence AI. This report is verified and synced with real-time news engines.
+                        </div>
+                    </div>
+                `;
+
+                const opt = {
+                    margin:       10,
+                    filename:     `LuminaNews_Report_${rawTitle.replace(/\s+/g, '_').substring(0, 30)}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(pdfElement).save().then(() => {
+                    downloadBtn.innerHTML = '📄 DOWNLOAD INTEL REPORT (PDF)';
+                    downloadBtn.disabled = false;
+                });
             };
         });
     </script>
