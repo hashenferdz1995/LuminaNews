@@ -329,18 +329,35 @@
 
                 // Ensure image is loaded before generating
                 const imgInPdf = pdfElement.querySelector('img');
+                
+                // CRITICAL: Handle CORS for external images to prevent canvas tainting
+                if (imgInPdf.src.startsWith('http')) {
+                    imgInPdf.crossOrigin = "anonymous";
+                }
+
                 const generate = () => {
-                    html2pdf().set(opt).from(pdfElement).save().then(() => {
-                        document.body.removeChild(pdfElement);
-                        downloadBtn.innerHTML = '📄 DOWNLOAD INTEL REPORT (PDF)';
-                        downloadBtn.disabled = false;
-                    });
+                    // Give the browser 500ms to paint the hidden element properly
+                    setTimeout(() => {
+                        html2pdf().set(opt).from(pdfElement).save().then(() => {
+                            if (document.body.contains(pdfElement)) {
+                                document.body.removeChild(pdfElement);
+                            }
+                            downloadBtn.innerHTML = '📄 DOWNLOAD INTEL REPORT (PDF)';
+                            downloadBtn.disabled = false;
+                        }).catch(err => {
+                            console.error('PDF Error:', err);
+                            alert('PDF conversion failed. Please try again.');
+                            downloadBtn.disabled = false;
+                            downloadBtn.innerHTML = '📄 DOWNLOAD INTEL REPORT (PDF)';
+                        });
+                    }, 800); // 800ms "Paint Delay" for safety
                 };
 
                 if (imgInPdf.complete) {
                     generate();
                 } else {
                     imgInPdf.onload = generate;
+                    imgInPdf.onerror = generate; // Proceed even if image fails
                 }
             };
         });
