@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://luminanews.netlify.app/sitemap.xml

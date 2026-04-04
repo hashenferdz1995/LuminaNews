@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://luminanews.netlify.app/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://luminanews.netlify.app/sports.html</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://luminanews.netlify.app/crypto.html</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://luminanews.netlify.app/markets.html</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://luminanews.netlify.app/economy.html</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://luminanews.netlify.app/about.html</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.5</priority>
+  </url>
+</urlset>
