@@ -1,0 +1,28 @@
+{
+  "name": "luminanews",
+  "version": "1.0.0",
+  "description": "A modern, high-intensity sports news blog built with a dark-themed aesthetic, featuring real-time scoreboard mocks, category filtering, and scroll-reveal animations.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hashenferdz1995/LuminaNews.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hashenferdz1995/LuminaNews/issues"
+  },
+  "homepage": "https://github.com/hashenferdz1995/LuminaNews#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "node-cron": "^4.2.1",
+    "rss-parser": "^3.13.0",
+    "sqlite3": "^6.0.1"
+  }
+}

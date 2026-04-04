@@ -49,13 +49,40 @@
                 </section>
             </div>
             <aside class="sidebar-news">
-                <div class="sidebar-header">
-                    <h2>World <span>Bank</span></h2>
-                </div>
-                <div class="sidebar-item">
-                    <span class="world-tag">Policy</span>
-                    <h4>Global Trade Barriers Ease for Essential Goods</h4>
-                    <span class="time">09:15 AM</span>
+                <!-- SIDEBAR AI TERMINAL -->
+                <div class="sidebar-terminal">
+                    <div class="terminal-brand">
+                        <span class="pulse-dot"></span>
+                        <h3>AI TRADER ALPHA</h3>
+                    </div>
+                    
+                    <div class="terminal-search-wrapper">
+                        <input type="text" id="unified-terminal-search" placeholder="Search Assets..." autocomplete="off">
+                        <div class="terminal-dropdown scrollable-list" id="terminal-dropdown-results"></div>
+                    </div>
+                    
+                    <div class="s-term-dashboard">
+                        <h2 id="display-asset-name">Bitcoin (BTC)</h2>
+                        <div class="s-term-metrics">
+                            <span class="price" id="display-asset-price">$72,450.00</span>
+                            <span class="trend up" id="display-asset-trend">+4.5%</span>
+                        </div>
+
+                        <div class="term-signal buy" id="terminal-action-card" style="min-width: unset; width: 100%;">
+                            <span class="signal-label">AI VERDICT</span>
+                            <div class="signal-action" id="display-signal-action">STRONG BUY</div>
+                            <div class="signal-prices" id="display-signal-targets">Target: $85,000</div>
+                        </div>
+
+                        <div class="s-term-sentiment">
+                            <div class="sentiment-text"><span id="market-direction">BULLISH BIAS 🚀</span></div>
+                            <div class="mini-meter"><div class="mini-pointer" id="sentiment-pointer"></div></div>
+                        </div>
+
+                        <div class="s-term-logic" id="display-signal-logic">
+                            * Heavy institutional ETF inflows detected.
+                        </div>
+                    </div>
                 </div>
                 <div class="sidebar-header" style="margin-top: 3rem;">
                     <h2>Economy <span>Deals</span></h2>

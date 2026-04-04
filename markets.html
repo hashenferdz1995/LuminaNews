@@ -48,54 +48,6 @@
             </div>
         </section>
 
-        <!-- AI TRADER INTELLIGENCE HUB -->
-        <section class="trader-intelligence-hub">
-            <div class="hub-header">
-                <div class="hub-badge">🛡️ AI MARKET INTELLIGENCE</div>
-                <h2>Daily <span>Trading Strategy</span></h2>
-                <p>AI-driven sentiment analysis and asset forecasting for today's global markets.</p>
-            </div>
-
-            <!-- ASSET TYPE SELECTOR -->
-            <div class="asset-selector-tabs">
-                <button class="asset-tab active" data-type="stocks">STOCKS & COMPANIES</button>
-                <button class="asset-tab" data-type="crypto">CRYPTO ASSETS</button>
-                <button class="asset-tab" data-type="forex">CURRENCY & FOREX</button>
-            </div>
-            
-            <div class="hub-grid">
-                <div class="hub-card sentiment-analyzer">
-                    <h3>Market <span>Sentiment</span></h3>
-                    <div class="sentiment-meter">
-                        <div class="meter-pointer" id="sentiment-pointer"></div>
-                        <div class="meter-labels">
-                            <span>EXTREME FEAR</span>
-                            <span>NEUTRAL</span>
-                            <span>EXTREME GREED</span>
-                        </div>
-                    </div>
-                    <div class="sentiment-status">
-                        <p id="sentiment-text">Analyzing Global Order Books...</p>
-                        <h4 id="market-direction">BULLISH BIAS 🚀</h4>
-                    </div>
-                </div>
-
-                <div class="hub-card strategy-box">
-                    <h3>AI <span>Buy/Sell Signal</span></h3>
-                    <div id="ai-main-signal" class="signal-board">
-                        <div class="signal-status loading">Analyzing Selected Market...</div>
-                    </div>
-                </div>
-
-                <div class="hub-card top-picks">
-                    <h3>Hot <span>Trading Assets</span></h3>
-                    <div class="assets-list" id="ai-top-picks">
-                        <div class="asset-item loading">Fetching Top Alpha...</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section class="content-wrapper">
             <div class="main-content">
                 <section class="latest-news">
@@ -108,8 +60,40 @@
                 </section>
             </div>
             <aside class="sidebar-news">
-                <div class="sidebar-header">
-                    <h2>Market <span>Pulse</span></h2>
+                <!-- SIDEBAR AI TERMINAL -->
+                <div class="sidebar-terminal">
+                    <div class="terminal-brand">
+                        <span class="pulse-dot"></span>
+                        <h3>AI TRADER ALPHA</h3>
+                    </div>
+                    
+                    <div class="terminal-search-wrapper">
+                        <input type="text" id="unified-terminal-search" placeholder="Search Assets..." autocomplete="off">
+                        <div class="terminal-dropdown scrollable-list" id="terminal-dropdown-results"></div>
+                    </div>
+                    
+                    <div class="s-term-dashboard">
+                        <h2 id="display-asset-name">Bitcoin (BTC)</h2>
+                        <div class="s-term-metrics">
+                            <span class="price" id="display-asset-price">$72,450.00</span>
+                            <span class="trend up" id="display-asset-trend">+4.5%</span>
+                        </div>
+
+                        <div class="term-signal buy" id="terminal-action-card" style="min-width: unset; width: 100%;">
+                            <span class="signal-label">AI VERDICT</span>
+                            <div class="signal-action" id="display-signal-action">STRONG BUY</div>
+                            <div class="signal-prices" id="display-signal-targets">Target: $85,000</div>
+                        </div>
+
+                        <div class="s-term-sentiment">
+                            <div class="sentiment-text"><span id="market-direction">BULLISH BIAS 🚀</span></div>
+                            <div class="mini-meter"><div class="mini-pointer" id="sentiment-pointer"></div></div>
+                        </div>
+
+                        <div class="s-term-logic" id="display-signal-logic">
+                            * Heavy institutional ETF inflows detected.
+                        </div>
+                    </div>
                 </div>
                 <div class="sidebar-header" style="margin-top: 3rem;">
                     <h2>Financial <span>Partners</span></h2>

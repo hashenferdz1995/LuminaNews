@@ -77,100 +77,151 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
     // 4. AI TRADER HUB ENGINE
-    function updateTraderHub() {
+    const assetDataRepo = {
+        // CRYPTO
+        "BTC": { type: "crypto", name: "Bitcoin (BTC)", price: "$72,450.00", trend: "+4.5%", dir: "BULLISH", color: "#10B981", pos: "88%", action: "STRONG BUY", entry: "$71,500", target: "$85,000", logic: "Heavy institutional ETF inflows detected. Technical breakout confirms strong upward momentum." },
+        "ETH": { type: "crypto", name: "Ethereum (ETH)", price: "$3,850.20", trend: "+2.1%", dir: "BULLISH", color: "#10B981", pos: "70%", action: "BUY", entry: "$3,800", target: "$4,200", logic: "Network upgrade anticipation and rising DeFi TVL driving demand." },
+        "SOL": { type: "crypto", name: "Solana (SOL)", price: "$145.60", trend: "-1.2%", dir: "NEUTRAL", color: "#F59E0B", pos: "45%", action: "HOLD", entry: "$140", target: "$160", logic: "Consolidating after recent massive rally. Wait for a clear breakout above $150." },
+        "BNB": { type: "crypto", name: "Binance Coin (BNB)", price: "$590.30", trend: "+1.5%", dir: "BULLISH", color: "#10B981", pos: "65%", action: "BUY", entry: "$580", target: "$650", logic: "Launchpool announcements driving utility token demand." },
+        "XRP": { type: "crypto", name: "Ripple (XRP)", price: "$0.61", trend: "-0.5%", dir: "NEUTRAL", color: "#F59E0B", pos: "50%", action: "HOLD", entry: "$0.58", target: "$0.70", logic: "Awaiting final court rulings with the SEC. High volatility expected." },
+        "ADA": { type: "crypto", name: "Cardano (ADA)", price: "$0.45", trend: "+0.8%", dir: "NEUTRAL", color: "#F59E0B", pos: "40%", action: "HOLD", entry: "$0.42", target: "$0.55", logic: "Steady development ongoing, but lagging in immediate DEX volume growth." },
+        "DOGE":{ type: "crypto", name: "Dogecoin (DOGE)", price: "$0.15", trend: "+8.2%", dir: "BULLISH", color: "#10B981", pos: "85%", action: "BUY", entry: "$0.14", target: "$0.20", logic: "Social media buzz and massive whale accumulation detected over the last 24h." },
+        "DOT": { type: "crypto", name: "Polkadot (DOT)", price: "$7.20", trend: "-2.1%", dir: "BEARISH", color: "#EF4444", pos: "35%", action: "SELL", entry: "N/A", target: "$6.50", logic: "Breaking below critical support levels due to shifting retail interest." },
+        
+        // STOCKS
+        "NVDA": { type: "stocks", name: "Nvidia (NVDA)", price: "$924.50", trend: "+3.8%", dir: "BULLISH", color: "#10B981", pos: "92%", action: "STRONG BUY", entry: "$910", target: "$1050", logic: "AI sector dominance continues. Next-gen chip orders exceeding supply capacity." },
+        "TSLA": { type: "stocks", name: "Tesla (TSLA)", price: "$172.40", trend: "-2.5%", dir: "BEARISH", color: "#EF4444", pos: "20%", action: "SELL", entry: "N/A", target: "$150", logic: "Margin pressures and intense competition in the EV sector weighing heavily on the stock." },
+        "AAPL": { type: "stocks", name: "Apple (AAPL)", price: "$168.20", trend: "-0.8%", dir: "NEUTRAL", color: "#F59E0B", pos: "40%", action: "HOLD", entry: "$165", target: "$180", logic: "Slow iPhone sales cycle. Waiting for clarity on the new AI product lineup announcements." },
+        "AMZN": { type: "stocks", name: "Amazon (AMZN)", price: "$185.30", trend: "+1.2%", dir: "BULLISH", color: "#10B981", pos: "75%", action: "BUY", entry: "$180", target: "$200", logic: "AWS growth re-accelerating and advertising revenue expanding robustly." },
+        "MSFT": { type: "stocks", name: "Microsoft (MSFT)", price: "$420.50", trend: "+0.9%", dir: "BULLISH", color: "#10B981", pos: "80%", action: "BUY", entry: "$415", target: "$450", logic: "Copilot monetization showing early, highly profitable signs of absolute success." },
+        "META": { type: "stocks", name: "Meta (META)", price: "$495.10", trend: "+2.5%", dir: "BULLISH", color: "#10B981", pos: "85%", action: "STRONG BUY", entry: "$485", target: "$530", logic: "Ad spending recovery and deep AI integration driving operating margins higher." },
+        "GOOGL":{ type: "stocks", name: "Alphabet (GOOGL)", price: "$155.40", trend: "-1.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "55%", action: "HOLD", entry: "$150", target: "$165", logic: "Facing AI search competition fears, despite solid cloud revenue growth." },
+        "NFLX": { type: "stocks", name: "Netflix (NFLX)", price: "$610.20", trend: "+4.1%", dir: "BULLISH", color: "#10B981", pos: "88%", action: "BUY", entry: "$600", target: "$650", logic: "Password crackdown success and ad-tier profitability beating all estimates." },
+
+        // FOREX
+        "EURUSD": { type: "forex", name: "EUR/USD", price: "1.0850", trend: "+0.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "50%", action: "HOLD", entry: "1.0800", target: "1.0950", logic: "ECB interest rate decision pending. Market is pricing in a hold, causing range-bound trading." },
+        "USDJPY": { type: "forex", name: "USD/JPY", price: "151.70", trend: "+0.3%", dir: "BULLISH", color: "#10B981", pos: "75%", action: "BUY", entry: "151.20", target: "153.00", logic: "Bank of Japan dovish stance keeping Yen weak. Upward channel remains firmly intact." },
+        "GBPUSD": { type: "forex", name: "GBP/USD", price: "1.2640", trend: "-0.2%", dir: "NEUTRAL", color: "#F59E0B", pos: "45%", action: "HOLD", entry: "1.2600", target: "1.2750", logic: "UK economic data showing stagnation, but BoE remains relatively hawkish." },
+        "USDCAD": { type: "forex", name: "USD/CAD", price: "1.3580", trend: "+0.4%", dir: "BULLISH", color: "#10B981", pos: "70%", action: "BUY", entry: "1.3550", target: "1.3700", logic: "Oil price fluctuations directly impacting CAD strength against a resurgent Dollar." },
+        "AUDUSD": { type: "forex", name: "AUD/USD", price: "0.6520", trend: "-0.5%", dir: "BEARISH", color: "#EF4444", pos: "30%", action: "SELL", entry: "0.6550", target: "0.6400", logic: "Weak manufacturing data from China severely impacting Australian export forecasts." },
+        "USDCHF": { type: "forex", name: "USD/CHF", price: "0.9050", trend: "+0.2%", dir: "BULLISH", color: "#10B981", pos: "65%", action: "BUY", entry: "0.9000", target: "0.9150", logic: "SNB unexpected rate cut has turned the Franc into a favorable funding currency." }
+    };
+
+    let currentActiveAsset = "BTC"; // Built-in Fallback
+    const currentPath = window.location.pathname.toLowerCase();
+    
+    // Automatically match the AI Trader Hub's starting asset to the page category
+    if (currentPath.includes('market')) {
+        currentActiveAsset = "NVDA";
+    } else if (currentPath.includes('economy')) {
+        currentActiveAsset = "EURUSD";
+    } else if (currentPath.includes('crypto')) {
+        currentActiveAsset = "BTC";
+    }
+
+    function initAssetAnalyzer() {
+        const searchInput = document.getElementById('unified-terminal-search');
+        const dropdownEl = document.getElementById('terminal-dropdown-results');
+        
+        if (!searchInput || !dropdownEl) return;
+
+        const renderDropdown = (filter = '') => {
+            const html = Object.keys(assetDataRepo)
+                .filter(key => assetDataRepo[key].name.toLowerCase().includes(filter.toLowerCase()) || key.toLowerCase().includes(filter.toLowerCase()))
+                .map(key => {
+                    return `<div class="dropdown-item" data-asset="${key}">
+                                <span>${assetDataRepo[key].name}</span>
+                                <span class="t-symbol">${assetDataRepo[key].type.toUpperCase()}</span>
+                            </div>`
+                }).join('');
+            
+            if(html === '') {
+                dropdownEl.innerHTML = '<div class="dropdown-item" style="color:var(--text-secondary)">No assets found...</div>';
+            } else {
+                dropdownEl.innerHTML = html;
+            }
+            
+            dropdownEl.querySelectorAll('.dropdown-item').forEach(item => {
+                if(item.getAttribute('data-asset')){
+                    item.addEventListener('click', (e) => {
+                        currentActiveAsset = item.getAttribute('data-asset');
+                        searchInput.value = '';
+                        dropdownEl.classList.remove('show');
+                        updateTraderHubDisplay(); 
+                    });
+                }
+            });
+        };
+
+        renderDropdown(); // Initial rendering
+
+        searchInput.addEventListener('input', (e) => {
+            renderDropdown(e.target.value);
+            dropdownEl.classList.add('show');
+        });
+
+        // Ensure dropdown closes when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('.terminal-search-wrapper')) {
+                dropdownEl.classList.remove('show');
+            }
+        });
+
+        searchInput.addEventListener('focus', () => {
+            renderDropdown(searchInput.value);
+            dropdownEl.classList.add('show');
+        });
+    }
+
+    function updateTraderHubDisplay() {
         const sentimentPointer = document.getElementById('sentiment-pointer');
         const marketDirection = document.getElementById('market-direction');
-        const topPicksContainer = document.getElementById('ai-top-picks');
+        const actionCard = document.getElementById('terminal-action-card');
+        const actionDisplay = document.getElementById('display-signal-action');
+        const targetDisplay = document.getElementById('display-signal-targets');
+        const logicDisplay = document.getElementById('display-signal-logic');
+        const displayName = document.getElementById('display-asset-name');
+        const displayPrice = document.getElementById('display-asset-price');
+        const displayTrend = document.getElementById('display-asset-trend');
         
         if (!sentimentPointer) return;
 
-        // ASSET DATA REPOSITORY (MOCKED ANALYTICS)
-        const marketData = {
-            stocks: {
-                direction: "BULLISH",
-                color: "#10B981",
-                pos: "82%",
-                signal: { action: "BUY", price: "$224.50", target: "$250.00", logic: "AI detects massive accumulation in NVDA and high-growth tech stocks. Order books suggest a potential +12% breakout within 48 hours." },
-                picks: [
-                    { name: "NVDA", trend: "+4.2%", up: true },
-                    { name: "TSLA", trend: "+1.8%", up: true },
-                    { name: "AAPL", trend: "-0.5%", up: false },
-                    { name: "AMZN", trend: "+2.1%", up: true }
-                ]
-            },
-            crypto: {
-                direction: "BULLISH",
-                color: "#10B981",
-                pos: "90%",
-                signal: { action: "STRONG BUY", price: "$72,120", target: "$85,000", logic: "Bitcoin ETF inflows hitting record levels. Global network hashrate stable. Institutional FOMO detected in derivatives market." },
-                picks: [
-                    { name: "BTC/USD", trend: "+5.1%", up: true },
-                    { name: "SOL", trend: "+8.4%", up: true },
-                    { name: "ETH", trend: "+3.2%", up: true },
-                    { name: "LINK", trend: "-1.5%", up: false }
-                ]
-            },
-            forex: {
-                direction: "NEUTRAL",
-                color: "#F59E0B",
-                pos: "50%",
-                signal: { action: "HOLD", price: "151.40", target: "155.00", logic: "USD/JPY is testing high-tension resistance zones. Central Bank intervention risks are elevated. Stay on the sidelines until a clear breakout." },
-                picks: [
-                    { name: "USD/JPY", trend: "+0.2%", up: true },
-                    { name: "EUR/USD", trend: "-0.5%", up: false },
-                    { name: "GBP/USD", trend: "+0.1%", up: true },
-                    { name: "USD/CAD", trend: "-0.3%", up: false }
-                ]
-            }
-        };
+        const data = assetDataRepo[currentActiveAsset] || assetDataRepo["BTC"];
 
-        const activeTab = document.querySelector('.asset-tab.active');
-        const type = activeTab ? activeTab.getAttribute('data-type') : 'stocks';
-        const data = marketData[type] || marketData.stocks;
+        // Update Text
+        if(displayName) displayName.textContent = data.name;
+        if(displayPrice) displayPrice.textContent = data.price;
+        if(displayTrend) {
+            displayTrend.textContent = `${data.trend} Today`;
+            displayTrend.className = `trend ${data.trend.includes('-') ? 'down' : 'up'}`;
+        }
+        if(logicDisplay) logicDisplay.innerHTML = `* ${data.logic}`;
 
-        // Update UI
+        // Sentiment Update
         sentimentPointer.style.left = data.pos;
-        marketDirection.textContent = `${data.direction} BIAS ${data.direction === 'BULLISH' ? '🚀' : data.direction === 'BEARISH' ? '📉' : '⚖️'}`;
-        marketDirection.style.color = data.color;
-
-        // Big Signal Board
-        const signalBoard = document.getElementById('ai-main-signal');
-        if (signalBoard) {
-            const lowAction = data.signal.action.toLowerCase();
-            const actionClass = lowAction.includes('buy') ? 'buy' : lowAction.includes('sell') ? 'sell' : 'hold';
-            
-            signalBoard.innerHTML = `
-                <div class="action-card ${actionClass}">
-                    <span class="action-label">AI RECOMMENDED ACTION</span>
-                    <div class="action-main">${data.signal.action}</div>
-                    <div class="action-price">Entry: ${data.signal.price} | Target: ${data.signal.target}</div>
-                </div>
-                <div class="signal-logic">
-                    <b>WHY THIS TRADE?</b>
-                    ${data.signal.logic}
-                </div>
-            `;
+        if(marketDirection) {
+            marketDirection.textContent = `${data.direction} BIAS ${data.direction === 'BULLISH' ? '🚀' : data.direction === 'BEARISH' ? '📉' : '⚖️'}`;
+            marketDirection.style.color = data.color;
         }
 
-        // Top Alpha Grid
-        topPicksContainer.innerHTML = data.picks.map(a => `
-            <div class="asset-item">
-                <span class="asset-name">${a.name}</span>
-                <span class="asset-trend ${a.up ? '' : 'down'}">${a.trend}</span>
-            </div>
-        `).join('');
+        // Action Signal Update
+        if (actionDisplay && targetDisplay && actionCard) {
+            const lowAction = data.action.toLowerCase();
+            const actionClass = lowAction.includes('buy') ? 'buy' : lowAction.includes('sell') ? 'sell' : 'hold';
+            
+            actionCard.className = `term-signal ${actionClass}`;
+            actionDisplay.textContent = data.action;
+            targetDisplay.textContent = `Entry: ${data.entry} | Target: ${data.target}`;
+        }
     }
 
-    // 5. TAB INTERACTIVITY (OFFLINE SYNC)
-    const assetTabs = document.querySelectorAll('.asset-tab');
-    if (assetTabs) {
-        assetTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                assetTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                updateTraderHub(); // Trigger immediate AI refresh
-            });
-        });
+    // Bridge for initial load and interval triggers
+    function updateTraderHub() {
+        if(document.getElementById('display-asset-name') && !window.analyzerInitialized) {
+             initAssetAnalyzer();
+             window.analyzerInitialized = true;
+        }
+        updateTraderHubDisplay();
     }
 
     // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED)
@@ -180,30 +231,27 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPremiumImage(item, categoryLabel) {
         let imageUrl = '';
         
-        // Try all possible image locations in the RSS item
-        if (item.thumbnail) imageUrl = item.thumbnail;
-        else if (item.enclosure && item.enclosure.link) imageUrl = item.enclosure.link;
+        // Try all possible image locations in the RSS item or database object
+        if (item.image) imageUrl = item.image; // Check database field first
+        else if (item.thumbnail) imageUrl = item.thumbnail;
+        else if (item.enclosure && (item.enclosure.link || item.enclosure.url)) imageUrl = item.enclosure.link || item.enclosure.url;
         else if (item.content && item.content.match(/src="([^"]+)"/)) imageUrl = item.content.match(/src="([^"]+)"/)[1];
 
-        // 1. Smart Source Upgrading & Fixing
+        // 1. Smart Source Upgrading - Keep it safe
         if (imageUrl && imageUrl.includes('http')) {
-            // Specific fix for CNBC and Financial sources
-            if (imageUrl.includes('cnbc.com')) {
-                imageUrl = imageUrl.replace(/width=\d+/, 'width=1024').replace(/&height=\d+/, '');
-            }
-            // Standard HD upgrade
-            imageUrl = imageUrl.replace('/120/', '/1024/').replace('/240/', '/1024/').replace('width=240', 'width=1024');
+            // Safe HD upgrade (only replace low res patterns if they exist)
+            imageUrl = imageUrl.replace('/120/', '/600/').replace('/240/', '/600/');
             return imageUrl;
         }
 
-        // 2. High-Quality Professional Fallbacks
+        // 2. High-Quality Professional Fallbacks (Using strictly validated Unsplash URLs)
         const fallbacks = {
-            'sports': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1200',
-            'crypto': 'https://images.unsplash.com/photo-1542340358-19642050965e?auto=format&fit=crop&q=80&w=1200',
-            'markets': 'https://images.unsplash.com/photo-1611974717482-48a4a390e8c6?auto=format&fit=crop&q=80&w=1200',
-            'economy': 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200',
-            'tech': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
-            'global': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1200'
+            'sports': 'https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80',
+            'crypto': 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80',
+            'markets': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+            'economy': 'https://images.unsplash.com/photo-1618042164219-62c820f10723?auto=format&fit=crop&w=1200&q=80',
+            'tech': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+            'global': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80'
         };
 
         const labelLow = categoryLabel.toLowerCase();
@@ -249,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <div class="card-footer">
-                        <span>${new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">${new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })} • ${new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
                         <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(highResImg)}&time=${encodeURIComponent(new Date(item.pubDate).toLocaleTimeString())}" class="arrow-link">→</a>
                     </div>
                 </div>
@@ -299,7 +347,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- HISTORICAL DATABASE FETCH ENGINE ---
+    async function loadHistoricalNews(dateStr) {
+        if (!newsGrid) return;
+        newsGrid.innerHTML = `<div class="loading-state">🛰️ Digging archives for ${dateStr}...</div>`;
+
+        let categoryKey = 'global';
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes('sports')) categoryKey = 'sports';
+        else if (path.includes('markets')) categoryKey = 'markets';
+        else if (path.includes('economy')) categoryKey = 'economy';
+        else if (path.includes('crypto')) categoryKey = 'crypto';
+        else if (path.includes('local')) categoryKey = 'local';
+
+        try {
+            const url = `http://localhost:3000/api/news?date=${dateStr}&category=${categoryKey === 'global' ? 'all' : categoryKey}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.status === 'ok' && data.items.length > 0) {
+                renderNews(data.items, `Archives (${dateStr})`);
+            } else {
+                newsGrid.innerHTML = `<div class="loading-state" style="color:var(--text-secondary)">No archived records found for this date. Server might be offline or no db records.</div>`;
+            }
+        } catch (e) {
+            newsGrid.innerHTML = `<div class="loading-state" style="color:var(--accent-red)">⚠️ Database Connection Error. Ensure the local server is running (node server.js).</div>`;
+            console.error(e);
+        }
+    }
+
+    // --- REALTIME NEWS ENGINE ---
     async function loadRealTimeNews(selectedCategory = null) {
+        if (!newsGrid) return;
         const path = window.location.pathname.toLowerCase();
         let RSS_URL = 'https://feeds.bbci.co.uk/news/world/rss.xml';
         let categoryLabel = 'Global Feed';
@@ -311,6 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (path.includes('markets')) categoryKey = 'markets';
             else if (path.includes('economy')) categoryKey = 'economy';
             else if (path.includes('crypto')) categoryKey = 'crypto';
+            else if (path.includes('local')) categoryKey = 'local';
         } else {
             categoryKey = selectedCategory.toLowerCase();
         }
@@ -320,7 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
             RSS_URL = 'https://feeds.bbci.co.uk/sport/rss.xml';
             categoryLabel = 'Live Sports';
         } else if (categoryKey === 'markets') {
-            RSS_URL = 'https://www.cnbc.com/id/100003114/device/rss/rss.html';
+            // Strictly US Markets / Finance feed, not Top News
+            RSS_URL = 'https://www.cnbc.com/id/10000664/device/rss/rss.html';
             categoryLabel = 'Markets Info';
         } else if (categoryKey === 'economy') {
             RSS_URL = 'https://www.cnbc.com/id/10001147/device/rss/rss.html';
@@ -331,6 +412,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (categoryKey === 'tech') {
             RSS_URL = 'https://feeds.bbci.co.uk/news/technology/rss.xml';
             categoryLabel = 'Tech Updates';
+        } else if (categoryKey === 'local') {
+            // localRssUrl is set by initLocalization()
+            RSS_URL = window.localRssUrl || 'https://feeds.bbci.co.uk/news/world/rss.xml';
+            categoryLabel = 'Local Coverage';
         }
 
         // Advanced Cache Busting: Force the proxy to fetch new data from the source
@@ -351,7 +436,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                     header.innerHTML = `Top Headlines <span style="font-size: 0.8rem; color: #10B981; margin-left: 1rem; font-weight: 400;">● Live Updated: ${time}</span>`;
                 }
-                // Advanced Filtering: Ensure news relevance especially for mixed feeds
+                
+                // Advanced Filtering: Ensure absolute relevance
                 let filteredItems = allNewsItems;
                 if (categoryKey === 'crypto') {
                     filteredItems = allNewsItems.filter(i => 
@@ -361,9 +447,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     filteredItems = allNewsItems.filter(i => 
                         (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/sport|game|match|score|player|league|team|football|cricket/i)
                     );
+                } else if (categoryKey === 'markets') {
+                    filteredItems = allNewsItems.filter(i => 
+                        (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/stock|market|trade|invest|share|wall street|nasdaq|dow|s&p|bull|bear|dividend|yield/i)
+                    );
                 }
 
-                // If filtering wiped out everything, show some original items
+                // If filtering wiped out everything, show some original items, but only if they somewhat match
                 if (filteredItems.length === 0) filteredItems = allNewsItems.slice(0, 12);
 
                 renderNews(filteredItems.slice(0, 12), categoryLabel);
@@ -433,7 +523,8 @@ document.addEventListener('DOMContentLoaded', () => {
         channelButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const videoId = btn.getAttribute('data-video');
-                newsPlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                // Use & instead of ? because videoId already contains ?channel=
+                newsPlayer.src = `https://www.youtube.com/embed/${videoId}&autoplay=1&mute=1`;
                 channelButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
             });
@@ -495,11 +586,155 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 12. HERO SLIDER ENGINE (index.html)
+    function initHeroSlider() {
+        const slides = document.querySelectorAll('.hero-slide');
+        const dotsContainer = document.getElementById('hero-dots-container');
+        const prevBtn = document.getElementById('hero-prev');
+        const nextBtn = document.getElementById('hero-next');
+        
+        if (!slides.length || !dotsContainer || !prevBtn || !nextBtn) return;
+
+        let currentSlide = 0;
+        let slideInterval;
+
+        // Generate dots dynamically
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('hero-dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.hero-dot');
+
+        function goToSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            
+            currentSlide = (n + slides.length) % slides.length;
+            
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            resetInterval();
+        }
+
+        function nextSlide() { goToSlide(currentSlide + 1); }
+        function prevSlide() { goToSlide(currentSlide - 1); }
+        
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 4500); // Faster slide interval (4.5s) to ensure auto-slide is noticeable
+        }
+
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+        
+        // Start engine
+        resetInterval();
+    }
+
     // Initial Load
+    initHeroSlider();
+    initLocalization();
+    
+    // Inject Date Picker Filter
+    const mainSectionHeader = document.querySelector('.main-content .section-header');
+    if (mainSectionHeader && !document.querySelector('.history-date-picker')) {
+        mainSectionHeader.style.display = 'flex';
+        mainSectionHeader.style.justifyContent = 'space-between';
+        mainSectionHeader.style.alignItems = 'center';
+        
+        const dateWrap = document.createElement('div');
+        dateWrap.className = 'date-filter-wrapper';
+        dateWrap.innerHTML = `
+            <label for="history-date">Archives:</label>
+            <input type="date" id="history-date" class="history-date-picker" title="Select a past date">
+        `;
+        mainSectionHeader.appendChild(dateWrap);
+
+        document.getElementById('history-date').addEventListener('change', (e) => {
+            const selectedDate = e.target.value; 
+            if(selectedDate) loadHistoricalNews(selectedDate);
+            else loadRealTimeNews(); 
+        });
+    }
+
     loadRealTimeNews();
     updateTraderHub();
     setInterval(() => {
         loadRealTimeNews();
         updateTraderHub();
     }, 60000); // Updated to 1 minute frequency for faster refreshes
+
+    // 13. DYNAMIC LOCALIZATION & TRANSLATION
+    async function initLocalization() {
+        try {
+            const response = await fetch('https://get.geojs.io/v1/ip/geo.json');
+            const geoInfo = await response.json();
+            const countryName = geoInfo.country || 'Global';
+            const countryCode = geoInfo.country_code || 'US';
+
+            const customTabName = `${countryName} News`;
+
+            // 1. Inject Navigation Tab
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks) {
+                const localLi = document.createElement('li');
+                const isActive = window.location.pathname.includes('local.html') ? 'class="active"' : '';
+                localLi.innerHTML = `<a href="local.html" ${isActive}>${customTabName}</a>`;
+                if(navLinks.children.length > 1) {
+                    navLinks.insertBefore(localLi, navLinks.children[1]);
+                } else {
+                    navLinks.appendChild(localLi);
+                }
+            }
+
+            // 2. Setup Custom Local Feed
+            // Using a direct search query guarantees that only news specifically about this country is fetched
+            const rssFeed = `https://news.google.com/rss/search?q=${encodeURIComponent(countryName)}+location&hl=en-US&gl=US&ceid=US:en`;
+            
+            if (window.location.pathname.toLowerCase().includes('local.html')) {
+                document.title = `LuminaNews | ${customTabName}`;
+                const sectionHeader = document.querySelector('.section-header h2');
+                if(sectionHeader) sectionHeader.innerHTML = `${countryName} <span>News</span>`;
+                window.localRssUrl = rssFeed;
+                loadRealTimeNews(); // reload with local rss
+            } else {
+                // Break top local news into Global ticker
+                const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeed)}&_=${new Date().getTime()}`;
+                try {
+                    const localRes = await fetch(API_URL);
+                    const localData = await localRes.json();
+                    if (localData.status === 'ok' && localData.items.length > 0) {
+                        const topStory = localData.items[0].title;
+                        const tickerContent = document.querySelector('.ticker-content p');
+                        if (tickerContent) {
+                            tickerContent.innerHTML = `⚡ <span style="color:#10B981; font-weight:bold;">[${countryName.toUpperCase()} ALERT]</span> ${topStory} &nbsp;&nbsp;•&nbsp;&nbsp; ` + tickerContent.innerHTML;
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // 3. Setup Google Translate
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                const translateDiv = document.createElement('div');
+                translateDiv.id = 'google_translate_element';
+                translateDiv.style.marginLeft = '1rem';
+                navbar.appendChild(translateDiv);
+
+                const script = document.createElement('script');
+                script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+                document.body.appendChild(script);
+
+                window.googleTranslateElementInit = function() {
+                    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                };
+            }
+        } catch(err) {
+            console.error("Localization failed", err);
+        }
+    }
 });

@@ -127,21 +127,94 @@
             </div>
         </section>
 
-        <section class="hero-section">
-            <div class="hero-content">
-                <div class="hero-label">Top Story 🗞️</div>
-                <h1 class="hero-title">Bitcoin Shatters Records: The New Gold Standard?</h1>
-                <p class="hero-excerpt">As Bitcoin reaches new all-time highs, global economists debate its role in the future of the financial world and institutional portfolios.</p>
-                <div class="hero-meta">
-                    <span>By Alex Turner</span>
-                    <span>• 5 mins ago</span>
-                    <span>• Markets</span>
+        <!-- HERO NEWS SLIDER -->
+        <section class="hero-slider-container">
+            <div class="hero-slides-wrapper" id="hero-slider-wrapper">
+                
+                <!-- SLIDE 1: General Markets -->
+                <div class="hero-slide active">
+                    <div class="hero-content">
+                        <div class="hero-label">Top Story 🗞️ • Markets</div>
+                        <h1 class="hero-title">Bitcoin Shatters Records: The New Gold Standard?</h1>
+                        <p class="hero-excerpt">As Bitcoin reaches new all-time highs, global economists debate its role in the future of the financial world and institutional portfolios.</p>
+                        <div class="hero-meta"><span>By Alex Turner</span><span>• 5 mins ago</span></div>
+                        <button class="read-more-btn">Read Full Story</button>
+                    </div>
+                    <div class="hero-image-container">
+                        <img src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80" alt="Bitcoin" class="main-hero-img">
+                        <div class="glass-overlay"></div>
+                    </div>
                 </div>
-                <button class="read-more-btn">Read Full Story</button>
+
+                <!-- SLIDE 2: Tech / AI -->
+                <div class="hero-slide">
+                    <div class="hero-content">
+                        <div class="hero-label">Breaking ⚡ • Tech</div>
+                        <h1 class="hero-title">Inside Nvidia's Next Generation AI Infrastructure</h1>
+                        <p class="hero-excerpt">The tech giant unveils its latest chipset architecture, promising a 4x leap in AI processing capabilities for enterprise applications worldwide.</p>
+                        <div class="hero-meta"><span>By Sarah Chen</span><span>• 1h ago</span></div>
+                        <button class="read-more-btn">Read Full Story</button>
+                    </div>
+                    <div class="hero-image-container">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="Technology AI chips" class="main-hero-img">
+                        <div class="glass-overlay"></div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 3: Sports -->
+                <div class="hero-slide">
+                    <div class="hero-content">
+                        <div class="hero-label">Trending 🔥 • Sports</div>
+                        <h1 class="hero-title">Champions League Finals: Historic Comeback Stuns the World</h1>
+                        <p class="hero-excerpt">In a breathtaking 90 minutes of pure determination, the underdogs secure a victory that will be remembered for decades across sporting history.</p>
+                        <div class="hero-meta"><span>By David Hughes</span><span>• 2h ago</span></div>
+                        <button class="read-more-btn">Read Full Story</button>
+                    </div>
+                    <div class="hero-image-container">
+                        <img src="https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80" alt="Stadium Lights" class="main-hero-img">
+                        <div class="glass-overlay"></div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 4: Global Economy -->
+                <div class="hero-slide">
+                    <div class="hero-content">
+                        <div class="hero-label">Exclusive 🎯 • Economics</div>
+                        <h1 class="hero-title">Fed Signals Unexpected Interest Rate Hold Amidst Stubborn Inflation</h1>
+                        <p class="hero-excerpt">Markets reacted swiftly as the central bank pivoted its stance, abandoning expected rate cuts for the fiscal quarter.</p>
+                        <div class="hero-meta"><span>By Emma Roberts</span><span>• 4h ago</span></div>
+                        <button class="read-more-btn">Read Full Story</button>
+                    </div>
+                    <div class="hero-image-container">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80" alt="Stock chart" class="main-hero-img">
+                        <div class="glass-overlay"></div>
+                    </div>
+                </div>
+
+                <!-- SLIDE 5: Politics / World -->
+                <div class="hero-slide">
+                    <div class="hero-content">
+                        <div class="hero-label">Update 🌐 • World</div>
+                        <h1 class="hero-title">Global Summit Reaches Unprecedented Climate Accords</h1>
+                        <p class="hero-excerpt">Leaders from 50 nations agree to accelerated emission targets, reshaping the future of green energy investments globally.</p>
+                        <div class="hero-meta"><span>By Michael Zheng</span><span>• 5h ago</span></div>
+                        <button class="read-more-btn">Read Full Story</button>
+                    </div>
+                    <div class="hero-image-container">
+                        <img src="https://images.unsplash.com/photo-1618042164219-62c820f10723?auto=format&fit=crop&w=1200&q=80" alt="Wind Turbines" class="main-hero-img">
+                        <div class="glass-overlay"></div>
+                    </div>
+                </div>
+
             </div>
-            <div class="hero-image-container">
-                 <img src="./assets/hero.png" alt="Dynamic Markets & Sports" class="main-hero-img">
-                 <div class="glass-overlay"></div>
+            
+            <!-- Slider Navigation Controls -->
+            <div class="hero-slider-nav">
+                <button class="slide-nav-btn" id="hero-prev">❮</button>
+                <div class="hero-dots" id="hero-dots-container">
+                    <!-- Dots generated by JS -->
+                </div>
+                <button class="slide-nav-btn" id="hero-next">❯</button>
             </div>
         </section>
 
@@ -168,14 +241,14 @@
                         <div class="section-header">
                             <h2>Global <span>Live Console</span></h2>
                             <div class="channel-tabs">
-                                <button class="channel-btn active" data-video="YDvsBbKfLPA">Sky News</button>
-                                <button class="channel-btn" data-video="gCNeDWCI0vo">Al Jazeera</button>
-                                <button class="channel-btn" data-video="phmPMqPiHaU">CNN Live</button>
-                                <button class="channel-btn" data-video="iipR5yUp36o">ABC News</button>
+                                <button class="channel-btn active" data-video="live_stream?channel=UCoMdktPbSTixAyNGrC80FzA">Sky News</button>
+                                <button class="channel-btn" data-video="live_stream?channel=UCNye-wNBqNL5ZzHSJj3l8Bg">Al Jazeera</button>
+                                <button class="channel-btn" data-video="live_stream?channel=UCeY0bbntWzzVIaj2z3QigXg">NBC News</button>
+                                <button class="channel-btn" data-video="live_stream?channel=UCBi2mrWuNuyYy4gbM6fU18Q">ABC News</button>
                             </div>
                         </div>
                         <div class="video-container">
-                            <iframe id="live-news-player" src="https://www.youtube.com/embed/YDvsBbKfLPA?autoplay=0" allowfullscreen></iframe>
+                            <iframe id="live-news-player" src="https://www.youtube.com/embed/live_stream?channel=UCoMdktPbSTixAyNGrC80FzA&autoplay=1&mute=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>
                 </section>

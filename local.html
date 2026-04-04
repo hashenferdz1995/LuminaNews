@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminaNews | Local</title>
+    <meta name="description" content="Local News Updates">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1214676344881133" crossorigin="anonymous"></script>
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="breaking-news-ticker">
+            <span class="ticker-label">LOCAL ALERTS</span>
+            <div class="ticker-content" id="local-ticker">
+                <p>⚡ Fetching live local updates...</p>
+            </div>
+        </div>
+        <nav id="navbar">
+            <div class="logo">
+                <span class="pulse-icon"></span>
+                <h1>Lumina<span>News</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="sports.html">Sports</a></li>
+                <li><a href="markets.html">Markets</a></li>
+                <li><a href="economy.html">Economy</a></li>
+                <li><a href="crypto.html" class="active">Crypto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="market-glance">
+            <!-- Hidden on local page -->
+        </section>
+
+        <section class="content-wrapper">
+            <div class="main-content">
+                <section class="latest-news">
+                    <div class="section-header">
+                        <h2>Top <span>Local News</span></h2>
+                    </div>
+                    <div class="news-grid" id="real-time-news-grid">
+                        <div class="loading-state">🛰️ Fetching Live Local Feed...</div>
+                    </div>
+                </section>
+            </div>
+            <aside class="sidebar-news">
+                <div class="sidebar-header">
+                    <h2>Local <span>Pulse</span></h2>
+                </div>
+                <div class="sidebar-item">
+                    <span class="world-tag local">Community</span>
+                    <h4>Local Services Experiencing Updates</h4>
+                    <span class="time">Just now</span>
+                </div>
+                <div class="sidebar-header" style="margin-top: 3rem;">
+                    <h2>Sponsors</h2>
+                </div>
+                <div class="sidebar-ad-stack">
+                    <div class="ad-placement sidebar-ad">
+                        <ins class="adsbygoogle"
+                             style="display:block"
+                             data-ad-client="ca-pub-1214676344881133"
+                             data-ad-slot="YOUR_AD_SLOT_ID"
+                             data-ad-format="auto"
+                             data-full-width-responsive="true"></ins>
+                        <script>
+                             (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
