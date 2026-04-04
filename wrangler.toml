@@ -5,7 +5,7 @@ compatibility_date = "2024-04-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "lumina_news_db"
-database_id = "YOUR_DATABASE_ID_HERE"
+database_id = "37880e86-67aa-4de3-91b5-a1a89274c479"
 
 [triggers]
 crons = ["* * * * *"] # Every single minute for real-time news
