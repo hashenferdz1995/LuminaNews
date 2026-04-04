@@ -745,12 +745,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 3. Setup Google Translate
-            const navbar = document.getElementById('navbar');
-            if (navbar) {
+            const navActions = document.querySelector('.nav-actions');
+            if (navActions) {
                 const translateDiv = document.createElement('div');
                 translateDiv.id = 'google_translate_element';
-                translateDiv.style.marginLeft = '1rem';
-                navbar.appendChild(translateDiv);
+                navActions.insertBefore(translateDiv, navActions.firstChild);
 
                 const script = document.createElement('script');
                 script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
