@@ -482,7 +482,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const category = pill.textContent.trim().toLowerCase();
                 if (category === 'all news') {
-                    loadRealTimeNews('all');
+           // --- LIVE TICKER ENGINE (REAL HEADLINES) ---
+    async function updateBreakingNewsTicker() {
+        const tickerContainer = document.querySelector('.ticker-content p');
+        if (!tickerContainer) return;
+
+        try {
+            const CF_WORKER = 'https://cold-mud-8201.hashenferdz.workers.dev'; // Use your actual URL
+            const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=8`);
+            const data = await res.json();
+
+            if (data.status === 'ok' && data.items.length > 0) {
+                const headlines = data.items.map(item => `⚡ ${item.title.toUpperCase()}`).join(' • ');
+                tickerContainer.innerHTML = headlines;
+            }
+        } catch (e) {
+            console.warn("Ticker sync failed", e);
+        }
+    }
+
+    // Initial Ticker Sync
+    updateBreakingNewsTicker();
+    
+    // Auto-Refresh Ticker every 3 minutes
+    setInterval(updateBreakingNewsTicker, 180000);
+
+    // Auto-Refresh Main News every 2 minutes for real-time feel
+    setInterval(() => {
+        const currentCategory = document.querySelector('.pill.active')?.textContent || 'All';
+        if (currentCategory !== 'Archives') {
+            loadRealTimeNews(currentCategory === 'All News' ? 'all' : currentCategory);
+        }
+    }, 120000);
                 } else {
                     loadRealTimeNews(category);
                 }
@@ -664,14 +695,6 @@ document.addEventListener('DOMContentLoaded', () => {
             else loadRealTimeNews(); 
         });
     }
-
-    loadRealTimeNews();
-    updateTraderHub();
-    setInterval(() => {
-        loadRealTimeNews();
-        updateTraderHub();
-    }, 60000); // Updated to 1 minute frequency for faster refreshes
-
     // 13. DYNAMIC LOCALIZATION & TRANSLATION
     async function initLocalization() {
         try {
@@ -712,13 +735,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const localRes = await fetch(API_URL);
                     const localData = await localRes.json();
                     if (localData.status === 'ok' && localData.items.length > 0) {
-                        const topStory = localData.items[0].title;
+                        const topLocal = localData.items[0].title;
                         const tickerContent = document.querySelector('.ticker-content p');
                         if (tickerContent) {
-                            tickerContent.innerHTML = `⚡ <span style="color:#10B981; font-weight:bold;">[${countryName.toUpperCase()} ALERT]</span> ${topStory} &nbsp;&nbsp;•&nbsp;&nbsp; ` + tickerContent.innerHTML;
+                            tickerContent.innerHTML += ` &bull; <span style='color:var(--accent)'>LOCAL: ${topLocal}</span>`;
                         }
                     }
-                } catch(e) {}
+                } catch (e) {}
             }
 
             // 3. Setup Google Translate
