@@ -1475,3 +1475,34 @@ footer {
         margin: 2rem 0;
     }
 }
+
+/* SIDEBAR TRADER POCKET */
+.trader-pocket {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(16, 185, 129, 0.1);
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 2.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.trader-pocket::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.trader-pocket .sentiment-meter {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.trader-pocket .meter-pointer {
+    width: 3px;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 1);
+}
