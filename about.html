@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminaNews | About Our AI Engine</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme article-page">
+    <header class="scrolled">
+        <nav id="navbar">
+            <div class="logo">
+                <span class="pulse-icon"></span>
+                <h1>Lumina<span>News</span></h1>
+            </div>
+            <a href="index.html" class="back-btn">← Back to Portal</a>
+        </nav>
+    </header>
+
+    <main class="article-container">
+        <div class="article-header" style="text-align: center;">
+            <div class="ai-badge">🧬 THE FUTURE OF NEWS</div>
+            <h1 style="font-size: 4rem; margin-bottom: 2rem;">World-First <span style="color: #00f2ff;">AI-Driven</span> News Hub</h1>
+            <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 700px; margin: 0 auto 4rem;">Cross-referencing global streams from CNN, BBC, Reuters, and Al Jazeera in real-time to bring you the singular truth.</p>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-card animate-float">
+                <div class="card-icon">🛰️</div>
+                <h3>Global Aggregation</h3>
+                <p>We source data from over 500 verified international news channels including CNN, Al Jazeera, and Associated Press simultaneously.</p>
+            </div>
+            <div class="about-card animate-float" style="animation-delay: 0.2s;">
+                <div class="card-icon">🧠</div>
+                <h3>AI Analysis</h3>
+                <p>Our deep-learning engine processes thousands of headlines per second to identify patterns, bias, and synthesized reports for you.</p>
+            </div>
+            <div class="about-card animate-float" style="animation-delay: 0.4s;">
+                <div class="card-icon">📊</div>
+                <h3>Veracity Meter</h3>
+                <p>The "AI Truth Score" analyzes the consensus between different agencies to provide a confidence level for every single news item.</p>
+            </div>
+        </div>
+
+        <div class="art-content" style="margin-top: 6rem; text-align: center;">
+            <div class="ai-summary" style="background: rgba(0, 242, 255, 0.05); border-color: rgba(0, 242, 255, 0.1);">
+                <h3>🚀 MISSION STATEMENT</h3>
+                <p>To eliminate misinformation by using technology to cross-reference multiple sources. At LuminaNews, we don't just provide news; we provide the verified truth derived from the world's most trusted networks.</p>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 4rem;
+        }
+
+        .about-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .about-card:hover {
+            background: rgba(0, 242, 255, 0.05);
+            border-color: #00f2ff;
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(0, 242, 255, 0.1);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .about-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-white);
+        }
+    </style>
+
+    <footer style="margin-top: 10rem;">
+        <div class="footer-bottom">
+            <p>&copy; 2026 LuminaNews AI. The Global Truth Standard.</p>
+        </div>
+    </footer>
+</body>
+</html>

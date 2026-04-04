@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminaNews | AI Reader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme article-page">
+    <header class="scrolled">
+        <nav id="navbar">
+            <div class="logo">
+                <span class="pulse-icon"></span>
+                <h1>Lumina<span>News</span></h1>
+            </div>
+            <a href="index.html" class="back-btn">← Back to Portal</a>
+        </nav>
+    </header>
+
+    <main class="article-container">
+        <div class="ad-placement top-billboard" style="margin-bottom: 5rem;">
+            <span>AI READER BILLBOARD AD</span>
+        </div>
+        <div class="article-header">
+            <div class="ai-narrator-pod">
+                <div class="narrator-info">
+                    <span class="narrator-aura"></span>
+                    <p>Lumina AI Voice Bot</p>
+                </div>
+                <div class="narrator-controls">
+                    <button id="btn-play" class="n-btn">▶ Play Report</button>
+                    <button id="btn-pause" class="n-btn" style="display:none;">⏸ Pause</button>
+                    <button id="btn-stop" class="n-btn">⏹ Stop</button>
+                </div>
+            </div>
+            <div class="ai-badge">🧬 AI AGGREGATED REPORT</div>
+            <h1 id="art-title">Loading Article...</h1>
+            <div class="art-meta">
+                <span>By Lumina AI</span> • <span id="art-date">Just Now</span>
+            </div>
+        </div>
+
+        <div class="art-hero-container">
+            <img id="art-img" src="" alt="Article Banner">
+        </div>
+
+        <div class="art-content">
+            <div class="ai-summary">
+                <h3>💡 AI Summary</h3>
+                <p id="art-summary">Synthesizing multiple global reports into a singular analysis...</p>
+            </div>
+            
+            <div class="ad-placement in-feed-ad" style="margin: 3rem 0; height: 150px;">
+                <span>MID-CONTENT SPONSORED LINKS</span>
+            </div>
+
+            <div class="art-body" id="art-body">
+                <!-- AI Generated Content Placeholder -->
+                <p>Analyzing global news streams for this topic. Please wait as our AI engine cross-references reports from major networks including BBC News, Reuters, CNBC, and Al Jazeera...</p>
+            </div>
+        </div>
+
+        <div class="ad-placement top-billboard" style="margin: 5rem auto;">
+            <span>FINISH STORY BILLBOARD</span>
+        </div>
+
+        <div class="next-story-nav">
+            <div class="section-header">
+                <h2>Next <span>AI Reports</span></h2>
+            </div>
+            <div class="next-grid">
+                <a href="article.html?title=Global%20Trade%20Surge&image=https://images.unsplash.com/photo-1526304640581-d334cdbbf45e&time=2h%20ago" class="next-card">
+                    <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e" alt="News Image">
+                    <div class="next-info">
+                        <h4>Global Trade Surge: New Routes Identified</h4>
+                        <span>Real-Time Analysis</span>
+                    </div>
+                </a>
+                <a href="article.html?title=Tech%20Innovation%20Summit&image=https://images.unsplash.com/photo-1518770660439-4636190af475&time=4h%20ago" class="next-card">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475" alt="News Image">
+                    <div class="next-info">
+                        <h4>Tech Innovation Summit 2026: What to Expect</h4>
+                        <span>AI Trends</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="art-sources">
+            <h4>Verified Data Sources</h4>
+            <div class="source-list">
+                <span class="source-tag">BBC News</span>
+                <span class="source-tag">Reuters</span>
+                <span class="source-tag">AL Jazeera</span>
+                <span class="source-tag">Associated Press</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const title = params.get('title') || 'AI News Highlight';
+            const img = params.get('image') || 'https://images.unsplash.com/photo-1586339949916-3e9457bef6a3';
+            const time = params.get('time') || 'Just Now';
+
+            document.getElementById('art-title').textContent = title;
+            document.getElementById('art-img').src = img;
+            document.getElementById('art-date').textContent = time;
+
+            // SIMULATE AI GENERATION
+            setTimeout(() => {
+                document.getElementById('art-summary').textContent = `Our AI engine has analyzed this topic across 12 international news agencies. The general consensus points towards a significant global impact, specifically regarding regional stability and economic outlook.`;
+                
+                document.getElementById('art-body').innerHTML = `
+                    <p>Global headlines are reporting intense developments regarding <strong>"${title}"</strong>. Multiple reports indicate that these events are unfolding rapidly, with key updates expected within the next 24 hours.</p>
+                    <p>Strategic analysts suggest that this topic is currently one of the most discussed events in the global press, drawing cross-disciplinary attention from both economic and social sectors.</p>
+                    <p>Our LuminaNews AI engine continues to monitor the situation, cross-referencing live data streams to provide you with the most accurate, non-biased view of the situation.</p>
+                `;
+            }, 1500);
+
+            // FINAL ULTIMATE AI NARRATION ENGINE (FIXED VOICE LOADING)
+            const playBtn = document.getElementById('btn-play');
+            const pauseBtn = document.getElementById('btn-pause');
+            const stopBtn = document.getElementById('btn-stop');
+            const aura = document.querySelector('.narrator-aura');
+            
+            const synth = window.speechSynthesis;
+            let voices = [];
+
+            // Pre-load voices correctly
+            function loadVoices() {
+                voices = synth.getVoices();
+            }
+            loadVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            }
+
+            function getBestVoice() {
+                // Return best natural voice
+                return voices.find(v => v.name.includes('Google US English')) || 
+                       voices.find(v => v.name.includes('Microsoft')) || 
+                       voices.find(v => v.lang.startsWith('en')) || 
+                       voices[0];
+            }
+
+            function speak() {
+                if (synth.speaking && !synth.paused) {
+                    synth.cancel(); // Reset if already talking to avoid stuck buffer
+                }
+
+                if (synth.paused) {
+                    synth.resume();
+                    playBtn.style.display = 'none';
+                    pauseBtn.style.display = 'block';
+                    aura.classList.add('active');
+                } else {
+                    const fullText = `${title}. ${document.getElementById('art-summary').textContent}. ${document.getElementById('art-body').innerText}`;
+                    const utterance = new SpeechSynthesisUtterance(fullText);
+                    
+                    utterance.voice = getBestVoice();
+                    utterance.rate = 0.95;
+                    utterance.pitch = 1.0;
+                    utterance.lang = 'en-US';
+
+                    utterance.onstart = () => {
+                        aura.classList.add('active');
+                        playBtn.style.display = 'none';
+                        pauseBtn.style.display = 'block';
+                    };
+                    utterance.onend = () => {
+                        aura.classList.remove('active');
+                        playBtn.style.display = 'block';
+                        pauseBtn.style.display = 'none';
+                    };
+                    utterance.onerror = () => {
+                        aura.classList.remove('active');
+                    };
+                    
+                    synth.speak(utterance);
+                }
+            }
+
+            playBtn.onclick = speak;
+            pauseBtn.onclick = () => {
+                synth.pause();
+                playBtn.style.display = 'block';
+                pauseBtn.style.display = 'none';
+                aura.classList.remove('active');
+            };
+            stopBtn.onclick = () => {
+                synth.cancel();
+                aura.classList.remove('active');
+                playBtn.style.display = 'block';
+                pauseBtn.style.display = 'none';
+            };
+        });
+    </script>
+</body>
+</html>

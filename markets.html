@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminaNews | Markets</title>
+    <meta name="description" content="Global Market News">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="breaking-news-ticker">
+            <span class="ticker-label">MARKET ALERTS</span>
+            <div class="ticker-content">
+                <p>⚡ NASDAQ Gains 1.2% • ⚡ Gold Prices Stabilize • ⚡ Crude Oil Rebounds • ⚡ Inflation Data Expected Tomorrow</p>
+            </div>
+        </div>
+        <nav id="navbar">
+            <div class="logo">
+                <span class="pulse-icon"></span>
+                <h1>Lumina<span>News</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="sports.html">Sports</a></li>
+                <li><a href="markets.html" class="active">Markets</a></li>
+                <li><a href="economy.html">Economy</a></li>
+                <li><a href="crypto.html">Crypto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="market-glance">
+            <div class="market-card">
+                <span class="m-label">NASDAQ</span>
+                <span class="m-value">16,428.82 <i class="up">▲ +1.2%</i></span>
+            </div>
+            <div class="market-card">
+                <span class="m-label">BITCOIN (BTC)</span>
+                <span class="m-value">$72,450.00 <i class="up">▲ +4.5%</i></span>
+            </div>
+        </section>
+
+        <section class="content-wrapper">
+            <div class="main-content">
+                <section class="latest-news">
+                    <div class="section-header">
+                        <h2>Market Hub</h2>
+                    </div>
+                    <div class="news-grid" id="real-time-news-grid">
+                        <div class="loading-state">🛰️ Fetching Live Market Data...</div>
+                    </div>
+                </section>
+            </div>
+            <aside class="sidebar-news">
+                <div class="sidebar-header">
+                    <h2>Market <span>Pulse</span></h2>
+                </div>
+                <div class="sidebar-header" style="margin-top: 3rem;">
+                    <h2>Financial <span>Partners</span></h2>
+                    <p>Premium Trading Deals</p>
+                </div>
+                <div class="sidebar-ad-stack">
+                    <div class="ad-placement sidebar-ad"><span>Market Ad 1</span></div>
+                    <div class="ad-placement sidebar-ad"><span>Market Ad 2</span></div>
+                    <div class="ad-placement sidebar-ad"><span>Market Ad 3</span></div>
+                    <div class="ad-placement sidebar-ad"><span>Market Ad 4</span></div>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

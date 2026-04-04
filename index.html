@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminaNews | Real-Time Global AI News Hub</title>
+    <meta name="description" content="Get the latest sports news, real-time scores, and deep-dive analysis into your favorite games.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="breaking-news-ticker">
+            <span class="ticker-label">BREAKING NEWS</span>
+            <div class="ticker-content">
+                <p>⚡ US Federal Reserve hints at potential rate cuts in Q3 • ⚡ Bitcoin surges past $72k as institutional interest peaks • ⚡ Global Markets react to new trade agreements in Asia • ⚡ New AI regulations proposed in the European Union</p>
+            </div>
+        </div>
+        <div class="conflict-alert-bar">
+            <span class="alert-label">CONFLICT ALERT 🛡️</span>
+            <div class="alert-content">
+                <p>⚠ Global Security Council convenes for emergency talks on peacekeeping • ⚠ New de-escalation zones proposed in Middle East conflicts • ⚠ Cyber-security threats identified in international naval domains • ⚠ Aid corridors established for humanitarian efforts in Eastern regions</p>
+            </div>
+        </div>
+        <nav id="navbar">
+            <div class="logo">
+                <span class="pulse-icon"></span>
+                <h1>Lumina<span>News</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="sports.html">Sports</a></li>
+                <li><a href="markets.html">Markets</a></li>
+                <li><a href="economy.html">Economy</a></li>
+                <li><a href="crypto.html">Crypto</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div id="weather-widget" class="weather-display">
+                    <span id="weather-icon">☁️</span>
+                    <span id="weather-temp">--°C</span>
+                    <span id="weather-location">Detecting...</span>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search news...">
+                    <button class="search-btn">🔍</button>
+                </div>
+                <button class="subscribe-btn">Subscribe</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="market-glance">
+            <div class="market-card">
+                <span class="m-label">NASDAQ</span>
+                <span class="m-value">16,428.82 <i class="up">▲ +1.2%</i></span>
+            </div>
+            <div class="market-card">
+                <span class="m-label">BITCOIN (BTC)</span>
+                <span class="m-value">$72,450.00 <i class="up">▲ +4.5%</i></span>
+            </div>
+            <div class="market-card">
+                <span class="m-label">GOLD</span>
+                <span class="m-value">$2,154.20 <i class="down">▼ -0.3%</i></span>
+            </div>
+            <div class="market-card">
+                <span class="m-label">CRUDE OIL</span>
+                <span class="m-value">$82.15 <i class="up">▲ +0.8%</i></span>
+            </div>
+        </section>
+
+        <section class="live-scoreboard">
+            <div class="score-card live">
+                <span class="sport-tag">Live Event</span>
+                <div class="match-info">Apple Product Launch Event • Streaming Now</div>
+            </div>
+            <div class="score-card live">
+                <span class="sport-tag">Football</span>
+                <div class="match-info">MUN 1 - 0 LIV • 78'</div>
+            </div>
+            <div class="score-card upcoming">
+                <span class="sport-tag">Cricket</span>
+                <div class="match-info">SL vs IND • Starts in 2h</div>
+            </div>
+        </section>
+
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-label">Top Story 🗞️</div>
+                <h1 class="hero-title">Bitcoin Shatters Records: The New Gold Standard?</h1>
+                <p class="hero-excerpt">As Bitcoin reaches new all-time highs, global economists debate its role in the future of the financial world and institutional portfolios.</p>
+                <div class="hero-meta">
+                    <span>By Alex Turner</span>
+                    <span>• 5 mins ago</span>
+                    <span>• Markets</span>
+                </div>
+                <button class="read-more-btn">Read Full Story</button>
+            </div>
+            <div class="hero-image-container">
+                 <img src="./assets/hero.png" alt="Dynamic Markets & Sports" class="main-hero-img">
+                 <div class="glass-overlay"></div>
+            </div>
+        </section>
+
+        <section class="content-wrapper">
+            <div class="main-content">
+                <section class="latest-news">
+                    <div class="section-header">
+                        <h2>Top Headlines</h2>
+                        <div class="filter-pills">
+                            <button class="pill active">All News</button>
+                            <button class="pill">Sports</button>
+                            <button class="pill">Markets</button>
+                            <button class="pill">Crypto</button>
+                            <button class="pill">Tech</button>
+                        </div>
+                    </div>
+                    
+                    <div class="news-grid" id="real-time-news-grid">
+                        <div class="loading-state">🛰️ Fetching Live Global News...</div>
+                    </div>
+
+                    <!-- GLOBAL LIVE NEWS CONSOLE -->
+                    <div class="news-video-section">
+                        <div class="section-header">
+                            <h2>Global <span>Live Console</span></h2>
+                            <div class="channel-tabs">
+                                <button class="channel-btn active" data-video="SzhO5vA68jM">Sky News</button>
+                                <button class="channel-btn" data-video="v6v3pW2o-nI">Al Jazeera</button>
+                                <button class="channel-btn" data-video="6L4v8PszQls">CNN Live Feed</button>
+                                <button class="channel-btn" data-video="jL8uDJJBjMA">BBC World</button>
+                            </div>
+                        </div>
+                        <div class="video-container">
+                            <iframe id="live-news-player" src="https://www.youtube.com/embed/SzhO5vA68jM?autoplay=0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="sidebar-news">
+                <div class="alert-center">
+                    <div class="awaiting-alert">
+                        <span class="alert-pulse"></span>
+                        <p>📢 BREAKING NEWS AWAITING...</p>
+                    </div>
+                </div>
+                <div class="sidebar-header">
+                    <h2>Market <span>Pulse</span></h2>
+                    <p>Live Sentiment & Trends</p>
+                </div>
+                <div class="market-item">
+                    <span class="world-tag crypto">Crypto</span>
+                    <h4>BTC ETF Inflows Hit Record $1.2B in a Single Day</h4>
+                    <span class="time">1h ago</span>
+                </div>
+                <div class="market-item">
+                    <span class="world-tag stocks">Stocks</span>
+                    <h4>NVDA Market Cap Surpasses $3 Trillion Mark</h4>
+                    <span class="time">3h ago</span>
+                </div>
+                <div class="sidebar-header" style="margin-top: 3rem;">
+                    <h2>Security <span>Updates</span></h2>
+                    <p>Global Geopolitics</p>
+                </div>
+                <div class="sidebar-item">
+                    <span class="world-tag security">Conflict Zone</span>
+                    <h4>New Peace Treaty Discussions in Eastern Regions</h4>
+                    <span class="time">1h ago</span>
+                </div>
+                <div class="sidebar-item">
+                    <span class="world-tag security">Security</span>
+                    <h4>Cybersecurity Red Alert Issued for International Defense Hubs</h4>
+                    <span class="time">4h ago</span>
+                </div>
+                <div class="sidebar-header" style="margin-top: 3rem;">
+                    <h2>Climate <span>Watch</span></h2>
+                    <p>Global Weather News</p>
+                </div>
+                <div class="sidebar-item">
+                    <span class="world-tag weather">Climate</span>
+                    <h4>Heatwave Forecast for Southern Europe Next Week</h4>
+                    <span class="time">2h ago</span>
+                </div>
+                <div class="sidebar-item">
+                    <span class="world-tag weather">Environment</span>
+                    <h4>Oceans Hit Record High Temperatures in March</h4>
+                    <span class="time">6h ago</span>
+                </div>
+                <div class="sidebar-header" style="margin-top: 3rem;">
+                    <h2>Sponsored <span>Links</span></h2>
+                    <p>Premium Partner Content</p>
+                </div>
+                <div class="sidebar-ad-stack">
+                    <div class="ad-placement sidebar-ad"><span>Partner Ad 1</span></div>
+                    <div class="ad-placement sidebar-ad"><span>Partner Ad 2</span></div>
+                    <div class="ad-placement sidebar-ad"><span>Partner Ad 3</span></div>
+                    <div class="ad-placement sidebar-ad"><span>Partner Ad 4</span></div>
+                </div>
+            </aside>
+        </section>
+
+        <div class="ad-placement top-billboard" style="margin: 5rem auto 2rem;">
+            <span>PREMIUM BOTTOM BILLBOARD AD SPACE</span>
+        </div>
+
+        <section class="newsletter">
+            <div class="newsletter-card">
+                <h2>Join the <span>Inner Circle</span></h2>
+                <p>Subscribe to our newsletter for exclusive sports deep-dives and early access to match reports.</p>
+                <form class="subscribe-form">
+                    <input type="email" placeholder="Your email address...">
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-about">
+                <h3>Lumina<span>News</span></h3>
+                <p>Bringing you closer to the adrenaline of world sports with premium journalism and real-time updates.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Sections</h4>
+                <ul>
+                    <li><a href="#">Cricket</a></li>
+                    <li><a href="#">Football</a></li>
+                    <li><a href="#">NBA</a></li>
+                    <li><a href="#">Tennis</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="cookies.html">Cookies</a></li>
+                    <li><a href="privacy.html">Terms</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#">FB</a>
+                    <a href="#">TW</a>
+                    <a href="#">IG</a>
+                    <a href="#">TK</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 LuminaNews. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
