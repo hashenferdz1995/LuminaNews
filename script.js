@@ -744,23 +744,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (e) {}
             }
 
-            // 3. Setup Google Translate
+            // --- 3. ULTIMATE CUSTOM GOOGLE TRANSLATE HUB ---
             const navActions = document.querySelector('.nav-actions');
             if (navActions) {
-                const translateDiv = document.createElement('div');
-                translateDiv.id = 'google_translate_element';
-                navActions.insertBefore(translateDiv, navActions.firstChild);
+                // Secret Hidden Google Widget
+                const secretDiv = document.createElement('div');
+                secretDiv.id = 'google_translate_element';
+                document.body.appendChild(secretDiv);
 
                 const script = document.createElement('script');
                 script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
                 document.body.appendChild(script);
 
                 window.googleTranslateElementInit = function() {
-                    new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
                 };
+
+                // Premium Visible Picker
+                const customPicker = document.createElement('div');
+                customPicker.className = 'lumina-lang-picker';
+                customPicker.id = 'custom-lang-hub';
+                customPicker.innerHTML = `
+                    <div class="lang-current" id="current-lang-select">🌐 English</div>
+                    <div class="lang-dropdown" id="lang-dropdown-menu">
+                        <div class="lang-option" data-lang="en">EN • English</div>
+                        <div class="lang-option" data-lang="si">SI • සිංහල</div>
+                        <div class="lang-option" data-lang="ta">TA • தமிழ்</div>
+                        <div class="lang-option" data-lang="hi">HI • हिन्दी</div>
+                        <div class="lang-option" data-lang="fr">FR • Français</div>
+                        <div class="lang-option" data-lang="de">DE • Deutsch</div>
+                        <div class="lang-option" data-lang="ru">RU • Русский</div>
+                    </div>
+                `;
+                navActions.insertBefore(customPicker, navActions.firstChild);
+
+                // Interaction Logic
+                const currentBtn = document.getElementById('current-lang-select');
+                const menu = document.getElementById('lang-dropdown-menu');
+                
+                currentBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    menu.classList.toggle('active');
+                };
+
+                document.querySelectorAll('.lang-option').forEach(opt => {
+                    opt.onclick = () => {
+                        const langCode = opt.getAttribute('data-lang');
+                        const langName = opt.textContent;
+                        
+                        // Bridge to Google
+                        const googleSelect = document.querySelector('.goog-te-combo');
+                        if (googleSelect) {
+                            googleSelect.value = langCode;
+                            googleSelect.dispatchEvent(new Event('change'));
+                            currentBtn.innerHTML = `🌐 ${langName.split('•')[1].trim()}`;
+                        } else {
+                            alert("Translate Engine initializing... Please wait 2 seconds.");
+                        }
+                        menu.classList.remove('active');
+                    };
+                });
+
+                window.onclick = () => menu.classList.remove('active');
             }
         } catch(err) {
-            console.error("Localization failed", err);
+            console.error("Localization engine failed", err);
         }
     }
 });
