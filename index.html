@@ -211,8 +211,8 @@
             <div class="newsletter-card">
                 <h2>Join the <span>Inner Circle</span></h2>
                 <p>Subscribe to our newsletter for exclusive sports deep-dives and early access to match reports.</p>
-                <form class="subscribe-form">
-                    <input type="email" placeholder="Your email address...">
+                <form class="subscribe-form" name="newsletter" method="POST" data-netlify="true">
+                    <input type="email" name="email" placeholder="Your email address..." required>
                     <button type="submit">Sign Up</button>
                 </form>
             </div>

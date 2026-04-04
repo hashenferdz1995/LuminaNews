@@ -67,22 +67,58 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED)
     const newsGrid = document.getElementById('real-time-news-grid');
     let allNewsItems = []; // Store items for filtering
+    function getPremiumImage(item, categoryLabel) {
+        let imageUrl = item.thumbnail || '';
+        
+        // 1. Smart Source Upgrading (for providers like BBC and CNBC)
+        if (imageUrl.includes('http')) {
+            // Upgrade low-res thumbnail paths to HD
+            imageUrl = imageUrl.replace('/120/', '/1024/')
+                             .replace('/240/', '/1024/')
+                             .replace('/480/', '/1024/')
+                             .replace('width=120', 'width=1024')
+                             .replace('width=240', 'width=1024');
+            return imageUrl;
+        }
+
+        // 2. High-Quality Fallbacks based on category if original is missing/invalid
+        const fallbacks = {
+            'sports': 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1200',
+            'crypto': 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&q=80&w=1200',
+            'markets': 'https://images.unsplash.com/photo-1611974717482-48a4a390e8c6?auto=format&fit=crop&q=80&w=1200',
+            'economy': 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200',
+            'tech': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
+            'global': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&q=80&w=1200'
+        };
+
+        const key = categoryLabel.toLowerCase().includes('sport') ? 'sports' :
+                    categoryLabel.toLowerCase().includes('crypto') ? 'crypto' :
+                    categoryLabel.toLowerCase().includes('market') ? 'markets' :
+                    categoryLabel.toLowerCase().includes('economy') ? 'economy' :
+                    categoryLabel.toLowerCase().includes('tech') ? 'tech' : 'global';
+
+        return fallbacks[key];
+    }
 
     function renderNews(items, categoryLabel) {
         if (!newsGrid) return;
         newsGrid.innerHTML = '';
         
+        const path = window.location.pathname.toLowerCase();
+        const isHomePage = path === '/' || path.includes('index.html') || path.endsWith('/lumina-news/') || path.endsWith('/');
+
         if (items.length === 0) {
             newsGrid.innerHTML = '<div class="error-state">🔍 No matching news found.</div>';
             return;
         }
 
         items.forEach((item, index) => {
+            const highResImg = getPremiumImage(item, categoryLabel);
             const card = document.createElement('article');
             card.className = 'news-card';
             card.innerHTML = `
                 <div class="card-img">
-                     <img src="${item.thumbnail || 'https://images.unsplash.com/photo-1586339949916-3e9457bef6a3?auto=format&fit=crop&q=80&w=800'}" alt="News Image">
+                     <img src="${highResImg}" alt="News Image" loading="lazy" style="transition: opacity 0.5s ease;">
                      <span class="category-tag">${categoryLabel}</span>
                 </div>
                 <div class="card-content">
@@ -98,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     <div class="card-footer">
                         <span>${new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-                        <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(item.thumbnail || '')}&time=${encodeURIComponent(new Date(item.pubDate).toLocaleTimeString())}" class="arrow-link">→</a>
+                        <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(highResImg)}&time=${encodeURIComponent(new Date(item.pubDate).toLocaleTimeString())}" class="arrow-link">→</a>
                     </div>
                 </div>
             `;
@@ -113,26 +149,78 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    async function loadRealTimeNews() {
-        const path = window.location.pathname;
+    function updateHeroSection(item, categoryLabel) {
+        const heroTitle = document.querySelector('.hero-title');
+        const heroExcerpt = document.querySelector('.hero-excerpt');
+        const heroImg = document.querySelector('.main-hero-img');
+        const heroMeta = document.querySelector('.hero-meta');
+
+        if (!heroTitle || !item) return;
+
+        heroTitle.textContent = item.title;
+        heroExcerpt.textContent = item.description.replace(/<[^>]*>?/gm, '').substring(0, 150).trim() + '...';
+        
+        // Use premium image enhancer
+        const highResColor = getPremiumImage(item, categoryLabel);
+        heroImg.style.opacity = '0';
+        setTimeout(() => {
+            heroImg.src = highResColor;
+            heroImg.onload = () => heroImg.style.opacity = '1';
+        }, 300);
+        
+        const timeValue = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        heroMeta.innerHTML = `
+            <span>By Lumina Intelligence</span>
+            <span>• ${timeValue}</span>
+            <span>• ${categoryLabel}</span>
+        `;
+
+        const readMoreBtn = document.querySelector('.read-more-btn');
+        if (readMoreBtn) {
+            readMoreBtn.onclick = () => {
+                window.location.href = `article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(highResColor)}&time=${encodeURIComponent(timeValue)}`;
+            };
+        }
+    }
+
+    async function loadRealTimeNews(selectedCategory = null) {
+        const path = window.location.pathname.toLowerCase();
         let RSS_URL = 'https://feeds.bbci.co.uk/news/world/rss.xml';
         let categoryLabel = 'Global Feed';
+        let categoryKey = '';
 
-        if (path.includes('sports.html')) {
-            RSS_URL = 'https://feeds.bbci.co.uk/sport/rss.xml';
-            categoryLabel = 'Live Sports';
-        } else if (path.includes('markets.html')) {
-            RSS_URL = 'https://www.cnbc.com/id/100003114/device/rss/rss.html';
-            categoryLabel = 'Markets Info';
-        } else if (path.includes('economy.html')) {
-            RSS_URL = 'https://www.cnbc.com/id/10001147/device/rss/rss.html';
-            categoryLabel = 'Global Economy';
-        } else if (path.includes('crypto.html')) {
-            RSS_URL = 'https://www.coindesk.com/arc/outboundfeeds/rss/';
-            categoryLabel = 'Digital Assets';
+        // Auto-detect from URL if no category provided (For specific landing pages)
+        if (!selectedCategory) {
+            if (path.includes('sports') || path.includes('sport')) categoryKey = 'sports';
+            else if (path.includes('markets')) categoryKey = 'markets';
+            else if (path.includes('economy')) categoryKey = 'economy';
+            else if (path.includes('crypto')) categoryKey = 'crypto';
+        } else {
+            categoryKey = selectedCategory.toLowerCase();
         }
 
-        const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_URL)}`;
+        // Assign RSS Source based on category
+        if (categoryKey === 'sports') {
+            RSS_URL = 'https://feeds.bbci.co.uk/sport/rss.xml';
+            categoryLabel = 'Live Sports';
+        } else if (categoryKey === 'markets') {
+            RSS_URL = 'https://www.cnbc.com/id/100003114/device/rss/rss.html';
+            categoryLabel = 'Markets Info';
+        } else if (categoryKey === 'economy') {
+            RSS_URL = 'https://www.cnbc.com/id/10001147/device/rss/rss.html';
+            categoryLabel = 'Global Economy';
+        } else if (categoryKey === 'crypto') {
+            RSS_URL = 'https://www.coindesk.com/arc/outboundfeeds/rss/';
+            categoryLabel = 'Digital Assets';
+        } else if (categoryKey === 'tech') {
+            RSS_URL = 'https://feeds.bbci.co.uk/news/technology/rss.xml';
+            categoryLabel = 'Tech Updates';
+        }
+
+        // Advanced Cache Busting: Force the proxy to fetch new data from the source
+        const cacheBust = new Date().getTime();
+        const freshRssUrl = RSS_URL + (RSS_URL.includes('?') ? '&' : '?') + 'nocache=' + cacheBust;
+        const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(freshRssUrl)}&_=${cacheBust}`;
 
         try {
             const response = await fetch(API_URL);
@@ -140,11 +228,56 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (data.status === 'ok') {
                 allNewsItems = data.items;
-                renderNews(allNewsItems.slice(0, 12), categoryLabel);
+                
+                // Update "Last Updated" UI indicator
+                const header = document.querySelector('.section-header h2');
+                if (header) {
+                    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    header.innerHTML = `Top Headlines <span style="font-size: 0.8rem; color: #10B981; margin-left: 1rem; font-weight: 400;">● Live Updated: ${time}</span>`;
+                }
+                // Advanced Filtering: Ensure news relevance especially for mixed feeds
+                let filteredItems = allNewsItems;
+                if (categoryKey === 'crypto') {
+                    filteredItems = allNewsItems.filter(i => 
+                        (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/crypto|bitcoin|btc|eth|ethereum|blockchain|token|web3|nft|ledger/i)
+                    );
+                } else if (categoryKey === 'sports') {
+                    filteredItems = allNewsItems.filter(i => 
+                        (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/sport|game|match|score|player|league|team|football|cricket/i)
+                    );
+                }
+
+                // If filtering wiped out everything, show some original items
+                if (filteredItems.length === 0) filteredItems = allNewsItems.slice(0, 12);
+
+                renderNews(filteredItems.slice(0, 12), categoryLabel);
+
+                // Update Hero Section on Home Page/Initial Load
+                if (filteredItems.length > 0) {
+                    updateHeroSection(filteredItems[0], categoryLabel);
+                }
             }
         } catch (err) {
             if (newsGrid) newsGrid.innerHTML = '<div class="error-state">⚠️ Failed to connect to live server.</div>';
         }
+    }
+
+    // 8. FILTER PILL LOGIC (HOME PAGE)
+    const filterPills = document.querySelectorAll('.pill');
+    if (filterPills) {
+        filterPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                filterPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                
+                const category = pill.textContent.trim().toLowerCase();
+                if (category === 'all news') {
+                    loadRealTimeNews('all');
+                } else {
+                    loadRealTimeNews(category);
+                }
+            });
+        });
     }
 
     // 9. SEARCH FUNCTIONALITY
@@ -191,7 +324,62 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 10. NOTIFICATION SYSTEM
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<span class="toast-icon">✓</span> <span>${message}</span>`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 100);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
+    }
+
+    // 11. SUBSCRIBE HANDLING
+    const mainSubscribeBtn = document.querySelector('.subscribe-btn');
+    const newsletterForm = document.querySelector('.subscribe-form');
+
+    if (mainSubscribeBtn) {
+        mainSubscribeBtn.addEventListener('click', () => {
+            const newsletterSection = document.querySelector('.newsletter');
+            if (newsletterSection) {
+                newsletterSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailInput = newsletterForm.querySelector('input');
+            const emailValue = emailInput.value;
+
+            if (emailValue) {
+                // Submit to Netlify via AJAX (prevents page refresh)
+                fetch('/', {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({
+                        "form-name": "newsletter",
+                        "email": emailValue
+                    }).toString(),
+                })
+                .then(() => {
+                    showToast(`Success! ${emailValue.split('@')[0]} joined the Inner Circle.`);
+                    emailInput.value = '';
+                })
+                .catch(() => {
+                    showToast('Oops! Network error. Please try again later.');
+                });
+            }
+        });
+    }
+
     // Initial Load
     loadRealTimeNews();
-    setInterval(loadRealTimeNews, 600000); 
+    setInterval(loadRealTimeNews, 60000); // Updated to 1 minute frequency for faster refreshes
 });
