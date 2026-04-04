@@ -232,10 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let imageUrl = '';
         
         // Try all possible image locations in the RSS item or database object
-        if (item.image) imageUrl = item.image; // Check database field first
+        if (item.image && item.image.trim() !== '') imageUrl = item.image; // Check database field first
         else if (item.thumbnail) imageUrl = item.thumbnail;
         else if (item.enclosure && (item.enclosure.link || item.enclosure.url)) imageUrl = item.enclosure.link || item.enclosure.url;
         else if (item.content && item.content.match(/src="([^"]+)"/)) imageUrl = item.content.match(/src="([^"]+)"/)[1];
+        else if (item.description && item.description.match(/src="([^"]+)"/)) imageUrl = item.description.match(/src="([^"]+)"/)[1];
 
         // 1. Smart Source Upgrading - Keep it safe
         if (imageUrl && imageUrl.includes('http')) {

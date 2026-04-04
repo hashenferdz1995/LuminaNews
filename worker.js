@@ -40,6 +40,7 @@ export default {
           // Image extraction (Media enclosure or content)
           let image = content.match(/<enclosure.*?url="(.*?)"/)?.[1] || 
                       content.match(/<media:content.*?url="(.*?)"/)?.[1] || 
+                      content.match(/<media:thumbnail.*?url="(.*?)"/)?.[1] || 
                       content.match(/<img.*?src="(.*?)"/)?.[1] || "";
 
           // DB Save (Insert or Ignore if title exists)
