@@ -265,49 +265,83 @@
                 window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank');
             };
 
-            // --- PDF GENERATION ENGINE ---
+            // --- PDF GENERATION ENGINE (RELIABLE) ---
             const downloadBtn = document.getElementById('btn-download-pdf');
             downloadBtn.onclick = () => {
-                downloadBtn.innerHTML = '⚙ Generating PDF...';
+                const summaryText = document.getElementById('art-summary').textContent;
+                if (summaryText.includes('Synthesizing') || summaryText === '') {
+                    alert('Please wait a moment for the AI Intelligence Report to finish generating.');
+                    return;
+                }
+
+                downloadBtn.innerHTML = '⚙ Processing Intel...';
                 downloadBtn.disabled = true;
 
-                // Create a temporary hidden container for PDF layout
+                // Create a temporary container for PDF layout
                 const pdfElement = document.createElement('div');
-                pdfElement.className = 'pdf-export-layout';
+                pdfElement.style.position = 'absolute';
+                pdfElement.style.left = '-9999px';
+                pdfElement.style.top = '0';
+                pdfElement.style.width = '800px'; // Consistent width for PDF
                 pdfElement.innerHTML = `
-                    <div style="padding: 40px; font-family: 'Inter', sans-serif; color: #000; background: #fff;">
-                        <div style="border-bottom: 2px solid #E63946; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-                            <h1 style="color: #0A0F14; font-family: 'Outfit'; font-size: 24px; margin:0;">Lumina<span style="color:#E63946">News</span> Intelligence Report</h1>
-                            <span style="font-size: 12px; color: #666;">Generated on ${new Date().toLocaleDateString()}</span>
+                    <div style="padding: 50px; font-family: 'Inter', Arial, sans-serif; color: #000; background: #fff;">
+                        <div style="border-bottom: 3px solid #E63946; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                            <h1 style="color: #0A0F14; font-family: 'Outfit'; font-size: 28px; margin:0;">Lumina<span style="color:#E63946">News</span> Intelligence Report</h1>
+                            <span style="font-size: 14px; color: #666; font-weight: bold;">TRANSCRIPT NO: ${Math.floor(Math.random() * 90000) + 10000}</span>
                         </div>
-                        <h2 style="font-size: 32px; color: #0A0F14; margin-bottom: 10px; font-family: 'Outfit';">${rawTitle}</h2>
-                        <p style="color: #E63946; font-weight: bold; font-size: 14px; margin-bottom: 20px;">SECURITY CLASSIFICATION: GLOBAL PUBLIC RELEASE</p>
-                        <img src="${document.getElementById('art-img').src}" style="width: 100%; border-radius: 12px; margin-bottom: 30px;">
-                        <div style="background: #f8f9fa; border-left: 4px solid #E63946; padding: 20px; margin-bottom: 30px;">
-                            <h3 style="margin-top:0; font-size: 18px;">Executive Summary</h3>
-                            <p style="font-size: 15px; color: #333; line-height: 1.6;">${document.getElementById('art-summary').textContent}</p>
+                        <h2 style="font-size: 36px; color: #0A0F14; margin-bottom: 15px; font-family: 'Outfit'; line-height: 1.2;">${rawTitle}</h2>
+                        <p style="color: #E63946; font-weight: 900; font-size: 14px; margin-bottom: 25px; letter-spacing: 1px;">SECURITY CLASSIFICATION: GLOBAL PUBLIC RELEASE • ${new Date().toLocaleDateString().toUpperCase()}</p>
+                        
+                        <div style="width: 100%; height: 400px; overflow: hidden; border-radius: 16px; margin-bottom: 35px;">
+                            <img src="${document.getElementById('art-img').src}" style="width: 100%; height: 100%; object-fit: cover;">
                         </div>
-                        <div style="font-size: 16px; color: #111; line-height: 1.8;">
+
+                        <div style="background: #f1f3f5; border-left: 5px solid #E63946; padding: 25px; margin-bottom: 35px; border-radius: 0 12px 12px 0;">
+                            <h3 style="margin-top:0; font-size: 20px; color: #0A0F14; font-family: 'Outfit';">Executive Summary</h3>
+                            <p style="font-size: 16px; color: #333; line-height: 1.7; margin:0;">${summaryText}</p>
+                        </div>
+
+                        <div style="font-size: 17px; color: #111; line-height: 1.9; margin-bottom: 40px;">
                             ${document.getElementById('art-body').innerHTML}
                         </div>
-                        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; font-size: 12px; color: #999;">
-                            © 2026 LuminaNews. Powered by Lumina Intelligence AI. This report is verified and synced with real-time news engines.
+
+                        <div style="margin-top: 60px; padding-top: 25px; border-top: 2px solid #eee; text-align: center; font-size: 13px; color: #888;">
+                            <p style="margin-bottom: 5px;">Verified by Lumina Intelligence Core. Data sources include Global RSS Syndicates.</p>
+                            <p>© 2026 LuminaNews Global Portal. All Rights Reserved.</p>
                         </div>
                     </div>
                 `;
+                document.body.appendChild(pdfElement);
 
                 const opt = {
-                    margin:       10,
-                    filename:     `LuminaNews_Report_${rawTitle.replace(/\s+/g, '_').substring(0, 30)}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    margin:       0,
+                    filename:     `LuminaNews_Report_${rawTitle.replace(/\s+/g, '_').substring(0, 40)}.pdf`,
+                    image:        { type: 'jpeg', quality: 1.0 },
+                    html2canvas:  { 
+                        scale: 2, 
+                        useCORS: true, 
+                        logging: false,
+                        letterRendering: true,
+                        allowTaint: false
+                    },
+                    jsPDF:        { unit: 'px', format: [800, 1100], orientation: 'portrait' }
                 };
 
-                html2pdf().set(opt).from(pdfElement).save().then(() => {
-                    downloadBtn.innerHTML = '📄 DOWNLOAD INTEL REPORT (PDF)';
-                    downloadBtn.disabled = false;
-                });
+                // Ensure image is loaded before generating
+                const imgInPdf = pdfElement.querySelector('img');
+                const generate = () => {
+                    html2pdf().set(opt).from(pdfElement).save().then(() => {
+                        document.body.removeChild(pdfElement);
+                        downloadBtn.innerHTML = '📄 DOWNLOAD INTEL REPORT (PDF)';
+                        downloadBtn.disabled = false;
+                    });
+                };
+
+                if (imgInPdf.complete) {
+                    generate();
+                } else {
+                    imgInPdf.onload = generate;
+                }
             };
         });
     </script>
