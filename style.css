@@ -1506,3 +1506,89 @@ footer {
     width: 3px;
     box-shadow: 0 0 10px rgba(16, 185, 129, 1);
 }
+
+/* TRADER ASSET SELECTOR */
+.asset-selector-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 3rem;
+}
+
+.asset-tab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.asset-tab.active {
+    background: #10B981;
+    color: white;
+    border-color: #10B981;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.asset-tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+/* SIGNAL BOARD ENGINE */
+.signal-board {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.action-card {
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.action-card.buy { background: rgba(16, 185, 129, 0.1); border: 1px solid #10B981; }
+.action-card.sell { background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; }
+.action-card.hold { background: rgba(245, 158, 11, 0.1); border: 1px solid #F59E0B; }
+
+.action-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.action-main {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin-bottom: 5px;
+}
+
+.action-card.buy .action-main { color: #10B981; }
+.action-card.sell .action-main { color: #EF4444; }
+.action-card.hold .action-main { color: #F59E0B; }
+
+.action-price {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.signal-logic {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.signal-logic b {
+    color: var(--text-white);
+    display: block;
+    margin-bottom: 5px;
+}

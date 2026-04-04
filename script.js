@@ -76,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
             () => fetchWeather(7.8731, 80.7718) // Sri Lanka fallback
         );
     }
-
     // 4. AI TRADER HUB ENGINE
     function updateTraderHub() {
         const sentimentPointer = document.getElementById('sentiment-pointer');
@@ -85,40 +84,93 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!sentimentPointer) return;
 
-        // Simulate Live AI Analysis
-        const odds = Math.random();
-        let sentiment = "BULLISH";
-        let color = "#10B981";
-        let position = "78%";
+        // ASSET DATA REPOSITORY (MOCKED ANALYTICS)
+        const marketData = {
+            stocks: {
+                direction: "BULLISH",
+                color: "#10B981",
+                pos: "82%",
+                signal: { action: "BUY", price: "$224.50", target: "$250.00", logic: "AI detects massive accumulation in NVDA and high-growth tech stocks. Order books suggest a potential +12% breakout within 48 hours." },
+                picks: [
+                    { name: "NVDA", trend: "+4.2%", up: true },
+                    { name: "TSLA", trend: "+1.8%", up: true },
+                    { name: "AAPL", trend: "-0.5%", up: false },
+                    { name: "AMZN", trend: "+2.1%", up: true }
+                ]
+            },
+            crypto: {
+                direction: "BULLISH",
+                color: "#10B981",
+                pos: "90%",
+                signal: { action: "STRONG BUY", price: "$72,120", target: "$85,000", logic: "Bitcoin ETF inflows hitting record levels. Global network hashrate stable. Institutional FOMO detected in derivatives market." },
+                picks: [
+                    { name: "BTC/USD", trend: "+5.1%", up: true },
+                    { name: "SOL", trend: "+8.4%", up: true },
+                    { name: "ETH", trend: "+3.2%", up: true },
+                    { name: "LINK", trend: "-1.5%", up: false }
+                ]
+            },
+            forex: {
+                direction: "NEUTRAL",
+                color: "#F59E0B",
+                pos: "50%",
+                signal: { action: "HOLD", price: "151.40", target: "155.00", logic: "USD/JPY is testing high-tension resistance zones. Central Bank intervention risks are elevated. Stay on the sidelines until a clear breakout." },
+                picks: [
+                    { name: "USD/JPY", trend: "+0.2%", up: true },
+                    { name: "EUR/USD", trend: "-0.5%", up: false },
+                    { name: "GBP/USD", trend: "+0.1%", up: true },
+                    { name: "USD/CAD", trend: "-0.3%", up: false }
+                ]
+            }
+        };
 
-        if (odds < 0.3) {
-            sentiment = "BEARISH";
-            color = "#EF4444";
-            position = "20%";
-        } else if (odds < 0.5) {
-            sentiment = "NEUTRAL";
-            color = "#F59E0B";
-            position = "50%";
+        const activeTab = document.querySelector('.asset-tab.active');
+        const type = activeTab ? activeTab.getAttribute('data-type') : 'stocks';
+        const data = marketData[type] || marketData.stocks;
+
+        // Update UI
+        sentimentPointer.style.left = data.pos;
+        marketDirection.textContent = `${data.direction} BIAS ${data.direction === 'BULLISH' ? '🚀' : data.direction === 'BEARISH' ? '📉' : '⚖️'}`;
+        marketDirection.style.color = data.color;
+
+        // Big Signal Board
+        const signalBoard = document.getElementById('ai-main-signal');
+        if (signalBoard) {
+            const lowAction = data.signal.action.toLowerCase();
+            const actionClass = lowAction.includes('buy') ? 'buy' : lowAction.includes('sell') ? 'sell' : 'hold';
+            
+            signalBoard.innerHTML = `
+                <div class="action-card ${actionClass}">
+                    <span class="action-label">AI RECOMMENDED ACTION</span>
+                    <div class="action-main">${data.signal.action}</div>
+                    <div class="action-price">Entry: ${data.signal.price} | Target: ${data.signal.target}</div>
+                </div>
+                <div class="signal-logic">
+                    <b>WHY THIS TRADE?</b>
+                    ${data.signal.logic}
+                </div>
+            `;
         }
 
-        sentimentPointer.style.left = position;
-        marketDirection.textContent = `${sentiment} BIAS ${sentiment === 'BULLISH' ? '🚀' : sentiment === 'BEARISH' ? '📉' : '⚖️'}`;
-        marketDirection.style.color = color;
-
-        // Dynamic Assets
-        const assets = [
-            { name: "BTC/USD", trend: "+4.2%", up: true },
-            { name: "GOLD", trend: "-0.8%", up: false },
-            { name: "NVDA", trend: "+1.5%", up: true },
-            { name: "ETH/USD", trend: "+2.8%", up: true }
-        ];
-
-        topPicksContainer.innerHTML = assets.map(a => `
+        // Top Alpha Grid
+        topPicksContainer.innerHTML = data.picks.map(a => `
             <div class="asset-item">
                 <span class="asset-name">${a.name}</span>
                 <span class="asset-trend ${a.up ? '' : 'down'}">${a.trend}</span>
             </div>
         `).join('');
+    }
+
+    // 5. TAB INTERACTIVITY (OFFLINE SYNC)
+    const assetTabs = document.querySelectorAll('.asset-tab');
+    if (assetTabs) {
+        assetTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                assetTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                updateTraderHub(); // Trigger immediate AI refresh
+            });
+        });
     }
 
     // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED)

@@ -55,6 +55,13 @@
                 <h2>Daily <span>Trading Strategy</span></h2>
                 <p>AI-driven sentiment analysis and asset forecasting for today's global markets.</p>
             </div>
+
+            <!-- ASSET TYPE SELECTOR -->
+            <div class="asset-selector-tabs">
+                <button class="asset-tab active" data-type="stocks">STOCKS & COMPANIES</button>
+                <button class="asset-tab" data-type="crypto">CRYPTO ASSETS</button>
+                <button class="asset-tab" data-type="forex">CURRENCY & FOREX</button>
+            </div>
             
             <div class="hub-grid">
                 <div class="hub-card sentiment-analyzer">
@@ -74,14 +81,9 @@
                 </div>
 
                 <div class="hub-card strategy-box">
-                    <h3>AI <span>Strategy Insight</span></h3>
-                    <div class="strategy-content">
-                        <p id="strategy-brief">Global macro trends suggest a strong liquidity influx into high-cap technology stocks. AI models indicate a potential breakout in the semi-conductor sector within the next 4 hours.</p>
-                        <ul class="strategy-tips">
-                            <li>🎯 Focus: Support Level Rebounds</li>
-                            <li>⚠️ Risk: Mid-Day Volatility Spikes</li>
-                            <li>🏦 Action: Selective Accumulation</li>
-                        </ul>
+                    <h3>AI <span>Buy/Sell Signal</span></h3>
+                    <div id="ai-main-signal" class="signal-board">
+                        <div class="signal-status loading">Analyzing Selected Market...</div>
                     </div>
                 </div>
 
