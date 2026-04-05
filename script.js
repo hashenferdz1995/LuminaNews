@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function updateTraderHubDisplay() {
+    async function updateTraderHubDisplay() {
         const sentimentPointer = document.getElementById('sentiment-pointer');
         const marketDirection = document.getElementById('market-direction');
         const actionCard = document.getElementById('terminal-action-card');
@@ -186,7 +186,23 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!sentimentPointer) return;
 
-        const data = assetDataRepo[currentActiveAsset] || assetDataRepo["BTC"];
+        let data = { ...(assetDataRepo[currentActiveAsset] || assetDataRepo["BTC"]) };
+
+        // Real-Time Injection
+        try {
+            if (currentActiveAsset === "BTC" || currentActiveAsset === "ETH") {
+                const id = currentActiveAsset === "BTC" ? "bitcoin" : "ethereum";
+                const cryptoRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true`);
+                const cryptoData = await cryptoRes.json();
+                
+                if (cryptoData[id]) {
+                    data.price = `$${cryptoData[id].usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    data.trend = `${cryptoData[id].usd_24h_change >= 0 ? '+' : ''}${cryptoData[id].usd_24h_change.toFixed(2)}%`;
+                }
+            }
+        } catch (e) {
+            console.warn("Terminal Live Override Failed", e);
+        }
 
         // Update Text
         if(displayName) displayName.textContent = data.name;
@@ -216,12 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Bridge for initial load and interval triggers
-    function updateTraderHub() {
+    async function updateTraderHub() {
         if(document.getElementById('display-asset-name') && !window.analyzerInitialized) {
              initAssetAnalyzer();
              window.analyzerInitialized = true;
         }
-        updateTraderHubDisplay();
+        await updateTraderHubDisplay();
     }
 
     // 7. DYNAMIC REAL-TIME NEWS ENGINE (CATEGORIZED)
