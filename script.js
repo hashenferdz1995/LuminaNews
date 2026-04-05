@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Priority: Cloudflare Worker API (Change this URL after deployment)
-            const CF_WORKER = 'https://luminanews.online'; 
+            const CF_WORKER = 'https://lumina-news-worker.hashenferdz.workers.dev'; 
             const url = `${CF_WORKER}/api/news?date=${dateStr}&category=${categoryKey === 'global' ? 'all' : categoryKey}`;
             
             const response = await fetch(url);
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Fetch from Lumina D1 Database (Ultra Fast Edge)
         try {
-            const CF_WORKER = 'https://luminanews.online';
+            const CF_WORKER = 'https://lumina-news-worker.hashenferdz.workers.dev';
             const queryCategory = (categoryKey === 'all news' || categoryKey === 'global') ? 'all' : categoryKey;
             const res = await fetch(`${CF_WORKER}/api/news?category=${queryCategory}&_=${new Date().getTime()}`);
             const data = await res.json();
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tickerContainer) return;
 
         try {
-            const CF_WORKER = 'https://luminanews.online';
+            const CF_WORKER = 'https://lumina-news-worker.hashenferdz.workers.dev';
             
             // 1. Fetch News
             const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=10`);
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailValue = emailInput.value;
 
             if (emailValue) {
-                const CF_WORKER = 'https://luminanews.online';
+                const CF_WORKER = 'https://lumina-news-worker.hashenferdz.workers.dev';
                 fetch(`${CF_WORKER}/api/subscribe`, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
