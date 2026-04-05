@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Scoreboard & Periodic Syncs
     updateLiveScoreboard();
     setInterval(updateLiveScoreboard, 1000); // 1-second Ticking UI
-    updateTraderHub();
+    updateTraderHubDisplay();
     updateBreakingNewsTicker();
     setInterval(updateBreakingNewsTicker, 10000);
     
