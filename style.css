@@ -36,11 +36,15 @@ h1, h2, h3, h4 {
 
 /* DEV MODE BAR */
 .dev-mode-bar {
-    background: rgba(255, 183, 3, 0.05);
-    border-bottom: 1px solid rgba(255, 183, 3, 0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 183, 3, 0.1);
+    border-bottom: 1px solid rgba(255, 183, 3, 0.3);
     color: var(--accent);
     text-align: center;
-    padding: 6px 15px;
+    padding: 8px 15px;
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 1.5px;
@@ -49,7 +53,9 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     gap: 15px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
+    z-index: 10001; /* Above sticky header */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .dev-mode-bar .badge {
@@ -58,6 +64,18 @@ h1, h2, h3, h4 {
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 0.6rem;
+    animation: flash-dev 2s infinite;
+}
+
+@keyframes flash-dev {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Adjust header to not be covered */
+header {
+    margin-top: 35px; /* Push header down for dev bar */
 }
 
 /* BREAKING NEWS TICKER */
