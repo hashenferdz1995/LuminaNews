@@ -34,6 +34,32 @@ h1, h2, h3, h4 {
     font-weight: 800;
 }
 
+/* DEV MODE BAR */
+.dev-mode-bar {
+    background: rgba(255, 183, 3, 0.05);
+    border-bottom: 1px solid rgba(255, 183, 3, 0.15);
+    color: var(--accent);
+    text-align: center;
+    padding: 6px 15px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.dev-mode-bar .badge {
+    background: var(--accent);
+    color: var(--black);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+}
+
 /* BREAKING NEWS TICKER */
 .breaking-news-ticker {
     background: var(--primary);

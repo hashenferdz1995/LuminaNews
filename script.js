@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 0. ADD DEV MODE WARNING (ALPHA TERMINAL)
+    const devBar = document.createElement('div');
+    devBar.className = 'dev-mode-bar';
+    devBar.innerHTML = `<span class="badge">ALPHA v1.2</span> <span>SYSTEM ACTIVE: Terminal under optimization & live data synchronization...</span>`;
+    document.body.prepend(devBar);
+
     // 1. STICKY HEADER & SCROLL EFFECTS
     const header = document.querySelector('header');
     window.addEventListener('scroll', () => {
