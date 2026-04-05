@@ -488,13 +488,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tickerContainer) return;
 
         try {
-            const CF_WORKER = 'https://cold-mud-8201.hashenferdz.workers.dev'; // Use your actual URL
-            const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=8`);
+            const CF_WORKER = 'https://lumina-news-worker.hashenferdz1995.workers.dev';
+            
+            // 1. Fetch News
+            const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=10`);
             const data = await res.json();
+            
+            // 2. Fetch Live Crypto Prices (Premium Feel)
+            let marketTicker = "";
+            try {
+                const cryptoRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');
+                const cryptoData = await cryptoRes.json();
+                marketTicker = ` <span style="color:#00f2ff">📊 BTC: $${cryptoData.bitcoin.usd.toLocaleString()}</span> <span style="color:${cryptoData.bitcoin.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.bitcoin.usd_24h_change.toFixed(2)}%)</span> • <span style="color:#00f2ff">📊 ETH: $${cryptoData.ethereum.usd.toLocaleString()}</span> <span style="color:${cryptoData.ethereum.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.ethereum.usd_24h_change.toFixed(2)}%)</span> • `;
+            } catch (ce) { console.warn("Crypto API lag", ce); }
 
             if (data.status === 'ok' && data.items.length > 0) {
                 const headlines = data.items.map(item => `⚡ ${item.title.toUpperCase()}`).join(' • ');
-                tickerContainer.innerHTML = headlines;
+                tickerContainer.innerHTML = marketTicker + headlines;
             }
         } catch (e) {
             console.warn("Ticker sync failed", e);
