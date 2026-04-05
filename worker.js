@@ -90,6 +90,40 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
+    if (url.pathname === "/api/news") {
+      const category = url.searchParams.get("category") || 'all';
+      const date = url.searchParams.get("date");
+      
+      let query = "SELECT * FROM articles WHERE 1=1";
+      const params = [];
+
+      if (category !== 'all') {
+        query += " AND category = ?";
+        params.push(category);
+      }
+      
+      if (date) {
+        const startTs = new Date(`${date}T00:00:00.000Z`).getTime();
+        const endTs = new Date(`${date}T23:59:59.999Z`).getTime();
+        query += " AND timestamp >= ? AND timestamp <= ?";
+        params.push(startTs, endTs);
+      }
+
+      query += " ORDER BY timestamp DESC LIMIT 50";
+      
+      try {
+        const { results } = await env.DB.prepare(query).bind(...params).all();
+        return new Response(JSON.stringify({ status: 'ok', items: results }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { 
+          status: 500, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
+      }
+    }
+
     // --- MANUAL NEWS UPDATE TRIGGER ---
     if (url.pathname === "/api/update") {
       try {
