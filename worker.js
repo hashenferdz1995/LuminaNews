@@ -39,16 +39,36 @@ export default {
           let description = content.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/)?.[1] || 
                            content.match(/<description>(.*?)<\/description>/)?.[1] || "";
           
-          // Image extraction (Media enclosure or content)
+          // --- ENHANCED IMAGE EXTRACTION ---
           let image = content.match(/<enclosure.*?url="(.*?)"/)?.[1] || 
                       content.match(/<media:content.*?url="(.*?)"/)?.[1] || 
                       content.match(/<media:thumbnail.*?url="(.*?)"/)?.[1] || 
                       content.match(/<img.*?src="(.*?)"/)?.[1] || "";
+          
+          // Deep check in description if still empty
+          if (!image && description.includes('src=')) {
+            image = description.match(/src="([^"]+)"/)?.[1] || "";
+          }
 
-          // DB Save (Insert or Ignore if title exists)
+          // HD Upgrade Logic (Normalize size patterns)
+          if (image && image.includes('http')) {
+            image = image.replace('/120/', '/800/').replace('/240/', '/800/').replace('width=120', 'width=800');
+          }
+
+          // --- AI IMAGE GENERATION (If no image found) ---
+          if (!image || image.trim() === '') {
+            // Generate Pollinations URL immediately and store it
+            // Using a faster model (turbo/sdxl) if possible, or just standard prompt
+            const safeTitle = title.replace(/[^\w\s-]/g, '').substring(0, 80);
+            const prompt = encodeURIComponent(`Professional high-definition news press photo of: ${safeTitle}, realistic style, 8k resolution`);
+            image = `https://image.pollinations.ai/prompt/${prompt}?width=800&height=500&nologo=true&seed=${Math.floor(Math.random() * 1000)}`;
+          }
+
+          // DB Save (Insert or Update image if it was missing before)
           await env.DB.prepare(
-            `INSERT OR IGNORE INTO articles (title, description, category, link, image, pubDate, timestamp) 
-             VALUES (?, ?, ?, ?, ?, ?, ?)`
+            `INSERT INTO articles (title, description, category, link, image, pubDate, timestamp) 
+             VALUES (?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(title) DO UPDATE SET image = CASE WHEN image = "" THEN excluded.image ELSE image END`
           ).bind(title, description, feed.key, link, image, pubDateRaw, ts).run();
         }
       } catch (e) {
@@ -145,6 +165,27 @@ export default {
         });
       } catch (err) {
         return new Response(err.message, { status: 500 });
+      }
+    }
+
+    // 5. UNIVERSAL REAL-TIME PRICE PROXY (Bypass CORS & Centralize Feed)
+    if (url.pathname === "/api/proxy") {
+      const targetUrl = url.searchParams.get("url");
+      if (!targetUrl) return new Response("Missing URL", { status: 400 });
+
+      try {
+        const response = await fetch(targetUrl, {
+          headers: { "User-Agent": "Mozilla/5.0 LuminaNewsBot/1.0" }
+        });
+        const data = await response.text();
+        return new Response(data, {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (e) {
+        return new Response(JSON.stringify({ error: e.message }), { 
+          status: 500, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
       }
     }
 

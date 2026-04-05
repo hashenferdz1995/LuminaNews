@@ -49,6 +49,26 @@
             </div>
         </section>
 
+        <!-- REAL-TIME TRADINGVIEW WIDGET -->
+        <section class="pro-analysis-widget">
+            <div class="tradingview-widget-container" style="height: 450px; border-radius: 15px; overflow: hidden; margin-bottom: 3rem;">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                {
+                    "interval": "1m",
+                    "width": "100%",
+                    "isTransparent": true,
+                    "height": 450,
+                    "symbol": "BINANCE:BTCUSDT",
+                    "showIntervalTabs": true,
+                    "displayMode": "single",
+                    "locale": "en",
+                    "colorTheme": "dark"
+                }
+                </script>
+            </div>
+        </section>
+
         <section class="content-wrapper">
             <div class="main-content">
                 <section class="latest-news">

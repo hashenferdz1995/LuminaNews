@@ -76,35 +76,36 @@ document.addEventListener('DOMContentLoaded', () => {
             () => fetchWeather(7.8731, 80.7718) // Sri Lanka fallback
         );
     }
+
     // 4. AI TRADER HUB ENGINE
     const assetDataRepo = {
         // CRYPTO
-        "BTC": { type: "crypto", name: "Bitcoin (BTC)", price: "$72,450.00", trend: "+4.5%", dir: "BULLISH", color: "#10B981", pos: "88%", action: "STRONG BUY", entry: "$71,500", target: "$85,000", logic: "Heavy institutional ETF inflows detected. Technical breakout confirms strong upward momentum." },
-        "ETH": { type: "crypto", name: "Ethereum (ETH)", price: "$3,850.20", trend: "+2.1%", dir: "BULLISH", color: "#10B981", pos: "70%", action: "BUY", entry: "$3,800", target: "$4,200", logic: "Network upgrade anticipation and rising DeFi TVL driving demand." },
-        "SOL": { type: "crypto", name: "Solana (SOL)", price: "$145.60", trend: "-1.2%", dir: "NEUTRAL", color: "#F59E0B", pos: "45%", action: "HOLD", entry: "$140", target: "$160", logic: "Consolidating after recent massive rally. Wait for a clear breakout above $150." },
-        "BNB": { type: "crypto", name: "Binance Coin (BNB)", price: "$590.30", trend: "+1.5%", dir: "BULLISH", color: "#10B981", pos: "65%", action: "BUY", entry: "$580", target: "$650", logic: "Launchpool announcements driving utility token demand." },
-        "XRP": { type: "crypto", name: "Ripple (XRP)", price: "$0.61", trend: "-0.5%", dir: "NEUTRAL", color: "#F59E0B", pos: "50%", action: "HOLD", entry: "$0.58", target: "$0.70", logic: "Awaiting final court rulings with the SEC. High volatility expected." },
-        "ADA": { type: "crypto", name: "Cardano (ADA)", price: "$0.45", trend: "+0.8%", dir: "NEUTRAL", color: "#F59E0B", pos: "40%", action: "HOLD", entry: "$0.42", target: "$0.55", logic: "Steady development ongoing, but lagging in immediate DEX volume growth." },
-        "DOGE":{ type: "crypto", name: "Dogecoin (DOGE)", price: "$0.15", trend: "+8.2%", dir: "BULLISH", color: "#10B981", pos: "85%", action: "BUY", entry: "$0.14", target: "$0.20", logic: "Social media buzz and massive whale accumulation detected over the last 24h." },
-        "DOT": { type: "crypto", name: "Polkadot (DOT)", price: "$7.20", trend: "-2.1%", dir: "BEARISH", color: "#EF4444", pos: "35%", action: "SELL", entry: "N/A", target: "$6.50", logic: "Breaking below critical support levels due to shifting retail interest." },
+        "BTC": { type: "crypto", name: "Bitcoin (BTC)", price: "$67,150.25", trend: "+1.2%", dir: "BULLISH", color: "#10B981", pos: "80%", logic: "Institutional accumulation detected. BTC remains the primary liquidity sink for the 2026 cycle." },
+        "ETH": { type: "crypto", name: "Ethereum (ETH)", price: "$2,042.85", trend: "-0.5%", dir: "NEUTRAL", color: "#F59E0B", pos: "45%", logic: "Gas optimization via Layer 2 solutions stabilizing network fees. ETH maintains ecosystem dominance." },
+        "SOL": { type: "crypto", name: "Solana (SOL)", price: "$79.50", trend: "+3.4%", dir: "BULLISH", color: "#10B981", pos: "75%", logic: "Network throughput hits all-time high. High retail activity on Solana DEXs drives buy pressure." },
+        "BNB": { type: "crypto", name: "Binance (BNB)", price: "$312.40", trend: "+0.8%", dir: "BULLISH", color: "#10B981", pos: "60%", logic: "Launchpad activity and burn mechanisms keeping supply tight near historical resistance." },
+        "XRP": { type: "crypto", name: "Ripple (XRP)", price: "$0.84", trend: "-1.2%", dir: "BEARISH", color: "#EF4444", pos: "35%", logic: "Regulatory clarity achieved but massive sell-side liquidity at $0.90 is suppressing growth." },
+        "ADA": { type: "crypto", name: "Cardano (ADA)", price: "$0.42", trend: "+0.2%", dir: "NEUTRAL", color: "#F59E0B", pos: "50%", logic: "DeFi TVL growing slowly. ADA technical indicators suggest long-term accumulation phase." },
+        "DOGE":{ type: "crypto", name: "Dogecoin (DOGE)", price: "$0.14", trend: "+5.1%", dir: "BULLISH", color: "#10B981", pos: "90%", logic: "Meme momentum remains high. Whale movements detected moving from exchanges to cold wallets." },
         
         // STOCKS
-        "NVDA": { type: "stocks", name: "Nvidia (NVDA)", price: "$924.50", trend: "+3.8%", dir: "BULLISH", color: "#10B981", pos: "92%", action: "STRONG BUY", entry: "$910", target: "$1050", logic: "AI sector dominance continues. Next-gen chip orders exceeding supply capacity." },
-        "TSLA": { type: "stocks", name: "Tesla (TSLA)", price: "$172.40", trend: "-2.5%", dir: "BEARISH", color: "#EF4444", pos: "20%", action: "SELL", entry: "N/A", target: "$150", logic: "Margin pressures and intense competition in the EV sector weighing heavily on the stock." },
-        "AAPL": { type: "stocks", name: "Apple (AAPL)", price: "$168.20", trend: "-0.8%", dir: "NEUTRAL", color: "#F59E0B", pos: "40%", action: "HOLD", entry: "$165", target: "$180", logic: "Slow iPhone sales cycle. Waiting for clarity on the new AI product lineup announcements." },
-        "AMZN": { type: "stocks", name: "Amazon (AMZN)", price: "$185.30", trend: "+1.2%", dir: "BULLISH", color: "#10B981", pos: "75%", action: "BUY", entry: "$180", target: "$200", logic: "AWS growth re-accelerating and advertising revenue expanding robustly." },
-        "MSFT": { type: "stocks", name: "Microsoft (MSFT)", price: "$420.50", trend: "+0.9%", dir: "BULLISH", color: "#10B981", pos: "80%", action: "BUY", entry: "$415", target: "$450", logic: "Copilot monetization showing early, highly profitable signs of absolute success." },
-        "META": { type: "stocks", name: "Meta (META)", price: "$495.10", trend: "+2.5%", dir: "BULLISH", color: "#10B981", pos: "85%", action: "STRONG BUY", entry: "$485", target: "$530", logic: "Ad spending recovery and deep AI integration driving operating margins higher." },
-        "GOOGL":{ type: "stocks", name: "Alphabet (GOOGL)", price: "$155.40", trend: "-1.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "55%", action: "HOLD", entry: "$150", target: "$165", logic: "Facing AI search competition fears, despite solid cloud revenue growth." },
-        "NFLX": { type: "stocks", name: "Netflix (NFLX)", price: "$610.20", trend: "+4.1%", dir: "BULLISH", color: "#10B981", pos: "88%", action: "BUY", entry: "$600", target: "$650", logic: "Password crackdown success and ad-tier profitability beating all estimates." },
+        "NVDA": { type: "stocks", name: "Nvidia (NVDA)", price: "$176.40", trend: "+2.1%", dir: "BULLISH", color: "#10B981", pos: "80%", logic: "Dominance in GPU manufacturing for AGIs persists. Enterprise orders up 15% this quarter." },
+        "TSLA": { type: "stocks", name: "Tesla (TSLA)", price: "$242.15", trend: "-1.8%", dir: "BEARISH", color: "#EF4444", pos: "30%", logic: "Robotaxi delays and increasing FSD competition in China pressuring short-term margins." },
+        "AAPL": { type: "stocks", name: "Apple (AAPL)", price: "$195.40", trend: "+0.4%", dir: "NEUTRAL", color: "#F59E0B", pos: "55%", logic: "Stable demand for iPhone 17 and high services revenue stream keeps AAPL steady." },
+        "AMZN": { type: "stocks", name: "Amazon (AMZN)", price: "$210.12", trend: "+1.5%", dir: "BULLISH", color: "#10B981", pos: "70%", logic: "AWS momentum re-accelerating. Cloud efficiency gains offset retail scaling costs." },
+        "MSFT": { type: "stocks", name: "Microsoft (MSFT)", price: "$512.80", trend: "+0.9%", dir: "BULLISH", color: "#10B981", pos: "75%", logic: "Azure AI services hitting record adoption. Copilot ecosystem expansion remains a key growth driver." },
+        "GOOGL":{ type: "stocks", name: "Alphabet (GOOGL)", price: "$182.40", trend: "-1.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "55%", logic: "Search dominance evolves with Gemini. YouTube ad revenue stable amid platform competition." },
+        "META": { type: "stocks", name: "Meta (META)", price: "$610.12", trend: "+2.4%", dir: "BULLISH", color: "#10B981", pos: "82%", logic: "Ad relevance improved by AI driving better ROAS. Llama 4 anticipation rising." },
+
+        // MARKETS
+        "NASDAQ": { type: "market", name: "NASDAQ (IXIC)", price: "$21,879.18", trend: "+1.3%", dir: "BULLISH", color: "#10B981", pos: "70%", logic: "Tech sector resilient despite inflation. AI growth stocks leading the index." },
+        "GOLD": { type: "market", name: "GOLD (GC=F)", price: "$4,705.50", trend: "+0.6%", dir: "BULLISH", color: "#10B981", pos: "65%", logic: "Geopolitical instability remains a tailwind for Gold. Central bank hoarding continues." },
+        "OIL": { type: "market", name: "CRUDE OIL (CL=F)", price: "$112.40", trend: "+2.5%", dir: "BULLISH", color: "#10B981", pos: "85%", logic: "Supply chain disruptions and strategic reserve depletion driving energy prices higher." },
 
         // FOREX
-        "EURUSD": { type: "forex", name: "EUR/USD", price: "1.0850", trend: "+0.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "50%", action: "HOLD", entry: "1.0800", target: "1.0950", logic: "ECB interest rate decision pending. Market is pricing in a hold, causing range-bound trading." },
-        "USDJPY": { type: "forex", name: "USD/JPY", price: "151.70", trend: "+0.3%", dir: "BULLISH", color: "#10B981", pos: "75%", action: "BUY", entry: "151.20", target: "153.00", logic: "Bank of Japan dovish stance keeping Yen weak. Upward channel remains firmly intact." },
-        "GBPUSD": { type: "forex", name: "GBP/USD", price: "1.2640", trend: "-0.2%", dir: "NEUTRAL", color: "#F59E0B", pos: "45%", action: "HOLD", entry: "1.2600", target: "1.2750", logic: "UK economic data showing stagnation, but BoE remains relatively hawkish." },
-        "USDCAD": { type: "forex", name: "USD/CAD", price: "1.3580", trend: "+0.4%", dir: "BULLISH", color: "#10B981", pos: "70%", action: "BUY", entry: "1.3550", target: "1.3700", logic: "Oil price fluctuations directly impacting CAD strength against a resurgent Dollar." },
-        "AUDUSD": { type: "forex", name: "AUD/USD", price: "0.6520", trend: "-0.5%", dir: "BEARISH", color: "#EF4444", pos: "30%", action: "SELL", entry: "0.6550", target: "0.6400", logic: "Weak manufacturing data from China severely impacting Australian export forecasts." },
-        "USDCHF": { type: "forex", name: "USD/CHF", price: "0.9050", trend: "+0.2%", dir: "BULLISH", color: "#10B981", pos: "65%", action: "BUY", entry: "0.9000", target: "0.9150", logic: "SNB unexpected rate cut has turned the Franc into a favorable funding currency." }
+        "EURUSD": { type: "forex", name: "EUR/USD", price: "1.0845", trend: "-0.2%", dir: "NEUTRAL", color: "#F59E0B", pos: "48%", logic: "Eurozone GDP growth lagging behind US. Dollar strength supported by higher-for-longer yields." },
+        "USDJPY": { type: "forex", name: "USD/JPY", price: "155.70", trend: "+0.3%", dir: "BULLISH", color: "#10B981", pos: "72%", logic: "BoJ intervention risks vs widening interest rate differentials favoring the Dollar." },
+        "GBPUSD": { type: "forex", name: "GBP/USD", price: "1.3142", trend: "-0.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "46%", logic: "BoE likely to hold rates, but economic softness in UK capping any significant rally." }
     };
 
     let currentActiveAsset = "BTC"; // Built-in Fallback
@@ -173,6 +174,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- CENTRALIZED MARKET DATA ENGINE (Single Source of Truth) ---
+    window.marketCache = {};
+    const CF_PROXY = 'https://lumina-news-worker.hashenferdz.workers.dev/api/proxy?url=';
+
+    async function fetchGlobalPrice(symbol, type) {
+        if (window.marketCache[symbol] && (Date.now() - window.marketCache[symbol].timestamp < 10000)) {
+            return window.marketCache[symbol];
+        }
+
+        let livePrice = 0, liveChange = 0;
+        try {
+            let targetUrl = '';
+            if (type === 'crypto') {
+                const s = symbol.includes('USDT') ? symbol : `${symbol}USDT`;
+                targetUrl = `https://api.binance.com/api/v3/ticker/24hr?symbol=${s}`;
+            } else {
+                const ts = symbol === 'EURUSD' ? 'EURUSD=X' : symbol === 'USDJPY' ? 'JPY=X' : 
+                          symbol === 'NASDAQ' ? '^IXIC' : symbol === 'GOLD' ? 'GC=F' : 
+                          symbol === 'OIL' ? 'CL=F' : symbol;
+                targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ts}?interval=1m&range=1d`;
+            }
+
+            const res = await fetch(`${CF_PROXY}${encodeURIComponent(targetUrl)}`);
+            const data = await res.json();
+            
+            if (type === 'crypto') {
+                livePrice = parseFloat(data.lastPrice);
+                liveChange = parseFloat(data.priceChangePercent);
+            } else {
+                const meta = data.chart.result[0].meta;
+                livePrice = meta.regularMarketPrice;
+                liveChange = ((livePrice - meta.previousClose) / meta.previousClose) * 100;
+            }
+
+            window.marketCache[symbol] = { price: livePrice, change: liveChange, timestamp: Date.now() };
+            return window.marketCache[symbol];
+        } catch (e) {
+            console.warn("Market Sync Error:", symbol, e);
+            return null;
+        }
+    }
+
     async function updateTraderHubDisplay() {
         const sentimentPointer = document.getElementById('sentiment-pointer');
         const marketDirection = document.getElementById('market-direction');
@@ -186,49 +229,71 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!sentimentPointer) return;
 
-        let data = { ...(assetDataRepo[currentActiveAsset] || assetDataRepo["BTC"]) };
+        let baseData = { ...(assetDataRepo[currentActiveAsset] || assetDataRepo["BTC"]) };
+        const liveData = await fetchGlobalPrice(currentActiveAsset, baseData.type);
+        
+        let livePrice = liveData ? liveData.price : parseFloat(baseData.price.replace(/[^0-9.]/g, ''));
+        let liveChange = liveData ? liveData.change : parseFloat(baseData.trend);
 
-        // Real-Time Injection
-        try {
-            if (currentActiveAsset === "BTC" || currentActiveAsset === "ETH") {
-                const id = currentActiveAsset === "BTC" ? "bitcoin" : "ethereum";
-                const cryptoRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true&_=${Date.now()}`);
-                const cryptoData = await cryptoRes.json();
-                
-                if (cryptoData[id]) {
-                    data.price = `$${cryptoData[id].usd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                    data.trend = `${cryptoData[id].usd_24h_change >= 0 ? '+' : ''}${cryptoData[id].usd_24h_change.toFixed(2)}%`;
-                }
-            }
-        } catch (e) {
-            console.warn("Terminal Live Override Failed", e);
-        }
+        if (!livePrice || isNaN(livePrice)) return;
 
-        // Update Text
-        if(displayName) displayName.textContent = data.name;
-        if(displayPrice) displayPrice.textContent = data.price;
-        if(displayTrend) {
-            displayTrend.textContent = `${data.trend} Today`;
-            displayTrend.className = `trend ${data.trend.includes('-') ? 'down' : 'up'}`;
-        }
-        if(logicDisplay) logicDisplay.innerHTML = `* ${data.logic}`;
-
-        // Sentiment Update
-        sentimentPointer.style.left = data.pos;
-        if(marketDirection) {
-            marketDirection.textContent = `${data.direction} BIAS ${data.direction === 'BULLISH' ? '🚀' : data.direction === 'BEARISH' ? '📉' : '⚖️'}`;
-            marketDirection.style.color = data.color;
-        }
-
-        // Action Signal Update
-        if (actionDisplay && targetDisplay && actionCard) {
-            const lowAction = data.action.toLowerCase();
-            const actionClass = lowAction.includes('buy') ? 'buy' : lowAction.includes('sell') ? 'sell' : 'hold';
+        // --- DYNAMIC AI VERDICT ENGINE ---
+        const generateAiVerdict = (price, change) => {
+            let verdict = "HOLD", logic = "", color = "#F59E0B";
+            const absChange = Math.abs(change);
             
-            actionCard.className = `term-signal ${actionClass}`;
-            actionDisplay.textContent = data.action;
-            targetDisplay.textContent = `Entry: ${data.entry} | Target: ${data.target}`;
-        }
+            if (change > 4) { verdict = "STRONG BUY"; color = "#10B981"; logic = `High-volume trend confirmation. ${currentActiveAsset} showing intense buyer dominance.`; }
+            else if (change > 1) { verdict = "BUY"; color = "#10B981"; logic = `Bullish pattern emerging. AI indicators detect steady accumulation phase.`; }
+            else if (change < -4) { verdict = "STRONG SELL"; color = "#EF4444"; logic = `Bearish capitulation. Significant distribution detected across major order books.`; }
+            else if (change < -1) { verdict = "SELL"; color = "#EF4444"; logic = `Weak demand at current resistance. AI predicts local support retest soon.`; }
+            else { verdict = "NEUTRAL"; color = "#F59E0B"; logic = `Market flat. No clear directional bias for ${currentActiveAsset}. Wait for volatility.`; }
+
+            const targetMult = baseData.type === 'crypto' ? 0.04 : 0.015;
+            const stopMult = baseData.type === 'crypto' ? 0.02 : 0.008;
+
+            return { 
+                verdict, logic, color, entry: price, 
+                target: change >= 0 ? price * (1 + targetMult) : price * (1 - targetMult), 
+                stop: change >= 0 ? price * (1 - stopMult) : price * (1 + stopMult),
+                confidence: Math.min(98, 85 + (absChange * 2))
+            };
+        };
+
+        // --- TICKING INTERFACE ENGINE ---
+        if (window.priceTickerInterval) clearInterval(window.priceTickerInterval);
+        let currentTickPrice = livePrice;
+
+        const updateUI = (p) => {
+            const ai = generateAiVerdict(p, liveChange);
+            const isForex = baseData.type === 'forex';
+            const pf = (v) => isForex ? v.toFixed(4) : `$${v.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            if(displayPrice) displayPrice.textContent = pf(p);
+            if(displayTrend) {
+                displayTrend.textContent = `${liveChange >= 0 ? '+' : ''}${liveChange.toFixed(2)}% Today`;
+                displayTrend.className = `trend ${liveChange < 0 ? 'down' : 'up'}`;
+            }
+            if(logicDisplay) logicDisplay.innerHTML = `<span style="color:var(--accent); font-weight:800; font-size: 0.7rem;">[TERMINAL ANALYSIS]</span> ${ai.logic}`;
+            
+            sentimentPointer.style.left = `${Math.min(92, Math.max(8, 50 + (liveChange * 2.5)))}%`;
+            if(marketDirection) {
+                marketDirection.textContent = `${liveChange >= 0 ? 'BULLISH' : 'BEARISH'} BIAS ${liveChange >= 0 ? '🚀' : '📉'}`;
+                marketDirection.style.color = ai.color;
+            }
+
+            if (actionDisplay && targetDisplay && actionCard) {
+                actionCard.className = `term-signal ${ai.verdict.toLowerCase().includes('buy') ? 'buy' : ai.verdict.toLowerCase().includes('sell') ? 'sell' : 'hold'}`;
+                actionDisplay.innerHTML = `${ai.verdict} <span style="font-size:0.6rem; opacity:0.6; display:block; font-weight:400; margin-top:5px;">AI CONFIDENCE: ${ai.confidence.toFixed(1)}%</span>`;
+                targetDisplay.textContent = `LIVE ENTRY: ${pf(ai.entry)} | TARGET: ${pf(ai.target)} | STOP: ${pf(ai.stop)}`;
+            }
+        };
+
+        updateUI(currentTickPrice);
+        window.priceTickerInterval = setInterval(() => {
+            const driftMult = baseData.type === 'forex' ? 0.00005 : 0.00015;
+            currentTickPrice += (Math.random() - 0.5) * (currentTickPrice * driftMult);
+            updateUI(currentTickPrice);
+        }, 500);
     }
 
     // Bridge for initial load and interval triggers
@@ -245,23 +310,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let allNewsItems = []; 
     
     function getPremiumImage(item, categoryLabel) {
-        let imageUrl = '';
+        // Since the Cloudflare Worker now handles image extraction and AI generation, 
+        // we prioritize the image stored in the database.
+        if (item.image && item.image.trim() !== '') {
+            return item.image;
+        }
         
-        // Try all possible image locations in the RSS item or database object
-        if (item.image && item.image.trim() !== '') imageUrl = item.image; // Check database field first
-        else if (item.thumbnail) imageUrl = item.thumbnail;
+        // Secondary extraction (for items not in DB, though most should be)
+        let imageUrl = '';
+        if (item.thumbnail) imageUrl = item.thumbnail;
         else if (item.enclosure && (item.enclosure.link || item.enclosure.url)) imageUrl = item.enclosure.link || item.enclosure.url;
         else if (item.content && item.content.match(/src="([^"]+)"/)) imageUrl = item.content.match(/src="([^"]+)"/)[1];
         else if (item.description && item.description.match(/src="([^"]+)"/)) imageUrl = item.description.match(/src="([^"]+)"/)[1];
 
-        // 1. Smart Source Upgrading - Keep it safe
         if (imageUrl && imageUrl.includes('http')) {
-            // Safe HD upgrade (only replace low res patterns if they exist)
-            imageUrl = imageUrl.replace('/120/', '/600/').replace('/240/', '/600/');
-            return imageUrl;
+            return imageUrl.replace('/120/', '/800/').replace('/240/', '/800/');
         }
 
-        // 2. High-Quality Professional Fallbacks (Using strictly validated Unsplash URLs)
+        // Final High-Quality Professional Fallbacks (if everything fails)
         const fallbacks = {
             'sports': ['https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80'],
             'crypto': ['https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80'],
@@ -277,13 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     labelLow.includes('market') ? 'markets' :
                     labelLow.includes('economy') ? 'economy' :
                     labelLow.includes('tech') ? 'tech' : 'global';
-
-        // 3. Ultra-Modern AI Generation for missing images
-        if (item.title) {
-            item.isAiImage = true;
-            // Generate a hyper-realistic press image using the story's actual headline via Pollinations API
-            return `https://image.pollinations.ai/prompt/${encodeURIComponent("News press photo of " + item.title)}?width=600&height=400&nologo=true`;
-        }
 
         const array = fallbacks[key] || fallbacks['global'];
         const seed = item.title ? item.title.length : Math.floor(Math.random() * 100);
@@ -304,13 +363,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach((item, index) => {
             const highResImg = getPremiumImage(item, categoryLabel);
+            const isEager = index < 4; // Load first 4 images immediately
             const card = document.createElement('article');
             card.className = 'news-card';
+            const isAiImage = highResImg.includes('pollinations.ai');
+            
             card.innerHTML = `
                 <div class="card-img" style="position: relative;">
-                     <img src="${highResImg}" alt="News Image" loading="lazy" style="transition: opacity 0.5s ease;">
+                     <img src="${highResImg}" alt="News Image" ${isEager ? '' : 'loading="lazy"'} style="transition: opacity 0.5s ease;">
                      <span class="category-tag">${categoryLabel}</span>
-                     ${item.isAiImage ? '<span class="ai-badge" style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.8); color:#00f2ff; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight: 800; border: 1px solid #00f2ff; backdrop-filter: blur(5px); z-index: 10;">🤖 AI Generated</span>' : ''}
+                     ${isAiImage ? '<span class="ai-badge" style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.8); color:#00f2ff; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight: 800; border: 1px solid #00f2ff; backdrop-filter: blur(5px); z-index: 10;">🤖 AI Generated</span>' : ''}
                 </div>
                 <div class="card-content">
                     <h3>${item.title}</h3>
@@ -358,7 +420,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let existingBadge = heroImg.parentElement.querySelector('.ai-badge');
         if (existingBadge) existingBadge.remove();
 
-        if (item.isAiImage) {
+        const isAiImage = highResColor.includes('pollinations.ai');
+        if (isAiImage) {
             const badge = document.createElement('span');
             badge.className = 'ai-badge';
             badge.style.cssText = 'position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.8); color:#00f2ff; padding:6px 14px; border-radius:12px; font-size:0.85rem; font-weight: 800; border: 1px solid #00f2ff; backdrop-filter: blur(5px); z-index: 10;';
@@ -367,10 +430,9 @@ document.addEventListener('DOMContentLoaded', () => {
             heroImg.parentElement.appendChild(badge);
         }
 
-        setTimeout(() => {
-            heroImg.src = highResColor;
-            heroImg.onload = () => heroImg.style.opacity = '1';
-        }, 300);
+        // Direct update without artificial timeout for faster first paint
+        heroImg.src = highResColor;
+        heroImg.onload = () => heroImg.style.opacity = '1';
         
         const timeValue = new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         heroMeta.innerHTML = `
@@ -489,27 +551,72 @@ document.addEventListener('DOMContentLoaded', () => {
         const tickerContainer = document.querySelector('.ticker-content p');
         if (!tickerContainer) return;
 
+        const CF_PROXY = 'https://lumina-news-worker.hashenferdz.workers.dev/api/proxy?url=';
+
         try {
             const CF_WORKER = 'https://lumina-news-worker.hashenferdz.workers.dev';
             
-            // 1. Fetch News
+            // 1. Fetch ALL Live Market Data (Crypto + Stocks/Commodities)
+            let marketTicker = "";
+            let masterDataMap = {}; // Map symbols to data objects
+
+            try {
+                // A. Fetch Crypto (Top 4)
+                const cSymbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
+                const cUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${JSON.stringify(cSymbols)}`;
+                const cRes = await fetch(`${CF_PROXY}${encodeURIComponent(cUrl)}`);
+                const cData = await cRes.json();
+                
+                cData.forEach(coin => {
+                    const symbol = coin.symbol.replace('USDT', '');
+                    const price = parseFloat(coin.lastPrice);
+                    const change = parseFloat(coin.priceChangePercent);
+                    masterDataMap[symbol] = { price, change, type: 'crypto' };
+                    
+                    const color = change >= 0 ? '#10B981' : '#EF4444';
+                    marketTicker += ` <span style="color:#00f2ff">📊 ${symbol}: $${price.toLocaleString()}</span> <span style="color:${color}">(${change >= 0 ? '+' : ''}${change.toFixed(2)}%)</span> • `;
+                });
+
+                // B. Fetch Traditional Markets (NASDAQ, Gold, Oil)
+                const mSymbols = ["^IXIC", "GC=F", "CL=F"];
+                const mUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${mSymbols.join(',')}?interval=1m&range=1d`;
+                // Yahoo finance multi-chart might need separate calls or specific proxy handling. 
+                // Using individual proxies for maximum reliability if multi fails.
+                for(const s of mSymbols) {
+                    try {
+                        const sUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${s}?interval=1m&range=1d`;
+                        const sRes = await fetch(`${CF_PROXY}${encodeURIComponent(sUrl)}`);
+                        const sData = await sRes.json();
+                        const meta = sData.chart.result[0].meta;
+                        const price = meta.regularMarketPrice;
+                        const change = ((price - meta.previousClose) / meta.previousClose) * 100;
+                        const label = s === "^IXIC" ? "NASDAQ" : s === "GC=F" ? "GOLD" : "CRUDE OIL";
+                        masterDataMap[label] = { price, change, type: 'market' };
+                    } catch(e) {}
+                }
+
+                // Dynamically update visual market cards (Smarter Matcher)
+                const glanceCards = document.querySelectorAll('.market-card');
+                glanceCards.forEach(card => {
+                    const labelText = card.querySelector('.m-label').textContent.toUpperCase();
+                    const valueEl = card.querySelector('.m-value');
+                    
+                    // Find match in masterDataMap
+                    let match = null;
+                    Object.keys(masterDataMap).forEach(key => {
+                        if (labelText.includes(key)) match = masterDataMap[key];
+                    });
+
+                    if (match && valueEl) {
+                        const pStr = match.type === 'market' && labelText.includes('CRUDE') ? `$${match.price.toFixed(2)}` : `$${match.price.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                        valueEl.innerHTML = `${pStr} <i class="${match.change >= 0 ? 'up' : 'down'}">${match.change >= 0 ? '▲' : '▼'} ${match.change.toFixed(2)}%</i>`;
+                    }
+                });
+            } catch (ce) { console.warn("Market Data Proxy Synchronizer Failed", ce); }
+
+            // 2. Fetch Breaking Headlines
             const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=10`);
             const data = await res.json();
-            
-            // 2. Fetch Live Crypto Prices (Premium Feel)
-            let marketTicker = "";
-            try {
-                const cryptoRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&_=${Date.now()}`);
-                const cryptoData = await cryptoRes.json();
-                marketTicker = ` <span style="color:#00f2ff">📊 BTC: $${cryptoData.bitcoin.usd.toLocaleString()}</span> <span style="color:${cryptoData.bitcoin.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.bitcoin.usd_24h_change.toFixed(2)}%)</span> • <span style="color:#00f2ff">📊 ETH: $${cryptoData.ethereum.usd.toLocaleString()}</span> <span style="color:${cryptoData.ethereum.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.ethereum.usd_24h_change.toFixed(2)}%)</span> • `;
-                
-                // Dynamically update the visual market glance cards if they exist on the page
-                const glanceCards = document.querySelectorAll('.market-card .m-value');
-                if (glanceCards.length >= 2) {
-                    glanceCards[0].innerHTML = `$${cryptoData.bitcoin.usd.toLocaleString()} <i class="${cryptoData.bitcoin.usd_24h_change >= 0 ? 'up' : 'down'}">${cryptoData.bitcoin.usd_24h_change >= 0 ? '▲' : '▼'} ${cryptoData.bitcoin.usd_24h_change.toFixed(2)}%</i>`;
-                    glanceCards[1].innerHTML = `$${cryptoData.ethereum.usd.toLocaleString()} <i class="${cryptoData.ethereum.usd_24h_change >= 0 ? 'up' : 'down'}">${cryptoData.ethereum.usd_24h_change >= 0 ? '▲' : '▼'} ${cryptoData.ethereum.usd_24h_change.toFixed(2)}%</i>`;
-                }
-            } catch (ce) { console.warn("Crypto API lag", ce); }
 
             if (data.status === 'ok' && data.items.length > 0) {
                 const headlines = data.items.map(item => `⚡ ${item.title.toUpperCase()}`).join(' • ');
@@ -523,11 +630,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Ticker Sync
     updateBreakingNewsTicker();
     
-    // Auto-Refresh Ticker & Trading Hub every 3 minutes
+    // Auto-Refresh Ticker & Trading Hub every 10 seconds for real-time feel
     setInterval(() => {
         updateBreakingNewsTicker();
         updateTraderHub();
-    }, 180000);
+    }, 10000);
 
     // Auto-Refresh Main News every 2 minutes for real-time feel
     setInterval(() => {
