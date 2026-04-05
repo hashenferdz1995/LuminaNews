@@ -7,5 +7,14 @@ binding = "DB"
 database_name = "lumina_news_db"
 database_id = "37880e86-67aa-4de3-91b5-a1a89274c479"
 
+# Explicit Routes to prevent Worker from taking over the whole domain
+[[routes]]
+pattern = "luminanews.online/api/*"
+zone_name = "luminanews.online"
+
+[[routes]]
+pattern = "luminanews.online/rss"
+zone_name = "luminanews.online"
+
 [triggers]
 crons = ["* * * * *"] # Every single minute for real-time news
