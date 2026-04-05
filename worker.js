@@ -12,7 +12,9 @@ export default {
       { key: 'economy', url: 'https://www.cnbc.com/id/10001147/device/rss/rss.html' },
       { key: 'crypto', url: 'https://www.coindesk.com/arc/outboundfeeds/rss/' },
       { key: 'tech', url: 'https://feeds.bbci.co.uk/news/technology/rss.xml' },
-      { key: 'global', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' }
+      { key: 'global', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+      { key: 'global', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+      { key: 'markets', url: 'https://search.cnbc.com/rs/search/view.xml?partnerId=2000&keywords=finance' }
     ];
 
     for (const feed of FEEDS) {

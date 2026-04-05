@@ -380,17 +380,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- REALTIME NEWS ENGINE ---
+    // --- UNIFIED NEWS ENGINE (Worker D1 Backend) ---
     async function loadRealTimeNews(selectedCategory = null) {
         if (!newsGrid) return;
         const path = window.location.pathname.toLowerCase();
-        let RSS_URL = 'https://feeds.bbci.co.uk/news/world/rss.xml';
-        let categoryLabel = 'Global Feed';
-        let categoryKey = '';
+        let categoryKey = 'global';
+        let categoryLabel = 'Global Hub';
 
-        // Auto-detect from URL if no category provided (For specific landing pages)
+        // 1. Detect Category
         if (!selectedCategory) {
-            if (path.includes('sports') || path.includes('sport')) categoryKey = 'sports';
+            if (path.includes('sports')) categoryKey = 'sports';
             else if (path.includes('markets')) categoryKey = 'markets';
             else if (path.includes('economy')) categoryKey = 'economy';
             else if (path.includes('crypto')) categoryKey = 'crypto';
@@ -399,76 +398,32 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryKey = selectedCategory.toLowerCase();
         }
 
-        // Assign RSS Source based on category
-        if (categoryKey === 'sports') {
-            RSS_URL = 'https://feeds.bbci.co.uk/sport/rss.xml';
-            categoryLabel = 'Live Sports';
-        } else if (categoryKey === 'markets') {
-            // Strictly US Markets / Finance feed, not Top News
-            RSS_URL = 'https://www.cnbc.com/id/10000664/device/rss/rss.html';
-            categoryLabel = 'Markets Info';
-        } else if (categoryKey === 'economy') {
-            RSS_URL = 'https://www.cnbc.com/id/10001147/device/rss/rss.html';
-            categoryLabel = 'Global Economy';
-        } else if (categoryKey === 'crypto') {
-            RSS_URL = 'https://www.coindesk.com/arc/outboundfeeds/rss/';
-            categoryLabel = 'Digital Assets';
-        } else if (categoryKey === 'tech') {
-            RSS_URL = 'https://feeds.bbci.co.uk/news/technology/rss.xml';
-            categoryLabel = 'Tech Updates';
-        } else if (categoryKey === 'local') {
-            // localRssUrl is set by initLocalization()
-            RSS_URL = window.localRssUrl || 'https://feeds.bbci.co.uk/news/world/rss.xml';
-            categoryLabel = 'Local Coverage';
-        }
-
-        // Advanced Cache Busting: Force the proxy to fetch new data from the source
-        const cacheBust = new Date().getTime();
-        const freshRssUrl = RSS_URL + (RSS_URL.includes('?') ? '&' : '?') + 'nocache=' + cacheBust;
-        const API_URL = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(freshRssUrl)}&_=${cacheBust}`;
-
+        // 2. Fetch from Lumina D1 Database (Ultra Fast Edge)
         try {
-            const response = await fetch(API_URL);
-            const data = await response.json();
-            
-            if (data.status === 'ok') {
+            const CF_WORKER = 'https://lumina-news-worker.hashenferdz1995.workers.dev';
+            const queryCategory = (categoryKey === 'all news' || categoryKey === 'global') ? 'all' : categoryKey;
+            const res = await fetch(`${CF_WORKER}/api/news?category=${queryCategory}&_=${new Date().getTime()}`);
+            const data = await res.json();
+
+            if (data.status === 'ok' && data.items.length > 0) {
                 allNewsItems = data.items;
+                renderNews(allNewsItems.slice(0, 15), categoryLabel);
                 
-                // Update "Last Updated" UI indicator
+                // Update Hero
+                updateHeroSection(allNewsItems[0], categoryLabel);
+                
+                // Live Indicator
                 const header = document.querySelector('.section-header h2');
                 if (header) {
-                    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                    header.innerHTML = `Top Headlines <span style="font-size: 0.8rem; color: #10B981; margin-left: 1rem; font-weight: 400;">● Live Updated: ${time}</span>`;
+                    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    header.innerHTML = `Lumina Insights <span style="font-size: 0.8rem; color: #10B981; margin-left: 1rem; font-weight: 400;">● AI Verified: ${time}</span>`;
                 }
-                
-                // Advanced Filtering: Ensure absolute relevance
-                let filteredItems = allNewsItems;
-                if (categoryKey === 'crypto') {
-                    filteredItems = allNewsItems.filter(i => 
-                        (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/crypto|bitcoin|btc|eth|ethereum|blockchain|token|web3|nft|ledger/i)
-                    );
-                } else if (categoryKey === 'sports') {
-                    filteredItems = allNewsItems.filter(i => 
-                        (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/sport|game|match|score|player|league|team|football|cricket/i)
-                    );
-                } else if (categoryKey === 'markets') {
-                    filteredItems = allNewsItems.filter(i => 
-                        (`${i.title} ${i.description} ${i.content || ''}`).toLowerCase().match(/stock|market|trade|invest|share|wall street|nasdaq|dow|s&p|bull|bear|dividend|yield/i)
-                    );
-                }
-
-                // If filtering wiped out everything, show some original items, but only if they somewhat match
-                if (filteredItems.length === 0) filteredItems = allNewsItems.slice(0, 12);
-
-                renderNews(filteredItems.slice(0, 12), categoryLabel);
-
-                // Update Hero Section on Home Page/Initial Load
-                if (filteredItems.length > 0) {
-                    updateHeroSection(filteredItems[0], categoryLabel);
-                }
+            } else {
+                newsGrid.innerHTML = '<div class="error-state">⚠️ Feed Sync in Progress. Refreshing...</div>';
+                setTimeout(() => loadRealTimeNews(categoryKey), 5000);
             }
         } catch (err) {
-            if (newsGrid) newsGrid.innerHTML = '<div class="error-state">⚠️ Failed to connect to live server.</div>';
+            newsGrid.innerHTML = '<div class="error-state">⚠️ Connection to Intelligence Hub Down.</div>';
         }
     }
 
