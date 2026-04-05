@@ -453,6 +453,13 @@ header {
     overflow: hidden;
     aspect-ratio: 16/10;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(110deg, var(--surface) 8%, rgba(255, 255, 255, 0.05) 18%, var(--surface) 33%);
+    background-size: 200% 100%;
+    animation: 1.5s pulse-skeleton linear infinite;
+}
+
+@keyframes pulse-skeleton {
+    to { background-position: -200% 0; }
 }
 
 .main-hero-img {
@@ -548,6 +555,9 @@ header {
 .card-img {
     position: relative;
     height: 220px;
+    background: linear-gradient(110deg, var(--surface) 8%, rgba(255, 255, 255, 0.05) 18%, var(--surface) 33%);
+    background-size: 200% 100%;
+    animation: 1.5s pulse-skeleton linear infinite;
 }
 
 .card-img img {
