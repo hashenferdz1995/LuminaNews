@@ -7,13 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. STICKY HEADER & SCROLL EFFECTS
     const header = document.querySelector('header');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
+    if (header) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    }
 
     // 2. SCROLL REVEAL ANIMATIONS
     const observerOptions = {
