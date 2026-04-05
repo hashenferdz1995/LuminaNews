@@ -643,6 +643,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Load
     initHeroSlider();
     initLocalization();
+    if (!window.location.pathname.toLowerCase().includes('local.html')) {
+        loadRealTimeNews();
+    }
     
     // Inject Date Picker Filter
     const mainSectionHeader = document.querySelector('.main-content .section-header');
