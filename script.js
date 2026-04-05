@@ -247,12 +247,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. High-Quality Professional Fallbacks (Using strictly validated Unsplash URLs)
         const fallbacks = {
-            'sports': 'https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80',
-            'crypto': 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80',
-            'markets': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-            'economy': 'https://images.unsplash.com/photo-1618042164219-62c820f10723?auto=format&fit=crop&w=1200&q=80',
-            'tech': 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
-            'global': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80'
+            'sports': [
+                'https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1541252876121-125dbb184dd6?auto=format&fit=crop&w=1200&q=80'
+            ],
+            'crypto': [
+                'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1621501104374-2dcafa5bbfc5?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&w=1200&q=80'
+            ],
+            'markets': [
+                'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1590283603385-17ffb14e3047?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80'
+            ],
+            'economy': [
+                'https://images.unsplash.com/photo-1618042164219-62c820f10723?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1200&q=80'
+            ],
+            'tech': [
+                'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
+            ],
+            'global': [
+                'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80',
+                'https://images.unsplash.com/photo-1529245001402-9ae1f9eb33fc?auto=format&fit=crop&w=1200&q=80'
+            ]
         };
 
         const labelLow = categoryLabel.toLowerCase();
@@ -262,7 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     labelLow.includes('economy') ? 'economy' :
                     labelLow.includes('tech') ? 'tech' : 'global';
 
-        return fallbacks[key];
+        const array = fallbacks[key] || fallbacks['global'];
+        const seed = item.title ? item.title.length : Math.floor(Math.random() * 100);
+        return array[seed % array.length];
     }
 
     function renderNews(items, categoryLabel) {
@@ -463,6 +489,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cryptoRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');
                 const cryptoData = await cryptoRes.json();
                 marketTicker = ` <span style="color:#00f2ff">📊 BTC: $${cryptoData.bitcoin.usd.toLocaleString()}</span> <span style="color:${cryptoData.bitcoin.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.bitcoin.usd_24h_change.toFixed(2)}%)</span> • <span style="color:#00f2ff">📊 ETH: $${cryptoData.ethereum.usd.toLocaleString()}</span> <span style="color:${cryptoData.ethereum.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.ethereum.usd_24h_change.toFixed(2)}%)</span> • `;
+                
+                // Dynamically update the visual market glance cards if they exist on the page
+                const glanceCards = document.querySelectorAll('.market-card .m-value');
+                if (glanceCards.length >= 2) {
+                    glanceCards[0].innerHTML = `$${cryptoData.bitcoin.usd.toLocaleString()} <i class="${cryptoData.bitcoin.usd_24h_change >= 0 ? 'up' : 'down'}">${cryptoData.bitcoin.usd_24h_change >= 0 ? '▲' : '▼'} ${cryptoData.bitcoin.usd_24h_change.toFixed(2)}%</i>`;
+                    glanceCards[1].innerHTML = `$${cryptoData.ethereum.usd.toLocaleString()} <i class="${cryptoData.ethereum.usd_24h_change >= 0 ? 'up' : 'down'}">${cryptoData.ethereum.usd_24h_change >= 0 ? '▲' : '▼'} ${cryptoData.ethereum.usd_24h_change.toFixed(2)}%</i>`;
+                }
             } catch (ce) { console.warn("Crypto API lag", ce); }
 
             if (data.status === 'ok' && data.items.length > 0) {
@@ -477,8 +510,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Ticker Sync
     updateBreakingNewsTicker();
     
-    // Auto-Refresh Ticker every 3 minutes
-    setInterval(updateBreakingNewsTicker, 180000);
+    // Auto-Refresh Ticker & Trading Hub every 3 minutes
+    setInterval(() => {
+        updateBreakingNewsTicker();
+        updateTraderHub();
+    }, 180000);
 
     // Auto-Refresh Main News every 2 minutes for real-time feel
     setInterval(() => {
@@ -643,6 +679,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial Load
     initHeroSlider();
     initLocalization();
+    updateTraderHub(); // Initialize Trading terminal on load
     if (!window.location.pathname.toLowerCase().includes('local.html')) {
         loadRealTimeNews();
     }
