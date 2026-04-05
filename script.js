@@ -635,15 +635,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial Ticker Sync
-    updateBreakingNewsTicker();
-    
-    // Auto-Refresh Ticker & Trading Hub every 10 seconds for real-time feel
-    setInterval(() => {
-        updateBreakingNewsTicker();
-        updateTraderHub();
-    }, 10000);
+    // 5. GLOBAL LIVE SCOREBOARD ENGINE (Thapparen Thappare)
+    let nbaMinutes = 5, nbaSeconds = 12;
+    function updateLiveScoreboard() {
+        const board = document.getElementById('live-scoreboard');
+        if (!board) return;
 
+        // NBA Game Clock Simulation (Second by Second)
+        if (nbaSeconds > 0) nbaSeconds--;
+        else { nbaMinutes--; nbaSeconds = 59; }
+
+        const scoreHTML = `
+            <div class="score-card live">
+                <span class="sport-tag">NBA LIVE 🏀</span>
+                <div class="match-info">MIL 108 - 105 MEM • Q4 ${nbaMinutes}:${nbaSeconds < 10 ? '0' : ''}${nbaSeconds}</div>
+            </div>
+            <div class="score-card live">
+                <span class="sport-tag">SERIE A ⚽</span>
+                <div class="match-info">INTER 1 - 1 ROMA • 67' Ticking...</div>
+            </div>
+            <div class="score-card finished">
+                <span class="sport-tag">IPL 🏏 • RESULT</span>
+                <div class="match-info">LSG Won by 5 Wickets vs SRH (SRH: 156/9)</div>
+            </div>
+            <div class="score-card upcoming">
+                <span class="sport-tag">CRICKET 🏏 • UPCOMING</span>
+                <div class="match-info">RCB vs CSK • Starts Today 7:30 PM</div>
+            </div>
+        `;
+        
+        board.innerHTML = scoreHTML;
+    }
+
+    // Initialize Scoreboard & Periodic Syncs
+    updateLiveScoreboard();
+    setInterval(updateLiveScoreboard, 1000); // 1-second Ticking UI
+    updateTraderHub();
+    updateBreakingNewsTicker();
+    setInterval(updateBreakingNewsTicker, 10000);
+    
     // Auto-Refresh Main News every 2 minutes for real-time feel
     setInterval(() => {
         const currentCategory = document.querySelector('.pill.active')?.textContent || 'All';
