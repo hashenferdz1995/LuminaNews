@@ -188,7 +188,113 @@ export default {
         });
       }
     }
+    // 8. LUMINA PULSE: REPORTER REGISTRATION (Identity & Referral v2.0)
+    if (url.pathname === "/api/pulse/register" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { full_name, nickname, email, phone, address, payment_info } = body;
+        const now = new Date();
+        const referral_code = `LN-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+        
+        await env.DB.prepare(
+          `INSERT OR IGNORE INTO reporters (full_name, nickname, email, phone, address, payment_info, created_at, referral_code) 
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        ).bind(full_name, nickname, email, phone, address, payment_info, now.toISOString(), referral_code).run();
 
+        const { results } = await env.DB.prepare("SELECT id FROM reporters WHERE email = ?").bind(email).all();
+
+        return new Response(JSON.stringify({ status: 'ok', reporter_id: results[0]?.id }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500 }); }
+    }
+
+    // 12. GLOBAL PLATFORM TELEMETRY (Stats Aggregator)
+    if (url.pathname === "/api/stats") {
+      try {
+        const aStats = await env.DB.prepare("SELECT SUM(views) as total_views FROM articles").all();
+        const sStats = await env.DB.prepare("SELECT SUM(views) as total_views FROM submissions").all();
+        const total = (aStats.results[0]?.total_views || 0) + (sStats.results[0]?.total_views || 0);
+        return new Response(JSON.stringify({ status: 'ok', views: total }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500 }); }
+    }
+
+    // 10. LUMINA GROWTH: REFERRAL & TRAFFIC TRACKING
+    if (url.pathname === "/api/pulse/refer") {
+      const code = url.searchParams.get("code");
+      try {
+        await env.DB.prepare(
+          "UPDATE reporters SET referral_clicks = referral_clicks + 1, referral_earnings = referral_earnings + 0.005 WHERE referral_code = ?"
+        ).bind(code).run();
+        return new Response(JSON.stringify({ status: 'ok' }), { headers: corsHeaders });
+      } catch (err) { return new Response(err.message, { status: 500 }); }
+    }
+
+    // 9. LUMINA PULSE: REPORTER PROFILE & WALLET
+    if (url.pathname === "/api/pulse/profile") {
+      const rid = url.searchParams.get("reporter_id");
+      try {
+        const { results } = await env.DB.prepare("SELECT * FROM reporters WHERE id = ?").bind(rid).all();
+        return new Response(JSON.stringify({ status: 'ok', data: results[0] }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500 }); }
+    }
+
+    // 6. LUMINA PULSE++: ADVANCED CITIZEN BROADCASTING (UGC v2.5)
+    if (url.pathname === "/api/pulse/submit" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { title, content, location, media_url, reporter_id, is_anonymous, lat, lon } = body;
+
+        // AI Logic & Scoring
+        let impact_score = 45; 
+        if (content.length > 800) impact_score = 92;
+        
+        const earnings = (impact_score / 100).toFixed(2);
+        const reporter_rank = impact_score > 90 ? 'Elite Correspondent' : 'Regional Voice';
+        
+        // --- AI ENHANCEMENTS (Simulated) ---
+        const video_url = impact_score > 90 ? `https://media.publit.io/file/news-snap-gen.mp4` : null;
+        const upscaled_media_url = media_url ? media_url.replace('/800/', '/4k/') : null;
+        const translated_content = `[EN]: ${content.substring(0, 500)}`; 
+        const audio_url = `https://api.voicerss.org/?key=DEMO&hl=en-us&src=${encodeURIComponent(content.substring(0, 150))}`;
+
+        const now = new Date();
+        
+        // TRANSACTIONAL UPDATE
+        const batchQuery = [
+          env.DB.prepare(`UPDATE reporters SET wallet_balance = wallet_balance + ? WHERE id = ?`).bind(earnings, reporter_id),
+          env.DB.prepare(`INSERT INTO submissions (title, content, translated_content, location, media_url, media_type, status, impact_score, created_at, audio_url, reporter_rank, lat, lon, reporter_id, is_anonymous, video_url, upscaled_media_url) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(title, content, translated_content, location, media_url, 'image', 'approved', impact_score, now.toISOString(), audio_url, reporter_rank, lat, lon, reporter_id, is_anonymous ? 1 : 0, video_url, upscaled_media_url)
+        ];
+        
+        await env.DB.batch(batchQuery);
+
+        return new Response(JSON.stringify({ status: 'ok', impact: impact_score, earned: earnings + " LUM" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500 }); }
+    }
+
+    // 7. LUMINA PULSE: CITIZEN FEED (Retrieve User Stories)
+    if (url.pathname === "/api/pulse/feed") {
+      try {
+        const { results } = await env.DB.prepare(
+          "SELECT * FROM submissions WHERE status = 'approved' ORDER BY impact_score DESC, created_at DESC LIMIT 20"
+        ).all();
+
+        return new Response(JSON.stringify({ status: 'ok', items: results }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(err.message, { status: 500 });
+      }
+    }
+
+    // 8. MAIN NEWS API (Global & Category Fetch)
     if (url.pathname === "/api/news") {
       const category = url.searchParams.get("category") || 'all';
       const date = url.searchParams.get("date");

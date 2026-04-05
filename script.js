@@ -373,8 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const highResImg = getPremiumImage(item, categoryLabel);
             const isEager = index < 4; // Load first 4 images immediately
             const card = document.createElement('article');
-            card.className = 'news-card';
-            const isAiImage = highResImg.includes('pollinations.ai');
+            card.onclick = () => window.trackView('article', item.id);
             
             card.innerHTML = `
                 <div class="card-img" style="position: relative;">
@@ -383,6 +382,10 @@ document.addEventListener('DOMContentLoaded', () => {
                      ${isAiImage ? '<span class="ai-badge" style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.8); color:#00f2ff; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight: 800; border: 1px solid #00f2ff; backdrop-filter: blur(5px); z-index: 10;">🤖 AI Generated</span>' : ''}
                 </div>
                 <div class="card-content">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size: 0.65rem; color: var(--accent); font-weight: 800;">HQ VERIFIED</span>
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">👁️ ${item.views || 0} VIEWS</span>
+                    </div>
                     <h3>${item.title}</h3>
                     <p>${item.description.substring(0, 100).replace(/<[^>]*>?/gm, '')}...</p>
                     
@@ -393,9 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="meter-label">⚡ ${Math.floor(Math.random() * 15) + 85}% AI TRUTH SCORE</span>
                     </div>
 
-                    <div class="card-footer">
-                        <span style="font-size: 0.75rem; color: var(--text-secondary);">${new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })} • ${new Date(item.pubDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
-                        <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(highResImg)}&time=${encodeURIComponent(new Date(item.pubDate).toLocaleTimeString())}" class="arrow-link">→</a>
+                    <div class="card-footer" style="margin-top:20px;">
+                        <span style="font-size: 0.75rem; color: var(--text-secondary);">${new Date(item.pubDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                        <a href="article.html?title=${encodeURIComponent(item.title)}&image=${encodeURIComponent(highResImg)}" class="arrow-link">→</a>
                     </div>
                 </div>
             `;
@@ -667,18 +670,94 @@ document.addEventListener('DOMContentLoaded', () => {
         board.innerHTML = scoreHTML;
     }
 
+    // 11. CLICK & REFERRAL TRACKING ENGINE
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode) {
+        fetch(`https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/refer?code=${refCode}`).catch(() => {});
+    }
+
+    window.trackView = async (type, id) => {
+        fetch(`https://lumina-news-worker.hashenferdz.workers.dev/api/view?type=${type}&id=${id}`).catch(() => {});
+    };
+
+    async function updateTelemetry() {
+        const pill = document.querySelector('.telemetry-pill');
+        if (!pill) return;
+        try {
+            const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/stats');
+            const data = await res.json();
+            if (data.status === 'ok') {
+                const reach = (data.views / 1000).toFixed(1);
+                pill.textContent = `NODES ACTIVE: 2,840 • VIRAL REACH: ${reach}K ENGAGEMENTS`;
+            }
+        } catch (e) {}
+    }
+    updateTelemetry();
+    setInterval(updateTelemetry, 60000); 
+
+    // 10. HOME PULSE HIGHLIGHTS & GLOBAL MAP
+    async function loadHomePulse() {
+        const grid = document.getElementById('home-pulse-grid');
+        const mapGroup = document.getElementById('map-dots');
+        if (!grid) return;
+        try {
+            const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed');
+            const data = await res.json();
+            if (data.status === 'ok' && data.items.length > 0) {
+                // Render Cards
+                grid.innerHTML = data.items.map(item => `
+                    <div class="news-card" onclick="trackView('pulse', ${item.id})">
+                        <div class="card-img" style="position: relative;">
+                            <img src="${item.media_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="News">
+                            <span class="category-tag" style="background:#FFB703; color: black;">SCORE: ${item.impact_score}</span>
+                            <div class="watermark-overlay" style="font-size: 0.5rem; opacity: 0.7;">LUMINA CITIZEN REPORT</div>
+                        </div>
+                        <div class="card-content">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div class="world-tag" style="color:var(--accent)">🌍 ${item.location}</div>
+                                <span style="font-size:0.7rem; opacity:0.6;">👁️ ${item.views || 0}</span>
+                            </div>
+                            <h3>${item.title}</h3>
+                            <p>${item.content}</p>
+                            <div class="card-footer">
+                                <span>By ${item.reporter_name || (item.is_anonymous ? 'Anonymous' : 'Correspondent')}</span>
+                                <span>${new Date(item.created_at).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Render Map Dots (Simple Projection)
+                if (mapGroup) {
+                    mapGroup.innerHTML = data.items.map(p => {
+                        // Projected coordinates (roughly map lat/lon to 1000x500 box)
+                        const x = (p.lon + 180) * (1000 / 360);
+                        const y = (90 - p.lat) * (500 / 180);
+                        return `<circle cx="${x}" cy="${y}" r="4" fill="#E63946">
+                                    <animate attributeName="r" values="3;8;3" dur="2s" repeatCount="indefinite" />
+                                    <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
+                                </circle>`;
+                    }).join('');
+                }
+            }
+        } catch (e) { console.error("Pulse home load failed", e); }
+    }
+
     // Initialize Scoreboard & Periodic Syncs
     updateLiveScoreboard();
     setInterval(updateLiveScoreboard, 1000); // 1-second Ticking UI
     updateTraderHubDisplay();
     updateBreakingNewsTicker();
     setInterval(updateBreakingNewsTicker, 10000);
+    loadHomePulse();
     
     // Auto-Refresh Main News every 2 minutes for real-time feel
     setInterval(() => {
         const currentCategory = document.querySelector('.pill.active')?.textContent || 'All';
         if (currentCategory !== 'Archives') {
             loadRealTimeNews(currentCategory.toLowerCase() === 'all news' ? 'all' : currentCategory);
+            loadHomePulse();
         }
     }, 120000);
 

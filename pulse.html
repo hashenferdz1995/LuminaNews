@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Pulse | Citizen Journalism Network</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .pulse-form-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .pulse-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .pulse-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pulse-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .media-preview-container {
+            margin-top: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+            position: relative;
+        }
+
+        .media-preview-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .watermark-overlay {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            background: rgba(230, 57, 70, 0.8);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+
+        .submit-pulse-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .submit-pulse-btn:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.2);
+        }
+
+        .ai-status-box {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            display: none;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <header>
+        <nav id="navbar">
+            <div class="logo">
+                <span class="pulse-icon"></span>
+                <h1>Lumina<span>News</span></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="pulse.html" class="active">Lumina Pulse</a></li>
+                <li><a href="markets.html">Markets</a></li>
+                <li><a href="crypto.html">Crypto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- REGISTRATION SECTION -->
+        <div class="pulse-form-container" id="registration-container">
+            <div class="pulse-header">
+                <div class="hero-label">Correspondent Onboarding 📄</div>
+                <h1>Join the <span>Citizen Network</span></h1>
+                <p>Register your professional profile. Verified reporters are eligible for future monetization and global distribution.</p>
+            </div>
+            <form id="reporter-reg-form">
+                <div class="form-group">
+                    <label>Full Legal Name (For Verification)</label>
+                    <input type="text" id="reg-name" placeholder="John Doe..." required>
+                </div>
+                <div class="form-group">
+                    <label>Public Nickname (Shown on Anonymous Reports)</label>
+                    <input type="text" id="reg-nick" placeholder="ShadowReporter..." required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="reg-email" placeholder="email@example.com..." required>
+                </div>
+                <div class="form-group">
+                    <label>Payment Information (Crypto Address or Bank Info)</label>
+                    <input type="text" id="reg-payment" placeholder="USDT TRC20 / Bank Details..." required>
+                </div>
+                <div class="form-group">
+                    <label>Physical Address (For KYC/Geographic Assigning)</label>
+                    <textarea id="reg-address" rows="2" placeholder="Street, City, Country..." required></textarea>
+                </div>
+                <button type="submit" class="submit-pulse-btn">COMPLETE ONBOARDING</button>
+            </form>
+        </div>
+
+        <div class="pulse-form-container" id="submission-container" style="display: none;">
+            <div class="pulse-header">
+                <div class="hero-label">Lumina Pulse Operational 📡</div>
+                <h1>Sync <span>Community News</span></h1>
+                <p>Distribute regional intelligence across the global network.</p>
+            </div>
+
+            <form id="pulse-submission-form">
+                <div class="form-group">
+                    <label>Headline / Catchy Title</label>
+                    <input type="text" id="title" placeholder="What happened? Keep it sharp..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Location (City / Region)</label>
+                    <input type="text" id="location" placeholder="e.g. Colombo, Sri Lanka / London, UK..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Detailed Report</label>
+                    <textarea id="content" rows="6" placeholder="Provide as much detail as possible. Stick to the facts..." required></textarea>
+                </div>
+
+                <div class="form-group" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px;">
+                    <input type="checkbox" id="is-anon" style="width:20px; height:20px;">
+                    <label style="margin:0;">Report Anonymously (Identity hidden from public feed)</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Media Upload (Image URL)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="media_url" placeholder="Paste image link here...">
+                        <button type="button" id="preview-btn" class="pill">Preview</button>
+                    </div>
+                    <div class="media-preview-container" id="preview-box">
+                        <img id="preview-img" src="" alt="Preview">
+                        <div class="watermark-overlay">LUMINA NEWS • CITIZEN REPORT</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-pulse-btn" id="submit-btn">ANALYZE & SYNC TO HUB</button>
+            </form>
+
+            <div class="ai-status-box" id="ai-status">
+                <div class="status-header">
+                    <span>AI MODERATOR SCANNING...</span>
+                    <span id="ai-impact">SCORE: --</span>
+                </div>
+                <p id="ai-feedback" style="font-size: 0.9rem; color: var(--text-secondary);">Identifying narrative value and safety compliance...</p>
+            </div>
+        </div>
+
+        <section class="latest-news" style="max-width: 1400px; margin: 4rem auto; padding: 0 2rem;">
+            <div class="section-header">
+                <h2>Trending <span>Citizen Reports</span></h2>
+                <p style="color: var(--text-secondary);">High-impact stories from the Lumina Network</p>
+            </div>
+            <div class="news-grid" id="pulse-feed-grid">
+                <!-- User stories will load here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const regForm = document.getElementById('reporter-reg-form');
+        const submissionForm = document.getElementById('pulse-submission-form');
+        const regContainer = document.getElementById('registration-container');
+        const subContainer = document.getElementById('submission-container');
+        
+        // ONBOARDING & DASHBOARD REDIRECTION
+        const reporterId = localStorage.getItem('lumina_reporter_id');
+        const reporterNick = localStorage.getItem('lumina_reporter_nick');
+        if (reporterId) {
+            regContainer.style.display = 'none';
+            subContainer.style.display = 'block';
+            
+            // Add Dashboard Link
+            const dashLink = document.createElement('div');
+            dashLink.style.textAlign = 'center';
+            dashLink.style.marginTop = '2rem';
+            dashLink.innerHTML = `<a href="dashboard.html" class="pill" style="text-decoration:none; background:rgba(255,255,255,0.05); color:var(--accent);">🚀 OPEN REPORTER DASHBOARD</a>`;
+            subContainer.prepend(dashLink);
+        }
+
+        // REPORTER REGISTRATION & PDF PLEDGE
+        regForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = regForm.querySelector('button');
+            const nick = document.getElementById('reg-nick').value;
+            btn.textContent = 'VERIFYING IDENTITY...';
+
+            const payload = {
+                full_name: document.getElementById('reg-name').value,
+                nickname: nick,
+                email: document.getElementById('reg-email').value,
+                phone: '--',
+                address: document.getElementById('reg-address').value,
+                payment_info: document.getElementById('reg-payment').value
+            };
+
+            try {
+                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    localStorage.setItem('lumina_reporter_id', data.reporter_id);
+                    localStorage.setItem('lumina_reporter_nick', nick);
+                    
+                    // --- AUTO-GENERATE PRIVACY PDF ---
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    doc.setFillColor(5, 7, 10); doc.rect(0, 0, 210, 297, 'F');
+                    doc.setTextColor(230, 57, 70); doc.setFontSize(26); doc.text('LuminaNews', 105, 40, { align: 'center' });
+                    doc.setTextColor(255, 255, 255); doc.setFontSize(18); doc.text('OFFICIAL PRIVACY & PROTECTION PLEDGE', 105, 60, { align: 'center' });
+                    doc.setFontSize(12); doc.text(`LuminaNews Operational Council hereby guarantees that the identity of ${nick} is encrypted and protected.`, 20, 90, { maxWidth: 170 });
+                    doc.text("Lumina Board Signature", 105, 240, { align: 'center' });
+                    doc.save(`LuminaNews_Privacy_Pledge.pdf`);
+
+                    setTimeout(() => window.location.href = 'dashboard.html', 1500);
+                }
+            } catch (err) { alert("Registration failed. Please try again."); btn.textContent = 'RETRY ONBOARDING'; }
+        });
+
+        // NEWS SUBMISSION
+        const previewBtn = document.getElementById('preview-btn');
+        const previewBox = document.getElementById('preview-box');
+        const previewImg = document.getElementById('preview-img');
+        const mediaInput = document.getElementById('media_url');
+
+        previewBtn.addEventListener('click', () => {
+            if (mediaInput.value) {
+                previewImg.src = mediaInput.value;
+                previewBox.style.display = 'block';
+            }
+        });
+
+        submissionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const aiBox = document.getElementById('ai-status');
+            const aiFeedback = document.getElementById('ai-feedback');
+            const aiImpact = document.getElementById('ai-impact');
+
+            btn.disabled = true;
+            btn.textContent = 'NEURAL SCAN IN PROGRESS...';
+            aiBox.style.display = 'block';
+
+            // Catch Location
+            let lat = 0, lon = 0;
+            if (navigator.geolocation) {
+                await new Promise(resolve => {
+                    navigator.geolocation.getCurrentPosition(p => {
+                        lat = p.coords.latitude;
+                        lon = p.coords.longitude;
+                        resolve();
+                    }, () => resolve(), {timeout: 3000});
+                });
+            }
+
+            const payload = {
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                location: document.getElementById('location').value,
+                media_url: document.getElementById('media_url').value,
+                reporter_id: localStorage.getItem('lumina_reporter_id'),
+                is_anonymous: document.getElementById('is-anon').checked,
+                lat, lon
+            };
+
+            try {
+                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (data.status === 'ok') {
+                    aiImpact.textContent = `IMPACT SCORE: ${data.impact}/100`;
+                    aiFeedback.textContent = data.message + " | AI Logic: Content decentralized across Lumina Hub successfully.";
+                    btn.textContent = 'SYNCED SUCCESSFULLY';
+                    btn.style.background = '#10B981';
+                    
+                    // Reload Feed
+                    setTimeout(() => window.location.reload(), 2000);
+                }
+            } catch (err) {
+                console.error(err);
+                btn.textContent = 'SYNC FAILED';
+                btn.disabled = false;
+            }
+        });
+
+        // Load Pulse Feed
+        async function loadPulseFeed() {
+            const grid = document.getElementById('pulse-feed-grid');
+            try {
+                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed');
+                const data = await res.json();
+
+                if (data.status === 'ok' && data.items.length > 0) {
+                    grid.innerHTML = data.items.map(item => `
+                        <div class="news-card">
+                            <div class="card-img" style="position: relative;">
+                                <img src="${item.media_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="News">
+                                <div class="rank-badge" style="position:absolute; top: 10px; right: 10px; background:var(--accent); color:black; padding: 2px 8px; border-radius: 4px; font-size:0.6rem; font-weight:800;">${item.reporter_rank}</div>
+                                <span class="category-tag" style="background:rgba(0,0,0,0.6); color: white;">IMPACT: ${item.impact_score}</span>
+                                <div class="watermark-overlay" style="font-size: 0.5rem; opacity: 0.7;">LUMINA CITIZEN REPORT</div>
+                            </div>
+                            <div class="card-content">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <div class="world-tag" style="color:var(--accent)">🌍 ${item.location}</div>
+                                    <button class="pill" style="font-size:0.6rem; padding: 4px 10px;" onclick="window.open('${item.audio_url}', '_blank')">🔊 LISTEN</button>
+                                </div>
+                                <h3 id="title-${item.id}">${item.title}</h3>
+                                <p id="body-${item.id}">${item.content}</p>
+                                <div style="margin-top:10px;">
+                                    <button class="pill" style="font-size:0.6rem; opacity:0.6;" onclick="document.getElementById('body-${item.id}').textContent = '${item.translated_content || item.content}'">🌐 NEURAL TRANSLATE</button>
+                                </div>
+                                <div class="card-footer" style="margin-top:20px;">
+                                    <span>By ${item.reporter_name}</span>
+                                    <span>${new Date(item.created_at).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    grid.innerHTML = '<div style="color:var(--text-secondary)">No network reports for this region yet. Be the first!</div>';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        loadPulseFeed();
+    </script>
+</body>
+</html>
