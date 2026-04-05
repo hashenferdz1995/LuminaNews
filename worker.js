@@ -168,6 +168,24 @@ export default {
       }
     }
 
-    return new Response("LuminaNews Cloudflare Hub - OK", { status: 200 });
+    // --- FINAL FALLBACK PROXY FOR STATIC ASSETS (Cloudflare Pages) ---
+    // This allows the Worker and Pages to coexist on the apex domain even if routing overlaps
+    try {
+      const PAGES_ORIGIN = "https://luminanews.pages.dev";
+      let response = await fetch(`${PAGES_ORIGIN}${url.pathname}${url.search}`, {
+        method: request.method,
+        headers: request.headers
+      });
+
+      // If not found and it's a clean URL (no extension), try adding .html
+      if (response.status === 404 && !url.pathname.includes('.') && url.pathname !== '/') {
+        const htmlResp = await fetch(`${PAGES_ORIGIN}${url.pathname}.html${url.search}`);
+        if (htmlResp.status === 200) return htmlResp;
+      }
+
+      return response;
+    } catch (e) {
+      return new Response("Lumina Hub Proxy Error: " + e.message, { status: 500 });
+    }
   }
 };
