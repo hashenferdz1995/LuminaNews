@@ -263,36 +263,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. High-Quality Professional Fallbacks (Using strictly validated Unsplash URLs)
         const fallbacks = {
-            'sports': [
-                'https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1541252876121-125dbb184dd6?auto=format&fit=crop&w=1200&q=80'
-            ],
-            'crypto': [
-                'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1621501104374-2dcafa5bbfc5?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1605792657660-596af9009e82?auto=format&fit=crop&w=1200&q=80'
-            ],
-            'markets': [
-                'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1590283603385-17ffb14e3047?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=1200&q=80'
-            ],
-            'economy': [
-                'https://images.unsplash.com/photo-1618042164219-62c820f10723?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=1200&q=80'
-            ],
-            'tech': [
-                'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80'
-            ],
-            'global': [
-                'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80',
-                'https://images.unsplash.com/photo-1529245001402-9ae1f9eb33fc?auto=format&fit=crop&w=1200&q=80'
-            ]
+            'sports': ['https://images.unsplash.com/photo-1508344928928-7151b67de2b4?auto=format&fit=crop&w=1200&q=80'],
+            'crypto': ['https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&w=1200&q=80'],
+            'markets': ['https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=80'],
+            'economy': ['https://images.unsplash.com/photo-1618042164219-62c820f10723?auto=format&fit=crop&w=1200&q=80'],
+            'tech': ['https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'],
+            'global': ['https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80']
         };
 
         const labelLow = categoryLabel.toLowerCase();
@@ -301,6 +277,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     labelLow.includes('market') ? 'markets' :
                     labelLow.includes('economy') ? 'economy' :
                     labelLow.includes('tech') ? 'tech' : 'global';
+
+        // 3. Ultra-Modern AI Generation for missing images
+        if (item.title) {
+            item.isAiImage = true;
+            // Generate a hyper-realistic press image using the story's actual headline via Pollinations API
+            return `https://image.pollinations.ai/prompt/${encodeURIComponent("News press photo of " + item.title)}?width=600&height=400&nologo=true`;
+        }
 
         const array = fallbacks[key] || fallbacks['global'];
         const seed = item.title ? item.title.length : Math.floor(Math.random() * 100);
@@ -324,9 +307,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('article');
             card.className = 'news-card';
             card.innerHTML = `
-                <div class="card-img">
+                <div class="card-img" style="position: relative;">
                      <img src="${highResImg}" alt="News Image" loading="lazy" style="transition: opacity 0.5s ease;">
                      <span class="category-tag">${categoryLabel}</span>
+                     ${item.isAiImage ? '<span class="ai-badge" style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.8); color:#00f2ff; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight: 800; border: 1px solid #00f2ff; backdrop-filter: blur(5px); z-index: 10;">🤖 AI Generated</span>' : ''}
                 </div>
                 <div class="card-content">
                     <h3>${item.title}</h3>
@@ -370,6 +354,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Use premium image enhancer
         const highResColor = getPremiumImage(item, categoryLabel);
         heroImg.style.opacity = '0';
+
+        let existingBadge = heroImg.parentElement.querySelector('.ai-badge');
+        if (existingBadge) existingBadge.remove();
+
+        if (item.isAiImage) {
+            const badge = document.createElement('span');
+            badge.className = 'ai-badge';
+            badge.style.cssText = 'position:absolute; top:20px; right:20px; background:rgba(0,0,0,0.8); color:#00f2ff; padding:6px 14px; border-radius:12px; font-size:0.85rem; font-weight: 800; border: 1px solid #00f2ff; backdrop-filter: blur(5px); z-index: 10;';
+            badge.textContent = '🤖 AI Generated Content';
+            heroImg.parentElement.style.position = 'relative';
+            heroImg.parentElement.appendChild(badge);
+        }
+
         setTimeout(() => {
             heroImg.src = highResColor;
             heroImg.onload = () => heroImg.style.opacity = '1';
