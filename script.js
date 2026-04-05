@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateHeroSection(allNewsItems[0], categoryLabel);
                 
                 // Live Indicator
-                const header = document.querySelector('.section-header h2');
+                const header = document.getElementById('main-feed-header') || document.querySelector('.latest-news .section-header h2') || document.querySelector('.section-header h2');
                 if (header) {
                     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     header.innerHTML = `Lumina Insights <span style="font-size: 0.8rem; color: #10B981; margin-left: 1rem; font-weight: 400;">● AI Verified: ${time}</span>`;
@@ -971,7 +971,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (window.location.pathname.toLowerCase().includes('local.html')) {
                 document.title = `LuminaNews | ${customTabName}`;
-                const sectionHeader = document.querySelector('.section-header h2');
+                const sectionHeader = document.getElementById('main-feed-header') || document.querySelector('.latest-news .section-header h2') || document.querySelector('.section-header h2');
                 if(sectionHeader) sectionHeader.innerHTML = `${countryName} <span>News</span>`;
                 window.localRssUrl = rssFeed;
                 loadRealTimeNews(); // reload with local rss
