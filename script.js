@@ -437,13 +437,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const category = pill.textContent.trim().toLowerCase();
                 if (category === 'all news') {
-           // --- LIVE TICKER ENGINE (REAL HEADLINES) ---
+                    loadRealTimeNews('all');
+                } else {
+                    loadRealTimeNews(category);
+                }
+            });
+        });
+    }
+
+    // --- LIVE TICKER ENGINE (REAL HEADLINES) ---
     async function updateBreakingNewsTicker() {
         const tickerContainer = document.querySelector('.ticker-content p');
         if (!tickerContainer) return;
 
         try {
-            const CF_WORKER = 'https://lumina-news-worker.hashenferdz1995.workers.dev';
+            const CF_WORKER = 'https://luminanews.online';
             
             // 1. Fetch News
             const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=10`);
@@ -476,15 +484,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(() => {
         const currentCategory = document.querySelector('.pill.active')?.textContent || 'All';
         if (currentCategory !== 'Archives') {
-            loadRealTimeNews(currentCategory === 'All News' ? 'all' : currentCategory);
+            loadRealTimeNews(currentCategory.toLowerCase() === 'all news' ? 'all' : currentCategory);
         }
     }, 120000);
-                } else {
-                    loadRealTimeNews(category);
-                }
-            });
-        });
-    }
+
 
     // 9. SEARCH FUNCTIONALITY
     const searchInput = document.querySelector('.search-bar input');
