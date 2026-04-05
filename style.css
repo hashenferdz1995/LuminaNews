@@ -202,18 +202,36 @@ header {
 }
 
 #navbar {
-    max-width: 1400px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.telemetry-pill {
+    display: block !important;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-links li {
+    white-space: nowrap;
 }
 
 .logo h1 {
@@ -253,15 +271,21 @@ header {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 2rem;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.nav-links li {
+    white-space: nowrap;
 }
 
 .nav-links a {
     text-decoration: none;
     color: var(--text-secondary);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .nav-links a:hover, .nav-links a.active {
@@ -953,6 +977,7 @@ footer {
 @media (max-width: 768px) {
     .nav-links {
         display: none;
+        white-space: nowrap;
     }
     .hero-title {
         font-size: 2.2rem;
