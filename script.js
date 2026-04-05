@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             if (currentActiveAsset === "BTC" || currentActiveAsset === "ETH") {
                 const id = currentActiveAsset === "BTC" ? "bitcoin" : "ethereum";
-                const cryptoRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true`);
+                const cryptoRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true&_=${Date.now()}`);
                 const cryptoData = await cryptoRes.json();
                 
                 if (cryptoData[id]) {
@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. Fetch Live Crypto Prices (Premium Feel)
             let marketTicker = "";
             try {
-                const cryptoRes = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true');
+                const cryptoRes = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true&_=${Date.now()}`);
                 const cryptoData = await cryptoRes.json();
                 marketTicker = ` <span style="color:#00f2ff">📊 BTC: $${cryptoData.bitcoin.usd.toLocaleString()}</span> <span style="color:${cryptoData.bitcoin.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.bitcoin.usd_24h_change.toFixed(2)}%)</span> • <span style="color:#00f2ff">📊 ETH: $${cryptoData.ethereum.usd.toLocaleString()}</span> <span style="color:${cryptoData.ethereum.usd_24h_change >= 0 ? '#10B981' : '#EF4444'}">(${cryptoData.ethereum.usd_24h_change.toFixed(2)}%)</span> • `;
                 
