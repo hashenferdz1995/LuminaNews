@@ -601,18 +601,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const emailValue = emailInput.value;
 
             if (emailValue) {
-                // Submit to Netlify via AJAX (prevents page refresh)
-                fetch('/', {
+                const CF_WORKER = 'https://lumina-news-worker.hashenferdz1995.workers.dev';
+                fetch(`${CF_WORKER}/api/subscribe`, {
                     method: 'POST',
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({
-                        "form-name": "newsletter",
-                        "email": emailValue
-                    }).toString(),
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: emailValue }),
                 })
-                .then(() => {
-                    showToast(`Success! ${emailValue.split('@')[0]} joined the Inner Circle.`);
-                    emailInput.value = '';
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === 'ok') {
+                        showToast(`Success! ${emailValue.split('@')[0]} joined the Inner Circle.`);
+                        emailInput.value = '';
+                    } else {
+                        showToast(`Error: ${data.error || 'Failed to subscribe'}`);
+                    }
                 })
                 .catch(() => {
                     showToast('Oops! Network error. Please try again later.');

@@ -71,6 +71,7 @@
                 <button class="share-btn tg-btn" id="share-tg" title="Share on Telegram">✈</button>
                 <button class="share-btn wa-btn" id="share-wa" title="Share on WhatsApp">💬</button>
                 <button class="share-btn fb-btn" id="share-fb" title="Share on Facebook">f</button>
+                <button class="share-btn copy-btn" id="share-link" title="Copy News Link">📋</button>
             </div>
             <button class="download-pdf-btn" id="btn-download-pdf">
                 <span class="icon">📄</span> DOWNLOAD INTEL REPORT (PDF)
@@ -263,6 +264,12 @@
             };
             document.getElementById('share-fb').onclick = () => {
                 window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank');
+            };
+            
+            document.getElementById('share-link').onclick = () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('News Link Copied to Clipboard!');
+                });
             };
 
             // --- PDF GENERATION ENGINE (ULTIMATE RELIABLE VERSION) ---

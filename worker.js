@@ -68,6 +68,72 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
+    if (url.pathname === "/api/subscribe" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const email = body.email;
+
+        if (!email || !email.includes('@')) {
+          return new Response(JSON.stringify({ error: 'Invalid email address' }), { status: 400, headers: corsHeaders });
+        }
+
+        const now = new Date();
+        await env.DB.prepare(
+          "INSERT OR IGNORE INTO subscribers (email, signup_at, timestamp) VALUES (?, ?, ?)"
+        ).bind(email, now.toISOString(), now.getTime()).run();
+
+        return new Response(JSON.stringify({ status: 'ok', message: 'Subscribed successfully' }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ error: err.message }), { 
+          status: 500, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
+      }
+    }
+
+    // 4. RSS FEED GENERATOR (For Google News Publisher Center)
+    if (url.pathname === "/api/feed" || url.pathname === "/rss") {
+      try {
+        const { results } = await env.DB.prepare(
+          "SELECT * FROM articles ORDER BY timestamp DESC LIMIT 20"
+        ).all();
+
+        const rssItems = results.map(item => `
+          <item>
+            <title><![CDATA[${item.title}]]></title>
+            <link>https://luminanews.online/article.html?title=${encodeURIComponent(item.title)}</link>
+            <description><![CDATA[${item.description}]]></description>
+            <pubDate>${new Date(item.timestamp).toUTCString()}</pubDate>
+            <guid isPermaLink="false">${item.id}</guid>
+            <media:content url="${item.image}" medium="image" />
+          </item>
+        `).join('');
+
+        const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>LuminaNews | Real-Time Global AI News</title>
+    <link>https://luminanews.online/</link>
+    <description>Bringing you closer to the adrenaline of world updates with AI intelligence.</description>
+    <language>en-us</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+    ${rssItems}
+  </channel>
+</rss>`;
+
+        return new Response(rssXml, {
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/rss+xml; charset=utf-8" 
+          }
+        });
+      } catch (err) {
+        return new Response(err.message, { status: 500 });
+      }
+    }
+
     if (url.pathname === "/api/news") {
       const category = url.searchParams.get("category") || 'all';
       const date = url.searchParams.get("date");

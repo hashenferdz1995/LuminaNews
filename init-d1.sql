@@ -11,3 +11,10 @@ CREATE TABLE IF NOT EXISTS articles (
     pubDate TEXT,
     timestamp INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS subscribers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE,
+    signup_at TEXT,
+    timestamp INTEGER
+);

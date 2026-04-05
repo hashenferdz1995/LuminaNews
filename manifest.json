@@ -1,0 +1,21 @@
+{
+  "name": "LuminaNews | Real-Time Global AI News",
+  "short_name": "LuminaNews",
+  "description": "Real-time global news, live sports scores, crypto analysis and AI-powered insights.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0A0F14",
+  "theme_color": "#E63946",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

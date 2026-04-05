@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 | Page Not Found - LuminaNews</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        .error-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0A0F14 0%, #151B23 100%);
+            padding: 20px;
+        }
+
+        .error-code {
+            font-size: 10rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #E63946, #FF6B6B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            line-height: 1;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .error-message {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .error-desc {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .back-home-btn {
+            background: #E63946;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 20px rgba(230, 57, 70, 0.3);
+        }
+
+        .back-home-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(230, 57, 70, 0.4);
+        }
+
+        .pulse-404 {
+            width: 100px;
+            height: 100px;
+            background: rgba(230, 57, 70, 0.1);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .pulse-404:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #E63946;
+            border-radius: 50%;
+            animation: pulse-out 2s infinite;
+        }
+
+        @keyframes pulse-out {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="error-container">
+        <div class="pulse-404">
+            <span style="font-size: 3rem;">🛰️</span>
+        </div>
+        <h1 class="error-code">404</h1>
+        <p class="error-message">Intel Lost in Orbit</p>
+        <p class="error-desc">The report you are looking for has been moved, archived, or is currently being analyzed by our AI agents. Let's get you back to the main portal.</p>
+        <a href="index.html" class="back-home-btn">Return to Base Portfolio</a>
+    </div>
+</body>
+</html>
