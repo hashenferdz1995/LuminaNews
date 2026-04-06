@@ -502,21 +502,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Detect Category
         if (!selectedCategory) {
-            if (path.includes('sports')) categoryKey = 'sports';
-            else if (path.includes('markets')) categoryKey = 'markets';
-            else if (path.includes('economy')) categoryKey = 'economy';
-            else if (path.includes('crypto')) categoryKey = 'crypto';
-            else if (path.includes('local')) categoryKey = 'local';
+            if (path.includes('sports')) { categoryKey = 'sports'; categoryLabel = 'Lumina Sports'; }
+            else if (path.includes('markets')) { categoryKey = 'markets'; categoryLabel = 'Market Hub'; }
+            else if (path.includes('economy')) { categoryKey = 'economy'; categoryLabel = 'Economy Watch'; }
+            else if (path.includes('crypto')) { categoryKey = 'crypto'; categoryLabel = 'Digital Assets'; }
+            else if (path.includes('local')) { categoryKey = 'local'; categoryLabel = 'Regional Hub'; }
         } else {
             categoryKey = selectedCategory.toLowerCase();
+            categoryLabel = categoryKey.charAt(0).toUpperCase() + categoryKey.slice(1);
         }
 
-        // 2. Fetch from Lumina D1 Database (Ultra Fast Edge)
+        // 2. Fetch Logic
         try {
             const CF_WORKER = 'https://lumina-news-worker.hashenferdz.workers.dev';
             const queryCategory = (categoryKey === 'all news' || categoryKey === 'global') ? 'all' : categoryKey;
-            const res = await fetch(`${CF_WORKER}/api/news?category=${queryCategory}&_=${new Date().getTime()}`);
-            const data = await res.json();
+            
+            // Try D1 Worker First
+            let res = await fetch(`${CF_WORKER}/api/news?category=${queryCategory}&_=${new Date().getTime()}`);
+            let data = await res.json();
+
+            // 3. Fallback for Local News (RSS)
+            if (categoryKey === 'local' && (!data.items || data.items.length === 0) && window.localRssUrl) {
+                const RSS_API = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(window.localRssUrl)}&_=${new Date().getTime()}`;
+                const rssRes = await fetch(RSS_API);
+                data = await rssRes.json();
+            }
 
             if (data.status === 'ok' && data.items.length > 0) {
                 allNewsItems = data.items;
