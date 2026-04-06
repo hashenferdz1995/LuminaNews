@@ -370,7 +370,7 @@
         async function loadPulseFeed() {
             const grid = document.getElementById('pulse-feed-grid');
             try {
-                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed');
+                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed?_=' + new Date().getTime());
                 const data = await res.json();
 
                 if (data.status === 'ok' && data.items.length > 0) {

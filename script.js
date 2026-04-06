@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${ts}?interval=1m&range=1d`;
             }
 
-            const res = await fetch(`${CF_PROXY}${encodeURIComponent(targetUrl)}`);
+            const res = await fetch(`${CF_PROXY}${encodeURIComponent(targetUrl)}&_=${new Date().getTime()}`);
             const data = await res.json();
             
             if (type === 'crypto') {
@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // A. Fetch Crypto (Top 4)
                 const cSymbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "BNBUSDT"];
                 const cUrl = `https://api.binance.com/api/v3/ticker/24hr?symbols=${JSON.stringify(cSymbols)}`;
-                const cRes = await fetch(`${CF_PROXY}${encodeURIComponent(cUrl)}`);
+                const cRes = await fetch(`${CF_PROXY}${encodeURIComponent(cUrl)}&_=${new Date().getTime()}`);
                 const cData = await cRes.json();
                 
                 cData.forEach(coin => {
@@ -596,7 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 for(const s of mSymbols) {
                     try {
                         const sUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${s}?interval=1m&range=1d`;
-                        const sRes = await fetch(`${CF_PROXY}${encodeURIComponent(sUrl)}`);
+                        const sRes = await fetch(`${CF_PROXY}${encodeURIComponent(sUrl)}&_=${new Date().getTime()}`);
                         const sData = await sRes.json();
                         const meta = sData.chart.result[0].meta;
                         const price = meta.regularMarketPrice;
@@ -626,7 +626,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (ce) { console.warn("Market Data Proxy Synchronizer Failed", ce); }
 
             // 2. Fetch Breaking Headlines
-            const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=10`);
+            const res = await fetch(`${CF_WORKER}/api/news?category=all&limit=10&_=${new Date().getTime()}`);
             const data = await res.json();
 
             if (data.status === 'ok' && data.items.length > 0) {
