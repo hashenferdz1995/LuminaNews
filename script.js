@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
             if (data.status === 'ok') {
                 const reach = (data.views / 1000).toFixed(1);
-                pill.textContent = `NODES ACTIVE: 2,840 • VIRAL REACH: ${reach}K ENGAGEMENTS`;
+                pill.textContent = `🟢 2,840 Nodes Active • ⚡ ${reach}K Reach`;
             }
         } catch (e) {}
     }
