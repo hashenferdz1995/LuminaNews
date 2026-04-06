@@ -371,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach((item, index) => {
             const highResImg = getPremiumImage(item, categoryLabel);
+            const isAiImage = typeof highResImg === 'string' && highResImg.includes('pollinations.ai');
             const isEager = index < 4; // Load first 4 images immediately
             const card = document.createElement('article');
             card.onclick = () => window.trackView('article', item.id);
