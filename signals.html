@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Economy | LuminaNews Global Insights</title>
+    <title>Trading Signals | LuminaNews</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <meta name="description" content="Global Economic News">
+    <meta name="description" content="Technical Analysis and Trading Signals">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1214676344881133" crossorigin="anonymous"></script>
 </head>
 <body class="dark-theme">
     <header>
         <div class="breaking-news-ticker">
-            <span class="ticker-label">ECONOMY WATCH</span>
+            <span class="ticker-label">SIGNALS ACTIVE</span>
             <div class="ticker-content">
-                <p>⚡ GDP Growth Estimates • ⚡ Central Bank Policy Updates • ⚡ Trade Relations • ⚡ Labor Market Trends</p>
+                <p>⚡ High Volatility Detected • ⚡ Trade with caution • ⚡ AI Algorithms Running</p>
             </div>
         </div>
         <nav id="navbar">
@@ -29,26 +26,47 @@
             </div>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
+                <li><a href="pulse.html">Lumina Pulse</a></li>
                 <li><a href="sports.html">Sports</a></li>
                 <li><a href="markets.html">Markets</a></li>
-                <li><a href="economy.html" class="active">Economy</a></li>
                 <li><a href="crypto.html">Crypto</a></li>
-            <li><a href="signals.html">Signals</a></li>
-                </ul>
+                <li><a href="signals.html" class="active">Signals</a></li>
+            </ul>
         </nav>
     </header>
 
     <main>
-        <section class="content-wrapper">
+        <section class="section-header" style="max-width: 1400px; margin: 2rem auto; text-align: center;">
+            <h1 style="font-size: 3rem; margin-bottom: 1rem;">Trading <span>Signals & Analysis</span></h1>
+            <p style="color: var(--text-secondary);">Real-time technical charts powered by TradingView</p>
+        </section>
+
+        <!-- REAL-TIME TRADINGVIEW WIDGET -->
+        <section class="pro-analysis-widget" style="max-width: 1400px; margin: 0 auto 3rem;">
+            <div class="tradingview-widget-container" style="height: 600px; border-radius: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+                {
+                    "interval": "1m",
+                    "width": "100%",
+                    "isTransparent": true,
+                    "height": "100%",
+                    "symbol": "BINANCE:BTCUSDT",
+                    "showIntervalTabs": true,
+                    "displayMode": "multiple",
+                    "locale": "en",
+                    "colorTheme": "dark"
+                }
+                </script>
+            </div>
+        </section>
+
+        <section class="content-wrapper" style="max-width: 1400px; margin: 0 auto;">
             <div class="main-content">
-                <section class="latest-news">
-                    <div class="section-header">
-                        <h2>Economy Hub</h2>
-                    </div>
-                    <div class="news-grid" id="real-time-news-grid">
-                        <div class="loading-state">🛰️ Fetching Live Economic Data...</div>
-                    </div>
-                </section>
+                <div class="loading-state" style="padding: 3rem; background: var(--surface); border-radius: 24px; text-align: center;">
+                    <h3>Live AI Trade Feeds</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Our AI is currently monitoring order book imbalances across 12 major exchanges...</p>
+                </div>
             </div>
             <aside class="sidebar-news">
                 <!-- SIDEBAR AI TERMINAL -->
@@ -86,26 +104,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="sidebar-header" style="margin-top: 3rem;">
-                    <h2>Economy <span>Deals</span></h2>
-                </div>
-                <div class="sidebar-ad-stack">
-                    <div class="ad-placement sidebar-ad">
-                        <!-- Sidebar Ad Economy -->
-                        <ins class="adsbygoogle"
-                             style="display:block"
-                             data-ad-client="ca-pub-1214676344881133"
-                             data-ad-slot="YOUR_AD_SLOT_ID"
-                             data-ad-format="auto"
-                             data-full-width-responsive="true"></ins>
-                        <script>
-                             (adsbygoogle = window.adsbygoogle || []).push({});
-                        </script>
-                    </div>
-                </div>
             </aside>
         </section>
     </main>
+
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 LuminaNews News. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
