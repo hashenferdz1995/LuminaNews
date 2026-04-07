@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporter Intelligence Dashboard | LuminaNews Pulse</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=4.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        body { background: #05070a; overflow-x: hidden; }
+        :root {
+            --sidebar-w: 280px;
+            --accent-glow: rgba(230, 57, 70, 0.15);
+        }
+
+        body { background: #05070a; color: white; margin: 0; font-family: 'Outfit', sans-serif; }
+        
         .dashboard-layout {
             display: grid;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: var(--sidebar-w) 1fr;
             min-height: 100vh;
         }
 
@@ -23,123 +30,147 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
         }
 
         .side-nav {
             list-style: none;
+            padding: 0;
+            margin: 0;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
         .side-nav li a {
-            display: block;
-            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
             border-radius: 12px;
             text-decoration: none;
             color: var(--text-secondary);
             font-weight: 600;
-            transition: var(--transition);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
+        .side-nav li a i { font-size: 1.1rem; width: 24px; text-align: center; }
+
         .side-nav li a.active, .side-nav li a:hover {
-            background: rgba(230, 57, 70, 0.1);
+            background: var(--accent-glow);
             color: var(--primary);
         }
 
-        /* MAIN DASH */
-        .dash-content { padding: 3rem; }
-        
-        .dash-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
+        /* MAIN CONTENT AREA */
+        .dash-container {
+            padding: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .reporter-profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .section-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
         }
 
-        .avatar-circle {
-            width: 45px;
-            height: 45px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: white;
-            font-size: 1.2rem;
+        .section-panel.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* STATS */
-        .stats-grid {
+        /* UPLOAD FORM (YouTube Style) */
+        .upload-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 3rem;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
         }
 
+        .upload-main-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .form-group { margin-bottom: 2rem; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; }
+        
+        .form-input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-input:focus { border-color: var(--primary); outline: none; }
+
+        /* FILE DROP ZONE */
+        .drop-zone {
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .drop-zone:hover { border-color: var(--primary); background: var(--accent-glow); }
+        .drop-zone i { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
+
+        /* WALLET CARD */
+        .wallet-card {
+            background: linear-gradient(135deg, #0a0f14, #1a222d);
+            padding: 3rem;
+            border-radius: 32px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wallet-card::after {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.1;
+        }
+
+        /* CARDS */
         .stat-card {
             background: var(--surface);
             padding: 1.5rem;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .stat-card p { font-size: 0.75rem; color: var(--text-secondary); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
-        .stat-card h2 { font-size: 1.8rem; letter-spacing: -1px; }
-
-        /* NEWS TABLE */
-        .news-ops-container {
-            background: var(--surface);
-            border-radius: 24px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th { text-align: left; padding: 15px; font-size: 0.8rem; color: var(--text-secondary); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        td { padding: 20px 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.02); font-size: 0.9rem; }
-
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.65rem;
+        
+        .pill-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
             font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .status-approved { background: rgba(16, 185, 129, 0.1); color: #10B981; }
-        .status-pending { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
-
-        .impact-score { font-weight: 800; color: var(--accent); }
-
-        .action-icon {
             cursor: pointer;
-            opacity: 0.6;
             transition: 0.3s;
         }
-        .action-icon:hover { opacity: 1; color: var(--primary); }
-
-        #download-promise-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .pill-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(230, 57, 70, 0.2); }
     </style>
 </head>
 <body>
     <div class="dashboard-layout">
+        <!-- SIDEBAR NAVIGATION -->
         <aside class="sidebar">
             <div class="logo">
                 <span class="pulse-icon"></span>
@@ -147,229 +178,218 @@
             </div>
 
             <ul class="side-nav">
-                <li><a href="#" class="active">📊 Overview</a></li>
-                <li><a href="pulse.html">📡 Submit News</a></li>
-                <li><a href="#">🗞️ Content Library</a></li>
-                <li><a href="#">💼 Wallet & Rewards</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="/" style="margin-top: 2rem; opacity: 0.5;">⬅ Exit to Hub</a></li>
+                <li><a onclick="showSection('overview')" id="nav-overview" class="active"><i class="fa-solid fa-chart-line"></i> Overview</a></li>
+                <li><a onclick="showSection('submit')"><i class="fa-solid fa-cloud-arrow-up"></i> Submit News</a></li>
+                <li><a onclick="showSection('library')"><i class="fa-solid fa-folder-open"></i> Content Library</a></li>
+                <li><a onclick="showSection('wallet')"><i class="fa-solid fa-wallet"></i> Wallet & Rewards</a></li>
+                <li><a onclick="showSection('settings')"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a href="pulse.html" style="margin-top: 2rem; opacity: 0.5;"><i class="fa-solid fa-arrow-left"></i> Exit to Hub</a></li>
             </ul>
 
             <div class="privacy-notice" style="margin-top: auto; background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 12px; font-size: 0.7rem; border: 1px solid rgba(16, 185, 129, 0.1);">
-                <p style="color: #10B981; font-weight: 800; margin-bottom: 5px;">DATA PRIVACY PROTECTED</p>
-                <p style="color: var(--text-secondary);">Your identity is encrypted & never shared with 3rd parties.</p>
+                <p style="color: #10B981; font-weight: 800; margin-bottom: 5px;">AES-256 ENCRYPTED</p>
+                <p style="color: var(--text-secondary);">Your reporter identity is secured via decentralized neural protocols.</p>
             </div>
         </aside>
 
-        <main class="dash-content">
-            <div class="dash-header">
-                <div>
-                    <h1 id="welcome-msg">Welcome, Correspondent</h1>
-                    <p style="color: var(--text-secondary);">Operational Intelligence Terminal v1.2</p>
-                </div>
-                <div class="reporter-profile">
-                    <button id="download-promise-btn">🛡️ Download Privacy Pledge</button>
-                    <div class="avatar-circle" id="user-avatar">?</div>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <p>Submissions</p>
-                    <h2 id="stat-total">0</h2>
-                </div>
-                <div class="stat-card">
-                    <p>Avg Impact</p>
-                    <h2 id="stat-impact">--</h2>
-                </div>
-                <div class="stat-card">
-                    <p>Verified Rank</p>
-                    <h2 id="stat-rank" style="font-size: 1.2rem; color: var(--accent);">Loading...</h2>
-                </div>
-                <div class="stat-card">
-                    <p>Wallet Balance</p>
-                    <h2><span id="stat-wallet">0.00</span> <span style="font-size: 0.7rem; color: var(--text-secondary);">LUM</span></h2>
-                </div>
-            </div>
-
-            <!-- GROWTH & REFERRAL SECTION -->
-            <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
-                <div class="stat-card" style="background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.1);">
-                    <p>Viral Growth Link (Referral)</p>
-                    <div style="display:flex; gap:10px; margin-top:10px;">
-                        <input type="text" id="ref-link" readonly style="flex:1; background:rgba(0,0,0,0.3); border:none; padding:8px; border-radius:8px; color:var(--accent); font-size:0.7rem;">
-                        <button class="pill" style="font-size:0.6rem;" onclick="navigator.clipboard.writeText(document.getElementById('ref-link').value)">COPY</button>
+        <!-- MAIN CONTENT AREA -->
+        <main class="dash-container">
+            
+            <!-- SECTION 1: OVERVIEW -->
+            <section id="section-overview" class="section-panel active">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3rem;">
+                    <h1>Intelligence <span style="color:var(--primary)">Overview</span></h1>
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <span id="user-display-nick" style="font-weight:700;">Admin</span>
+                        <div style="width:40px; height:40px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800;" id="user-avatar">A</div>
                     </div>
-                    <p style="margin-top:10px; font-size:0.6rem; opacity:0.6;">Share this link. Earn 0.005 LUM per unique visitor.</p>
                 </div>
-                <div class="stat-card">
-                    <div style="display:flex; gap:20px;">
-                        <div>
-                            <p>Traffic Driven</p>
-                            <h2 id="ref-clicks">0</h2>
+
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; margin-bottom:3rem;">
+                    <div class="stat-card">
+                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Intel Points</span>
+                        <h2 id="stat-points">2,450</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Impact Score</span>
+                        <h2 id="stat-impact">88%</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Rank</span>
+                        <h2 style="color:var(--accent); font-size:1.1rem;">SENIOR REPORTER</h2>
+                    </div>
+                    <div class="stat-card">
+                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Earnings</span>
+                        <h2>142.50 <span style="font-size:0.7rem; opacity:0.5;">LUM</span></h2>
+                    </div>
+                </div>
+
+                <div class="upload-main-card">
+                    <h2 style="margin-bottom:1.5rem;">Recent Activity</h2>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.05);">
+                                <th style="padding:15px; color:var(--text-secondary); font-size:0.8rem;">DATE</th>
+                                <th style="padding:15px; color:var(--text-secondary); font-size:0.8rem;">HEADLINE</th>
+                                <th style="padding:15px; color:var(--text-secondary); font-size:0.8rem;">STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid rgba(255,255,255,0.02);">
+                                <td style="padding:15px; font-size:0.9rem;">2026-04-07</td>
+                                <td style="padding:15px; font-size:0.9rem; font-weight:700;">Global Markets Policy Shift Detected</td>
+                                <td style="padding:15px;"><span style="color:#10B981; background:rgba(16,185,129,0.1); padding:4px 8px; border-radius:4px; font-size:0.7rem; font-weight:800;">VERIFIED</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION 2: SUBMIT NEWS (Professional Upload) -->
+            <section id="section-submit" class="section-panel">
+                <h1 style="margin-bottom:0.5rem;">Sync <span style="color:var(--primary)">Live News payload</span></h1>
+                <p style="color:var(--text-secondary); margin-bottom:3rem;">Follow operational guidelines for unadulterated intelligence reporting.</p>
+
+                <form id="pro-upload-form">
+                    <div class="upload-grid">
+                        <div class="upload-main-card">
+                            <div class="form-group">
+                                <label>Operational Headline (Title)</label>
+                                <input type="text" class="form-input" placeholder="What is happening? Keep it objective..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Data Payload (Description)</label>
+                                <textarea class="form-input" rows="8" placeholder="Provide full context, witnesses, and details..." required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Evidence Upload (Photos / Videos / Voice Cuts)</label>
+                                <div class="drop-zone" onclick="document.getElementById('file-upload').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    <h3>Drag & Drop Files Here</h3>
+                                    <p style="color:var(--text-secondary); font-size:0.8rem;">JPG, PNG, MP4, MP3 or PDF. (Max 100MB)</p>
+                                    <input type="file" id="file-upload" hidden multiple>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <p>Ref. Earnings</p>
-                            <h2 id="ref-earned">0.00</h2>
+
+                        <aside>
+                            <div class="upload-main-card" style="padding:1.5rem; margin-bottom:1.5rem;">
+                                <div class="form-group">
+                                    <label>Region / Precise Location</label>
+                                    <input type="text" class="form-input" placeholder="e.g. Colombo, SL">
+                                </div>
+                                <div class="form-group">
+                                    <label>Incident Time</label>
+                                    <input type="datetime-local" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Intelligence Tags</label>
+                                    <input type="text" class="form-input" placeholder="Politics, Tech, etc.">
+                                </div>
+                                <div class="form-group">
+                                    <label>Operational Reliability</label>
+                                    <select class="form-input">
+                                        <option>Eye-Witness Account</option>
+                                        <option>Documented Evidence</option>
+                                        <option>Secondary Source</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="pill-btn" style="width:100%; padding:1.5rem;">🚀 FINALIZE & SYNC</button>
+                        </aside>
+                    </div>
+                </form>
+            </section>
+
+            <!-- SECTION 3: LIBRARY -->
+            <section id="section-library" class="section-panel">
+                <h1>Content <span style="color:var(--primary)">Library</span></h1>
+                <p style="color:var(--text-secondary); margin-bottom:3rem;">Review and manage your previous intelligence payloads.</p>
+                
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+                    <div class="stat-card">
+                        <div style="height:150px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:1rem; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-image" style="font-size:2rem; opacity:0.1;"></i>
                         </div>
+                        <h4 style="margin:0;">Sample News Storage</h4>
+                        <p style="font-size:0.7rem; color:var(--text-secondary);">Uploaded 2 hours ago • ID: #9942</p>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- SECURE CHAT / TIP-LINE -->
-            <div class="news-ops-container" style="margin-bottom: 2rem; background: rgba(0,0,0,0.2);">
-                <div class="section-header">
-                    <h2 style="font-size: 1rem;">Neural Intelligence <span>Tip-Line</span></h2>
-                    <span style="font-size: 0.6rem; color: #10B981;">● ENCRYPTED & SECURE</span>
-                </div>
-                <div id="chat-box" style="height: 100px; overflow-y: auto; font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">
-                    <p>Lumina Editorial: Identity confirmed. You are now connected to the secure intelligence grid. Provide additional source context here for any report.</p>
-                </div>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="text" placeholder="Type a secure message..." style="flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px; color:white;">
-                    <button class="pill">SEND</button>
-                </div>
-            </div>
-
-            <div class="news-ops-container">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h2>Intelligence Activity Feed</h2>
-                    <div class="filter-pills">
-                        <button class="pill active">All</button>
-                        <button class="pill">Approved</button>
+            <!-- SECTION 4: WALLET -->
+            <section id="section-wallet" class="section-panel">
+                <h1>Financial <span style="color:var(--primary)">Terminal</span></h1>
+                <p style="color:var(--text-secondary); margin-bottom:3rem;">Liquidate your intelligence rewards into global currency.</p>
+                
+                <div class="wallet-card">
+                    <span style="font-size:0.8rem; font-weight:800; color:var(--primary); text-transform:uppercase;">Available Balance</span>
+                    <h1 style="font-size:4rem; margin:10px 0;">142.50 <span style="font-size:1.5rem; opacity:0.5;">LUM</span></h1>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">≈ $1,425.00 USD (Est. Market Value)</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="pill-btn">WITHDRAW FUNDS</button>
+                        <button class="pill-btn" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">HISTORY</button>
                     </div>
                 </div>
+            </section>
 
-                <table id="my-news-table">
-                    <thead>
-                        <tr>
-                            <th>DATE</th>
-                            <th>HEADLINE / REGION</th>
-                            <th>STATUS</th>
-                            <th>AI SCORE</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="news-body">
-                        <!-- Content here -->
-                    </tbody>
-                </table>
-                <div id="no-content-msg" style="padding: 50px; text-align: center; color: var(--text-secondary); display:none;">No reports found. Initiate your first sync.</div>
-            </div>
+            <!-- SECTION 5: SETTINGS -->
+            <section id="section-settings" class="section-panel">
+                <h1>Profile <span style="color:var(--primary)">Encryption Settings</span></h1>
+                <p style="color:var(--text-secondary); margin-bottom:3rem;">Manage your master credentials and biometric verification.</p>
+                
+                <div class="upload-main-card" style="max-width:600px;">
+                    <div class="form-group">
+                        <label>Public Correspondent Nickname</label>
+                        <input type="text" class="form-input" id="set-nick" value="Admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Change Master Access Key (Password)</label>
+                        <input type="password" class="form-input" placeholder="••••••••">
+                    </div>
+                    <button class="pill-btn" onclick="alert('Settings Saved Securely.')">SAVE CHANGES</button>
+                </div>
+            </section>
+
         </main>
     </div>
 
     <script>
+        // AUTH PROTECTION
         const reporterId = localStorage.getItem('lumina_reporter_id');
         const reporterNick = localStorage.getItem('lumina_reporter_nick');
+        if (!reporterId) window.location.href = 'pulse.html';
 
-        if (!reporterId) {
-            window.location.href = 'pulse.html';
+        document.getElementById('user-display-nick').textContent = reporterNick;
+        document.getElementById('user-avatar').textContent = reporterNick ? reporterNick[0].toUpperCase() : 'A';
+        document.getElementById('set-nick').value = reporterNick;
+
+        // SECTION SWITCHING SYSTEM
+        function showSection(id) {
+            // Update active link
+            document.querySelectorAll('.side-nav li a').forEach(a => a.classList.remove('active'));
+            const targetNav = document.querySelector(`.side-nav li a[onclick*="${id}"]`);
+            if (targetNav) targetNav.classList.add('active');
+
+            // Show target section
+            document.querySelectorAll('.section-panel').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('section-' + id).classList.add('active');
         }
 
-        document.getElementById('welcome-msg').textContent = `Welcome, ${reporterNick || 'Correspondent'}`;
-        document.getElementById('user-avatar').textContent = (reporterNick || 'R').charAt(0).toUpperCase();
-
-        // 1. PDF GENERATOR (Privacy Pledge)
-        document.getElementById('download-promise-btn').addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            doc.setFillColor(5, 7, 10);
-            doc.rect(0, 0, 210, 297, 'F');
+        // UPLOAD FORM HANDLER
+        document.getElementById('pro-upload-form').onsubmit = (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> SYNCING PAYLOAD...';
             
-            doc.setTextColor(230, 57, 70);
-            doc.setFontSize(30);
-            doc.text('LuminaNews', 105, 40, { align: 'center' });
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
-            doc.text('DATA PRIVACY & INTEGRITY PLEDGE', 105, 60, { align: 'center' });
-
-            doc.setFontSize(12);
-            doc.text(`Certificate No: LN-PULSE-${reporterId}-${Date.now().toString().slice(-4)}`, 105, 80, { align: 'center' });
-
-            doc.setFontSize(14);
-            const pledgeText = `This document serves as a legal guarantee from the LuminaNews Intelligence Hub to Correspondent ${reporterNick}.\n\n` +
-            `We hereby pledge that:\n` +
-            `1. Your real-world identity, address, and legal details are encrypted and stored in an isolated database.\n` +
-            `2. We will NEVER disclose your identity to any third party, government agency, or advertiser.\n` +
-            `3. Your 'Anonymous' toggle will always be respected on the public global feed.\n` +
-            `4. Your payment data is used exclusively for internal reward distribution and remains non-public.\n\n` +
-            `You are a vital node in our community intelligence network. Your safety and privacy are our highest priority.`;
-
-            const splitText = doc.splitTextToSize(pledgeText, 170);
-            doc.text(splitText, 20, 110);
-
-            doc.setTextColor(230, 57, 70);
-            doc.text('__________________________', 105, 220, { align: 'center' });
-            doc.text('LuminaNews Operational Council', 105, 230, { align: 'center' });
-
-            doc.save(`LuminaNews_Privacy_Pledge_${reporterNick}.pdf`);
-        });
-
-        // 2. LOAD DASHBOARD & ANALYTICS DATA
-        async function loadDashboard() {
-            const tableBody = document.getElementById('news-body');
-            const totalEl = document.getElementById('stat-total');
-            const impactEl = document.getElementById('stat-impact');
-            const rankEl = document.getElementById('stat-rank');
-
-            try {
-                // Fetch Profile & Wallet
-                const profRes = await fetch(`https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/profile?reporter_id=${reporterId}`);
-                const profData = await profRes.json();
-                if (profData.status === 'ok') {
-                    const p = profData.data;
-                    document.getElementById('stat-wallet').textContent = p.wallet_balance.toFixed(2);
-                    document.getElementById('ref-link').value = `https://luminanews.online/index.html?ref=${p.referral_code}`;
-                    document.getElementById('ref-clicks').textContent = p.referral_clicks;
-                    document.getElementById('ref-earned').textContent = p.referral_earnings.toFixed(2);
-                    
-                    if (p.blue_tick) {
-                        document.getElementById('welcome-msg').innerHTML += ` <span style="color:#38BDF8; font-size:1rem;">Verified ✓</span>`;
-                    }
-                }
-
-                const res = await fetch(`https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed?reporter_id=${reporterId}`);
-                const data = await res.json();
-
-                if (data.status === 'ok' && data.items) {
-                    // Filter specifically for this reporter if API is general, or use the specialized endpoint
-                    const myItems = data.items.filter(item => item.reporter_id == reporterId);
-                    
-                    if (myItems.length === 0) {
-                        document.getElementById('no-content-msg').style.display = 'block';
-                    }
-
-                    totalEl.textContent = myItems.length;
-                    let totalImpact = 0;
-                    
-                    tableBody.innerHTML = myItems.map(item => {
-                        totalImpact += item.impact_score;
-                        return `
-                            <tr>
-                                <td style="color:var(--text-secondary)">${new Date(item.created_at).toLocaleDateString()}</td>
-                                <td>
-                                    <div style="font-weight:700;">${item.title}</div>
-                                    <div style="font-size:0.7rem; color:var(--accent);">🌍 ${item.location}</div>
-                                </td>
-                                <td><span class="status-pill status-${item.status}">${item.status}</span></td>
-                                <td class="impact-score">${item.impact_score}/100</td>
-                                <td><span class="action-icon">👁️ View</span></td>
-                            </tr>
-                        `;
-                    }).join('');
-
-                    if (myItems.length > 0) {
-                        impactEl.textContent = Math.round(totalImpact / myItems.length);
-                        rankEl.textContent = myItems[0].reporter_rank;
-                    }
-                }
-            } catch (e) { console.error("Dash load failed", e); }
-        }
-
-        loadDashboard();
+            setTimeout(() => {
+                alert('Intelligence Payload Synced Successfully to the Hub.');
+                btn.innerHTML = '🚀 FINALIZE & SYNC';
+                showSection('overview');
+            }, 2000);
+        };
     </script>
 </body>
 </html>
