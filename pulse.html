@@ -651,6 +651,25 @@
             document.getElementById('user-initials').textContent = nick ? nick[0].toUpperCase() : 'C';
         }
 
+        // LOGIN LOGIC
+        document.getElementById('pulse-login-form').onsubmit = (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            const btn = e.target.querySelector('button');
+
+            if (email === 'admin@luminanews.online' && pass === 'ADMIN123') {
+                btn.textContent = 'AUTHORIZING...';
+                localStorage.setItem('lumina_reporter_id', 'REP-ADMIN-' + Date.now());
+                localStorage.setItem('lumina_reporter_nick', 'Admin');
+                localStorage.setItem('lumina_reporter_email', email);
+                setTimeout(() => location.reload(), 800);
+            } else {
+                alert('Invalid Admin Credentials. Please check your email or password.');
+                btn.textContent = 'AUTHORIZE ACCESS';
+            }
+        };
+
         // SUBMISSION
         document.getElementById('pulse-submission-form').onsubmit = async (e) => {
             e.preventDefault();
