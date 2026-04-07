@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumina Pulse | Citizen Journalism Network</title>
-    <link rel="stylesheet" href="style.css?v=3.8">
+    <link rel="stylesheet" href="style.css?v=3.9">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -122,16 +122,75 @@
             margin-top: 0.5rem;
         }
 
-        /* VERIFICATION MODAL */
+        /* MULTI-STEP REGISTRATION STYLING */
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; width: 100%; height: 2px;
+            background: var(--glass-border);
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .indicator-dot {
+            width: 35px; height: 35px;
+            background: var(--surface);
+            border: 2px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            z-index: 2;
+            transition: var(--transition);
+            color: var(--text-secondary);
+        }
+
+        .indicator-dot.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 15px rgba(230, 57, 70, 0.4);
+        }
+
+        .indicator-dot.completed {
+            border-color: #10B981;
+            background: #10B981;
+            color: white;
+        }
+
+        .form-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-step.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* MODAL STYLING */
         .modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(15px);
             display: none;
             z-index: 100000;
             align-items: center;
             justify-content: center;
+            overflow-y: auto;
+            padding: 2rem;
         }
 
         .modal-content {
@@ -139,11 +198,12 @@
             border: 1px solid var(--glass-border);
             padding: 3rem;
             border-radius: 32px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
         }
 
+        /* OTP INPUTS */
         .otp-inputs {
             display: flex;
             gap: 10px;
@@ -189,6 +249,22 @@
             font-size: 0.7rem;
             letter-spacing: 2px;
         }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .radio-item input { width: auto; margin: 0; }
 
         @media (max-width: 1024px) {
             .pulse-layout { grid-template-columns: 1fr; }
@@ -239,7 +315,6 @@
                     <div class="telemetry-pill">🟢 4,204 Active Nodes</div>
                 </div>
 
-                <!-- Google AdSense Placeholder -->
                 <div class="pulse-ad">
                     <ins class="adsbygoogle"
                          style="display:block"
@@ -254,7 +329,6 @@
                     <div class="loading-state">🛰️ Synchronizing Neural Streams...</div>
                 </div>
                 
-                <!-- Another Ad Slot -->
                 <div class="pulse-ad">SPONSORED INTEL</div>
             </article>
 
@@ -284,7 +358,7 @@
                     </div>
                 </div>
 
-                <!-- LOGGED IN STATE: MINI PROFILE -->
+                <!-- LOGGED IN STATE -->
                 <div id="logged-in-hub" style="display: none;">
                     <div class="auth-card" style="border-color: var(--accent);">
                         <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 1.5rem;">
@@ -298,108 +372,231 @@
                         <button class="secondary-auth-btn" onclick="logoutUser()">SIGN OUT</button>
                     </div>
 
-                    <div class="auth-card">
-                        <h3>New Intel Report</h3>
-                        <p>Submit a new data point to the global hub.</p>
-                        <button class="primary-auth-btn" onclick="location.href='#pulse-submission-form'" style="background: var(--accent); color: black;">CREATE REPORT</button>
-                    </div>
-                </div>
-
-                <!-- SUBMISSION FORM (VISIBLE ONLY IF LOGGED IN) -->
-                <div id="pulse-submission-box" style="display: none;">
-                    <div class="auth-card">
-                        <h3>Submit Raw Intel</h3>
-                        <form id="pulse-submission-form">
-                            <div class="auth-form-group">
-                                <label>Operational Headline</label>
-                                <input type="text" id="title" placeholder="Summary of event..." required>
-                            </div>
-                            <div class="auth-form-group">
-                                <label>Precise Location</label>
-                                <input type="text" id="location" placeholder="City, Country..." required>
-                            </div>
-                            <div class="auth-form-group">
-                                <label>Data Payload (Detailed Content)</label>
-                                <textarea id="content" rows="5" required></textarea>
-                            </div>
-                            <div class="auth-form-group">
-                                <label>Intel Evidence (Image Link)</label>
-                                <input type="text" id="media_url" placeholder="Direct URL to image...">
-                            </div>
-                            <button type="submit" class="primary-auth-btn" style="background:#10B981;">SYNC TO NETWORK</button>
-                        </form>
+                    <div id="pulse-submission-box" style="display: none;">
+                        <div class="auth-card">
+                            <h3>Submit Raw Intel</h3>
+                            <form id="pulse-submission-form">
+                                <div class="auth-form-group">
+                                    <label>Headline</label>
+                                    <input type="text" id="title" required>
+                                </div>
+                                <div class="auth-form-group">
+                                    <label>Location</label>
+                                    <input type="text" id="location" required>
+                                </div>
+                                <div class="auth-form-group">
+                                    <label>Payaload</label>
+                                    <textarea id="content" rows="4" required></textarea>
+                                </div>
+                                <button type="submit" class="primary-auth-btn" style="background:#10B981;">SYNC NOW</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </aside>
         </section>
     </main>
 
-    <!-- FULL REGISTRATION MODAL (BANK-GRADE) -->
+    <!-- MULTI-STEP REGISTRATION MODAL -->
     <div class="modal" id="register-modal">
-        <div class="modal-content" style="max-width: 700px; text-align: left;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                <h2 style="font-size: 1.8rem;">Correspondent <span style="color:var(--primary)">Onboarding</span></h2>
-                <button onclick="closeRegister()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
-            </div>
+        <div class="modal-content">
+            <button onclick="closeRegister()" style="position:absolute; top:2rem; right:2rem; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
             
+            <div class="step-indicator">
+                <div class="indicator-dot active" id="dot-1">1</div>
+                <div class="indicator-dot" id="dot-2">2</div>
+                <div class="indicator-dot" id="dot-3">3</div>
+                <div class="indicator-dot" id="dot-4">4</div>
+                <div class="indicator-dot" id="dot-5">5</div>
+            </div>
+
             <form id="reporter-reg-form">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <!-- STEP 1: PERSONAL IDENTIFICATION -->
+                <div class="form-step active" id="step-1">
+                    <h2 style="margin-bottom:1rem;">👤 Personal Identification</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Your legal identity is encrypted and stored in secure neural vaults.</p>
+                    
                     <div class="auth-form-group">
-                        <label>Legal Full Name</label>
+                        <label>Full Legal Name</label>
                         <input type="text" id="reg-name" placeholder="As per Identity Document" required>
                     </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="auth-form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="reg-dob" required>
+                        </div>
+                        <div class="auth-form-group">
+                            <label>Gender</label>
+                            <div class="radio-group">
+                                <label class="radio-item"><input type="radio" name="gender" value="Male" required> Male</label>
+                                <label class="radio-item"><input type="radio" name="gender" value="Female"> Female</label>
+                                <label class="radio-item"><input type="radio" name="gender" value="Other"> Other</label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="auth-form-group">
-                        <label>Public Correspondent Nickname</label>
-                        <input type="text" id="reg-nick" placeholder="e.g. AtlasRunner" required>
+                        <label>National ID / Passport Number</label>
+                        <input type="text" id="reg-id-val" placeholder="Required for Network Security" required>
+                    </div>
+
+                    <button type="button" class="primary-auth-btn" onclick="nextStep(2)">CONTINUE TO CONTACT</button>
+                </div>
+
+                <!-- STEP 2: CONTACT INFORMATION -->
+                <div class="form-step" id="step-2">
+                    <h2 style="margin-bottom:1rem;">📞 Contact Information</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Used for verification and critical operational alerts.</p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="auth-form-group">
+                            <label>Email Address</label>
+                            <input type="email" id="reg-email" required>
+                        </div>
+                        <div class="auth-form-group">
+                            <label>Phone Number (Country Code)</label>
+                            <input type="tel" id="reg-phone" placeholder="+94 7X XXX XXXX" required>
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label>Permanent Home Address</label>
+                        <textarea id="reg-address" rows="2" required></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                        <div class="auth-form-group">
+                            <label>City</label>
+                            <input type="text" id="reg-city" required>
+                        </div>
+                        <div class="auth-form-group">
+                            <label>Country</label>
+                            <select id="reg-country" required>
+                                <option value="Sri Lanka">Sri Lanka</option>
+                                <option value="United States">United States</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="India">India</option>
+                                <option value="Australia">Australia</option>
+                                <!-- More will be added dynamically if needed -->
+                            </select>
+                        </div>
+                        <div class="auth-form-group">
+                            <label>Postal Code</label>
+                            <input type="number" id="reg-zip" required>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="secondary-auth-btn" onclick="prevStep(1)">BACK</button>
+                        <button type="button" class="primary-auth-btn" onclick="nextStep(3)">CONTINUE TO PROFILE</button>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div class="auth-form-group">
-                        <label>Secure Email</label>
-                        <input type="email" id="reg-email" required>
+                <!-- STEP 3: PROFESSIONAL BACKGROUND -->
+                <div class="form-step" id="step-3">
+                    <h2 style="margin-bottom:1rem;">💼 Professional Background</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Helps us categorize your narrative impact (Optional).</p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="auth-form-group">
+                            <label>Current Occupation</label>
+                            <input type="text" id="reg-job">
+                        </div>
+                        <div class="auth-form-group">
+                            <label>Highest Qualification</label>
+                            <select id="reg-edu">
+                                <option>Secondary</option>
+                                <option>Diploma</option>
+                                <option>Bachelor's</option>
+                                <option>Master's</option>
+                                <option>PhD</option>
+                            </select>
+                        </div>
                     </div>
+
                     <div class="auth-form-group">
-                        <label>Phone Number (with Country Code)</label>
-                        <input type="text" id="reg-phone" placeholder="+94 7X XXX XXXX" required>
+                        <label>LinkedIn Profile URL (Optional)</label>
+                        <input type="url" id="reg-linkedin" placeholder="https://linkedin.com/in/...">
+                    </div>
+                    
+                    <div class="auth-form-group">
+                        <label>X (Twitter) Handle (Optional)</label>
+                        <input type="text" id="reg-x" placeholder="@username">
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="secondary-auth-btn" onclick="prevStep(2)">BACK</button>
+                        <button type="button" class="primary-auth-btn" onclick="nextStep(4)">CONTINUE TO VERIFY</button>
                     </div>
                 </div>
 
-                <div class="auth-form-group">
-                    <label>Identity Document Type & Number</label>
-                    <select id="reg-id-type">
-                        <option>National ID / NIC</option>
-                        <option>Passport</option>
-                        <option>Press Credential</option>
-                    </select>
-                    <input type="text" id="reg-id-val" placeholder="Document ID Number" style="margin-top:0.5rem;" required>
+                <!-- STEP 4: DOCUMENT VERIFICATION -->
+                <div class="form-step" id="step-4">
+                    <h2 style="margin-bottom:1rem;">📜 Identity Verification</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Uploaded documents are deleted instantly after AI verification (Recommended).</p>
+
+                    <div class="auth-form-group">
+                        <label>Identity Proof (NIC / License / Passport)</label>
+                        <input type="file" id="reg-file-id" accept=".pdf,.jpg,.jpeg,.png">
+                    </div>
+
+                    <div class="auth-form-group">
+                        <label>Address Proof (Utility Bill / Bank Statement)</label>
+                        <input type="file" id="reg-file-addr" accept=".pdf,.jpg,.jpeg,.png">
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="secondary-auth-btn" onclick="prevStep(3)">BACK</button>
+                        <button type="button" class="primary-auth-btn" onclick="nextStep(5)">FINAL SECURITY STEP</button>
+                    </div>
                 </div>
 
-                <div class="auth-form-group">
-                    <label>Payout Channel (Bank / Crypto Wallet)</label>
-                    <input type="text" id="reg-payment" placeholder="IBAN or USDT Address" required>
-                </div>
+                <!-- STEP 5: SECURITY PREFERENCES -->
+                <div class="form-step" id="step-5">
+                    <h2 style="margin-bottom:1rem;">⚙️ Security & Privacy</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Complete your master credentials to sync with the Hub.</p>
 
-                <div class="auth-form-group">
-                    <label>Set Master Access Key (Password)</label>
-                    <input type="password" id="reg-pass" required>
-                </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="auth-form-group">
+                            <label>Public Nickname</label>
+                            <input type="text" id="reg-nick" placeholder="Display Name" required>
+                        </div>
+                        <div class="auth-form-group">
+                            <label>Master Access Key (Password)</label>
+                            <input type="password" id="reg-pass" required>
+                        </div>
+                    </div>
 
-                <div style="background: rgba(230, 57, 70, 0.05); padding: 1rem; border-radius: 12px; margin-bottom: 2rem;">
-                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">By clicking, I agree to the Lumina Ethics Code and verify that all intel provided will be raw, unadulterated facts.</p>
-                </div>
+                    <div class="auth-form-group">
+                        <label>Security Question</label>
+                        <select id="reg-sec-q">
+                            <option>What was your first pet's name?</option>
+                            <option>Mother's maiden name?</option>
+                            <option>First school you attended?</option>
+                        </select>
+                        <input type="text" id="reg-sec-a" placeholder="Answer..." style="margin-top:10px;" required>
+                    </div>
 
-                <button type="submit" class="primary-auth-btn">SUBMIT VERIFICATION APPLICATION</button>
+                    <div style="background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid #10B981;">
+                        <p style="font-size: 0.75rem; color: #10B981; margin: 0; font-weight:600;">🔒 Privacy Pledge: Your sensitive data is encrypted using military-grade AES-256 protocols. LuminaNews never sells person-identifiable data.</p>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="secondary-auth-btn" onclick="prevStep(4)">BACK</button>
+                        <button type="submit" class="primary-auth-btn" style="background:#10B981;">FINALIZE ONBOARDING</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 
     <!-- OTP VERIFICATION MODAL -->
     <div class="modal" id="otp-modal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width:500px;">
             <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
-            <h3>Security Verification</h3>
-            <p>We've sent a 6-digit synchronization code to your email. Enter it below to authorize this session.</p>
+            <h3>Neural Sync Verification</h3>
+            <p>Verification code sent to your email. Enter to authorize terminal synchronization.</p>
             <div class="otp-inputs">
                 <input type="text" maxlength="1">
                 <input type="text" maxlength="1">
@@ -408,16 +605,34 @@
                 <input type="text" maxlength="1">
                 <input type="text" maxlength="1">
             </div>
-            <button class="primary-auth-btn" onclick="finalizeAuth()">VERIFY & SYNC</button>
+            <button class="primary-auth-btn" onclick="finalizeAuth()">AUTHORIZE SESSION</button>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // UI HELPERS
+        let currentStep = 1;
+
         function openRegister() { document.getElementById('register-modal').style.display = 'flex'; }
         function closeRegister() { document.getElementById('register-modal').style.display = 'none'; }
-        
+
+        function nextStep(step) {
+            // Basic validation for required fields in current step would go here
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step-' + step).classList.add('active');
+            
+            document.querySelectorAll('.indicator-dot').forEach((dot, idx) => {
+                if (idx + 1 < step) dot.className = 'indicator-dot completed';
+                else if (idx + 1 === step) dot.className = 'indicator-dot active';
+                else dot.className = 'indicator-dot';
+            });
+            currentStep = step;
+        }
+
+        function prevStep(step) {
+            nextStep(step);
+        }
+
         function logoutUser() {
             localStorage.removeItem('lumina_reporter_id');
             localStorage.removeItem('lumina_reporter_nick');
@@ -431,111 +646,77 @@
             document.getElementById('logged-out-hub').style.display = 'none';
             document.getElementById('logged-in-hub').style.display = 'block';
             document.getElementById('pulse-submission-box').style.display = 'block';
-            
             const nick = localStorage.getItem('lumina_reporter_nick');
             document.getElementById('user-nick').textContent = nick;
             document.getElementById('user-initials').textContent = nick ? nick[0].toUpperCase() : 'C';
         }
 
-        // REGISTRATION LOGIC
-        document.getElementById('reporter-reg-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.textContent = 'NEURAL ENCRYPTION...';
-            
-            const payload = {
-                full_name: document.getElementById('reg-name').value,
-                nickname: document.getElementById('reg-nick').value,
-                email: document.getElementById('reg-email').value,
-                phone: document.getElementById('reg-phone').value,
-                password: document.getElementById('reg-pass').value,
-                payment_info: document.getElementById('reg-payment').value
-            };
-
-            // SIMULATE BANK-GRADE AUTH
-            setTimeout(() => {
-                document.getElementById('register-modal').style.display = 'none';
-                document.getElementById('otp-modal').style.display = 'flex';
-                // Store temp data
-                window.tempPayload = payload;
-            }, 1500);
-        };
-
-        function finalizeAuth() {
-            const btn = document.querySelector('#otp-modal button');
-            btn.textContent = 'AUTHORIZING...';
-            
-            // Mocking success
-            const data = window.tempPayload;
-            localStorage.setItem('lumina_reporter_id', 'REP-' + Math.random().toString(36).substr(2, 9).toUpperCase());
-            localStorage.setItem('lumina_reporter_nick', data.nickname);
-            localStorage.setItem('lumina_reporter_email', data.email);
-            
-            setTimeout(() => {
-                location.href = 'dashboard.html';
-            }, 1000);
-        }
-
-        // FEED LOADER
-        async function loadPulseFeed() {
-            const grid = document.getElementById('pulse-feed-grid');
-            try {
-                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed?_=' + new Date().getTime());
-                const data = await res.json();
-
-                if (data.status === 'ok' && data.items.length > 0) {
-                    grid.innerHTML = data.items.map(item => `
-                        <div class="news-card">
-                            <div class="card-img">
-                                <img src="${item.media_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="News">
-                                <div class="rank-badge" style="position:absolute; top: 10px; right: 10px; background:var(--accent); color:black; padding: 2px 8px; border-radius: 4px; font-size:0.6rem; font-weight:800;">VERIFIED</div>
-                                <span class="category-tag">IMPACT: ${item.impact_score || '72'}</span>
-                            </div>
-                            <div class="card-content">
-                                <div class="world-tag" style="color:var(--accent); margin-bottom:10px;">🌍 ${item.location}</div>
-                                <h3>${item.title}</h3>
-                                <p>${item.content.substring(0, 100)}...</p>
-                                <div class="card-footer" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top:15px; margin-top:15px;">
-                                    <span>By ${item.reporter_name}</span>
-                                    <span>${new Date(item.created_at || Date.now()).toLocaleDateString()}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            } catch (e) {
-                grid.innerHTML = '<p>Error syncing with Neural Core. Retrying...</p>';
-            }
-        }
-
-        // SUBMISSION LOGIC
+        // SUBMISSION
         document.getElementById('pulse-submission-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = e.target.querySelector('button');
-            btn.textContent = 'SYNCING TO HUB...';
-            
             const payload = {
                 title: document.getElementById('title').value,
                 content: document.getElementById('content').value,
                 location: document.getElementById('location').value,
-                media_url: document.getElementById('media_url').value,
                 reporter_id: localStorage.getItem('lumina_reporter_id')
             };
-
+            btn.textContent = 'SYNCING...';
             try {
                 const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (res.ok) {
-                    btn.textContent = 'SYNCED SUCCESSFULLY';
-                    btn.style.background = '#10B981';
-                    setTimeout(() => location.reload(), 1500);
-                }
-            } catch (err) { alert("Sync failed."); btn.textContent = 'RETRY SYNC'; }
+                if (res.ok) { btn.textContent = 'SUCCESS'; setTimeout(() => location.reload(), 1000); }
+            } catch (err) { btn.textContent = 'ERROR'; }
         };
 
+        // REGISTRATION
+        document.getElementById('reporter-reg-form').onsubmit = (e) => {
+            e.preventDefault();
+            window.tempPayload = {
+                nickname: document.getElementById('reg-nick').value,
+                email: document.getElementById('reg-email').value
+            };
+            document.getElementById('register-modal').style.display = 'none';
+            document.getElementById('otp-modal').style.display = 'flex';
+        };
+
+        function finalizeAuth() {
+            const data = window.tempPayload;
+            localStorage.setItem('lumina_reporter_id', 'REP-' + Date.now());
+            localStorage.setItem('lumina_reporter_nick', data.nickname);
+            localStorage.setItem('lumina_reporter_email', data.email);
+            location.href = 'dashboard.html';
+        }
+
+        // LOAD FEED
+        async function loadPulseFeed() {
+            const grid = document.getElementById('pulse-feed-grid');
+            try {
+                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/feed?_=' + Date.now());
+                const data = await res.json();
+                if (data.status === 'ok') {
+                    grid.innerHTML = data.items.map(item => `
+                        <div class="news-card">
+                            <div class="card-img">
+                                <img src="${item.media_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&w=800'}" alt="News">
+                                <div class="rank-badge" style="position:absolute; top:10px; right:10px; background:var(--accent); color:black; padding:2px 8px; border-radius:4px; font-size:0.6rem; font-weight:800;">VERIFIED</div>
+                            </div>
+                            <div class="card-content">
+                                <div class="world-tag" style="color:var(--accent); margin-bottom:10px;">🌍 ${item.location}</div>
+                                <h3>${item.title}</h3>
+                                <p>${item.content.substring(0, 80)}...</p>
+                                <div class="card-footer" style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.05);">
+                                    <span>By ${item.reporter_name}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (e) { grid.innerHTML = '<p>Feed synchronization interrupted.</p>'; }
+        }
         loadPulseFeed();
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1214676344881133" crossorigin="anonymous"></script>
