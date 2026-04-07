@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporter Intelligence Dashboard | LuminaNews Pulse</title>
-    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="style.css?v=4.1">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,6 +12,8 @@
         :root {
             --sidebar-w: 280px;
             --accent-glow: rgba(230, 57, 70, 0.15);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         body { background: #05070a; color: white; margin: 0; font-family: 'Outfit', sans-serif; }
@@ -64,7 +66,7 @@
             color: var(--primary);
         }
 
-        /* MAIN CONTENT AREA */
+        /* MAIN */
         .dash-container {
             padding: 3rem;
             max-width: 1200px;
@@ -84,77 +86,130 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* UPLOAD FORM (YouTube Style) */
+        /* CARDS & PANELS */
+        .upload-main-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 2rem;
+        }
+
         .upload-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 2rem;
         }
 
-        .upload-main-card {
-            background: var(--surface);
-            padding: 2.5rem;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        /* SETTINGS / PROFILE STYLING */
+        .profile-banner {
+            height: 200px;
+            background: linear-gradient(135deg, #1a222d, #05070a);
+            border-radius: 24px 24px 0 0;
+            position: relative;
+            border: 1px solid var(--glass-border);
+            border-bottom: none;
         }
 
+        .profile-avatar-wrapper {
+            position: absolute;
+            bottom: -50px;
+            left: 50px;
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 6px solid #05070a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .settings-tab-nav {
+            display: flex;
+            gap: 30px;
+            padding: 20px 50px;
+            background: #0a0f14;
+            border-radius: 0 0 24px 24px;
+            border: 1px solid var(--glass-border);
+            border-top: none;
+            margin-bottom: 3rem;
+        }
+
+        .settings-tab-nav button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 700;
+            padding-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .settings-tab-nav button.active {
+            color: white;
+        }
+
+        .settings-tab-nav button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 2px;
+            background: var(--primary);
+        }
+
+        /* FORM CONTROLS */
         .form-group { margin-bottom: 2rem; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; }
-        
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; }
         .form-input {
             width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 1rem;
             color: white;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-family: inherit;
         }
-
         .form-input:focus { border-color: var(--primary); outline: none; }
 
-        /* FILE DROP ZONE */
-        .drop-zone {
-            border: 2px dashed rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
-            transition: 0.3s;
-            cursor: pointer;
-            background: rgba(255,255,255,0.02);
+        .verified-badge {
+            background: #10B981;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.6rem;
+            font-weight: 900;
+            margin-left: 10px;
         }
 
-        .drop-zone:hover { border-color: var(--primary); background: var(--accent-glow); }
-        .drop-zone i { font-size: 3rem; color: var(--primary); margin-bottom: 1rem; }
-
-        /* WALLET CARD */
-        .wallet-card {
-            background: linear-gradient(135deg, #0a0f14, #1a222d);
-            padding: 3rem;
-            border-radius: 32px;
-            border: 1px solid rgba(255,255,255,0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .wallet-card::after {
-            content: '';
-            position: absolute;
-            top: -50%; right: -20%;
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-            opacity: 0.1;
-        }
-
-        /* CARDS */
-        .stat-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        
         .pill-btn {
             background: var(--primary);
             color: white;
@@ -165,231 +220,289 @@
             cursor: pointer;
             transition: 0.3s;
         }
-        .pill-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(230, 57, 70, 0.2); }
+
+        .social-link-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 1rem;
+            background: var(--glass);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 10px;
+        }
+
+        .social-link-item i { font-size: 1.2rem; color: var(--text-secondary); }
+
+        /* DROP ZONE */
+        .drop-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--glass);
+            transition: 0.3s;
+        }
+        .drop-zone:hover { border-color: var(--primary); }
+
+        @media (max-width: 1024px) {
+            .dashboard-layout { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
+        }
     </style>
 </head>
 <body>
     <div class="dashboard-layout">
-        <!-- SIDEBAR NAVIGATION -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
                 <span class="pulse-icon"></span>
                 <h1 style="font-size: 1.5rem;">Lumina<span>Pulse</span></h1>
             </div>
-
             <ul class="side-nav">
                 <li><a onclick="showSection('overview')" id="nav-overview" class="active"><i class="fa-solid fa-chart-line"></i> Overview</a></li>
                 <li><a onclick="showSection('submit')"><i class="fa-solid fa-cloud-arrow-up"></i> Submit News</a></li>
                 <li><a onclick="showSection('library')"><i class="fa-solid fa-folder-open"></i> Content Library</a></li>
                 <li><a onclick="showSection('wallet')"><i class="fa-solid fa-wallet"></i> Wallet & Rewards</a></li>
-                <li><a onclick="showSection('settings')"><i class="fa-solid fa-gear"></i> Settings</a></li>
+                <li><a onclick="showSection('settings')"><i class="fa-solid fa-user-gear"></i> Settings</a></li>
                 <li><a href="pulse.html" style="margin-top: 2rem; opacity: 0.5;"><i class="fa-solid fa-arrow-left"></i> Exit to Hub</a></li>
             </ul>
-
             <div class="privacy-notice" style="margin-top: auto; background: rgba(16, 185, 129, 0.05); padding: 1rem; border-radius: 12px; font-size: 0.7rem; border: 1px solid rgba(16, 185, 129, 0.1);">
                 <p style="color: #10B981; font-weight: 800; margin-bottom: 5px;">AES-256 ENCRYPTED</p>
-                <p style="color: var(--text-secondary);">Your reporter identity is secured via decentralized neural protocols.</p>
+                <p style="color: var(--text-secondary);">Your reporter identity is secured via decentralized protocols.</p>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
+        <!-- MAIN DASH -->
         <main class="dash-container">
             
-            <!-- SECTION 1: OVERVIEW -->
+            <!-- OVERVIEW -->
             <section id="section-overview" class="section-panel active">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3rem;">
-                    <h1>Intelligence <span style="color:var(--primary)">Overview</span></h1>
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <span id="user-display-nick" style="font-weight:700;">Admin</span>
-                        <div style="width:40px; height:40px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800;" id="user-avatar">A</div>
-                    </div>
-                </div>
-
+                <h1 style="margin-bottom:3rem;">Intelligence <span style="color:var(--primary)">Overview</span></h1>
                 <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px; margin-bottom:3rem;">
-                    <div class="stat-card">
+                    <div class="upload-main-card" style="padding:1.5rem;">
                         <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Intel Points</span>
-                        <h2 id="stat-points">2,450</h2>
+                        <h2 style="margin:5px 0;">2,450</h2>
                     </div>
-                    <div class="stat-card">
-                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Impact Score</span>
-                        <h2 id="stat-impact">88%</h2>
+                    <div class="upload-main-card" style="padding:1.5rem;">
+                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Impact</span>
+                        <h2 style="margin:5px 0;">88%</h2>
                     </div>
-                    <div class="stat-card">
+                    <div class="upload-main-card" style="padding:1.5rem;">
                         <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Rank</span>
-                        <h2 style="color:var(--accent); font-size:1.1rem;">SENIOR REPORTER</h2>
+                        <h2 style="margin:5px 0; color:var(--accent); font-size:1.1rem;">SENIOR</h2>
                     </div>
-                    <div class="stat-card">
-                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Earnings</span>
-                        <h2>142.50 <span style="font-size:0.7rem; opacity:0.5;">LUM</span></h2>
+                    <div class="upload-main-card" style="padding:1.5rem;">
+                        <span style="font-size:0.7rem; color:var(--text-secondary); font-weight:800; text-transform:uppercase;">Wallet</span>
+                        <h2 style="margin:5px 0;">142.50 <span style="font-size:0.7rem; opacity:0.5;">LUM</span></h2>
                     </div>
-                </div>
-
-                <div class="upload-main-card">
-                    <h2 style="margin-bottom:1.5rem;">Recent Activity</h2>
-                    <table style="width:100%; border-collapse:collapse;">
-                        <thead>
-                            <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.05);">
-                                <th style="padding:15px; color:var(--text-secondary); font-size:0.8rem;">DATE</th>
-                                <th style="padding:15px; color:var(--text-secondary); font-size:0.8rem;">HEADLINE</th>
-                                <th style="padding:15px; color:var(--text-secondary); font-size:0.8rem;">STATUS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom:1px solid rgba(255,255,255,0.02);">
-                                <td style="padding:15px; font-size:0.9rem;">2026-04-07</td>
-                                <td style="padding:15px; font-size:0.9rem; font-weight:700;">Global Markets Policy Shift Detected</td>
-                                <td style="padding:15px;"><span style="color:#10B981; background:rgba(16,185,129,0.1); padding:4px 8px; border-radius:4px; font-size:0.7rem; font-weight:800;">VERIFIED</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </section>
 
-            <!-- SECTION 2: SUBMIT NEWS (Professional Upload) -->
+            <!-- SUBMIT -->
             <section id="section-submit" class="section-panel">
-                <h1 style="margin-bottom:0.5rem;">Sync <span style="color:var(--primary)">Live News payload</span></h1>
-                <p style="color:var(--text-secondary); margin-bottom:3rem;">Follow operational guidelines for unadulterated intelligence reporting.</p>
-
+                <h1>Sync <span style="color:var(--primary)">Intelligence Payload</span></h1>
                 <form id="pro-upload-form">
                     <div class="upload-grid">
                         <div class="upload-main-card">
                             <div class="form-group">
-                                <label>Operational Headline (Title)</label>
-                                <input type="text" class="form-input" placeholder="What is happening? Keep it objective..." required>
+                                <label>Operational Headline</label>
+                                <input type="text" class="form-input" placeholder="Title..." required>
                             </div>
                             <div class="form-group">
-                                <label>Data Payload (Description)</label>
-                                <textarea class="form-input" rows="8" placeholder="Provide full context, witnesses, and details..." required></textarea>
+                                <label>Detailed Description</label>
+                                <textarea class="form-input" rows="8" placeholder="Context..." required></textarea>
                             </div>
-                            <div class="form-group">
-                                <label>Evidence Upload (Photos / Videos / Voice Cuts)</label>
-                                <div class="drop-zone" onclick="document.getElementById('file-upload').click()">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <h3>Drag & Drop Files Here</h3>
-                                    <p style="color:var(--text-secondary); font-size:0.8rem;">JPG, PNG, MP4, MP3 or PDF. (Max 100MB)</p>
-                                    <input type="file" id="file-upload" hidden multiple>
-                                </div>
+                            <div class="drop-zone">
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem; margin-bottom:1rem; color:var(--primary);"></i>
+                                <h3>Drag Evidence Files</h3>
+                                <p style="font-size:0.8rem; color:var(--text-secondary);">Photos, Videos, or Voice Cuts (Max 100MB)</p>
                             </div>
                         </div>
-
                         <aside>
                             <div class="upload-main-card" style="padding:1.5rem; margin-bottom:1.5rem;">
-                                <div class="form-group">
-                                    <label>Region / Precise Location</label>
-                                    <input type="text" class="form-input" placeholder="e.g. Colombo, SL">
-                                </div>
-                                <div class="form-group">
-                                    <label>Incident Time</label>
-                                    <input type="datetime-local" class="form-input">
-                                </div>
-                                <div class="form-group">
-                                    <label>Intelligence Tags</label>
-                                    <input type="text" class="form-input" placeholder="Politics, Tech, etc.">
-                                </div>
-                                <div class="form-group">
-                                    <label>Operational Reliability</label>
-                                    <select class="form-input">
-                                        <option>Eye-Witness Account</option>
-                                        <option>Documented Evidence</option>
-                                        <option>Secondary Source</option>
-                                    </select>
-                                </div>
+                                <div class="form-group"><label>Location</label><input type="text" class="form-input"></div>
+                                <div class="form-group"><label>Incident Time</label><input type="datetime-local" class="form-input"></div>
+                                <div class="form-group"><label>Tags</label><input type="text" class="form-input"></div>
                             </div>
-                            <button type="submit" class="pill-btn" style="width:100%; padding:1.5rem;">🚀 FINALIZE & SYNC</button>
+                            <button type="submit" class="pill-btn" style="width:100%;">🚀 SYNC NOW</button>
                         </aside>
                     </div>
                 </form>
             </section>
 
-            <!-- SECTION 3: LIBRARY -->
+            <!-- LIBRARY -->
             <section id="section-library" class="section-panel">
-                <h1>Content <span style="color:var(--primary)">Library</span></h1>
-                <p style="color:var(--text-secondary); margin-bottom:3rem;">Review and manage your previous intelligence payloads.</p>
-                
-                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
-                    <div class="stat-card">
-                        <div style="height:150px; background:rgba(255,255,255,0.05); border-radius:12px; margin-bottom:1rem; display:flex; align-items:center; justify-content:center;">
-                            <i class="fa-solid fa-image" style="font-size:2rem; opacity:0.1;"></i>
-                        </div>
-                        <h4 style="margin:0;">Sample News Storage</h4>
-                        <p style="font-size:0.7rem; color:var(--text-secondary);">Uploaded 2 hours ago • ID: #9942</p>
-                    </div>
-                </div>
+                <h1>Content <span style="color:var(--primary)">Archive</span></h1>
             </section>
 
-            <!-- SECTION 4: WALLET -->
+            <!-- WALLET -->
             <section id="section-wallet" class="section-panel">
                 <h1>Financial <span style="color:var(--primary)">Terminal</span></h1>
-                <p style="color:var(--text-secondary); margin-bottom:3rem;">Liquidate your intelligence rewards into global currency.</p>
-                
-                <div class="wallet-card">
-                    <span style="font-size:0.8rem; font-weight:800; color:var(--primary); text-transform:uppercase;">Available Balance</span>
+                <div class="upload-main-card" style="background: linear-gradient(135deg, #1a222d, #05070a);">
+                    <span style="font-size:0.8rem; font-weight:800; color:var(--primary);">AVAILABLE BALANCE</span>
                     <h1 style="font-size:4rem; margin:10px 0;">142.50 <span style="font-size:1.5rem; opacity:0.5;">LUM</span></h1>
-                    <p style="color:var(--text-secondary); margin-bottom:2rem;">≈ $1,425.00 USD (Est. Market Value)</p>
-                    <div style="display:flex; gap:10px;">
-                        <button class="pill-btn">WITHDRAW FUNDS</button>
-                        <button class="pill-btn" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">HISTORY</button>
-                    </div>
+                    <button class="pill-btn">WITHDRAW FUNDS</button>
                 </div>
             </section>
 
-            <!-- SECTION 5: SETTINGS -->
+            <!-- SETTINGS (PROFESSIONAL PROFILE) -->
             <section id="section-settings" class="section-panel">
-                <h1>Profile <span style="color:var(--primary)">Encryption Settings</span></h1>
-                <p style="color:var(--text-secondary); margin-bottom:3rem;">Manage your master credentials and biometric verification.</p>
+                <h1 style="margin-bottom:3rem;">Profile <span style="color:var(--primary)">Master Editor</span></h1>
                 
-                <div class="upload-main-card" style="max-width:600px;">
-                    <div class="form-group">
-                        <label>Public Correspondent Nickname</label>
-                        <input type="text" class="form-input" id="set-nick" value="Admin">
+                <div class="profile-banner">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar" id="edit-avatar-circle">A
+                            <button class="edit-avatar-btn"><i class="fa-solid fa-camera"></i></button>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <h2 style="margin:0;" id="edit-display-nick">Admin <span class="verified-badge">VERIFIED</span></h2>
+                            <p style="margin:5px 0; color:var(--text-secondary); font-size:0.9rem;">Member since April 2024</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Change Master Access Key (Password)</label>
-                        <input type="password" class="form-input" placeholder="••••••••">
-                    </div>
-                    <button class="pill-btn" onclick="alert('Settings Saved Securely.')">SAVE CHANGES</button>
                 </div>
-            </section>
 
+                <div class="settings-tab-nav">
+                    <button class="active" onclick="switchSettings('personal')">Personal Info</button>
+                    <button onclick="switchSettings('contact')">Contact & Verification</button>
+                    <button onclick="switchSettings('social')">Social & Professional</button>
+                    <button onclick="switchSettings('security')">Security</button>
+                </div>
+
+                <!-- PERSONAL TAB -->
+                <div id="settings-personal" class="settings-content-panel">
+                    <div class="upload-grid">
+                        <div class="upload-main-card">
+                            <div class="form-group">
+                                <label>Full Legal Name</label>
+                                <input type="text" class="form-input" value="Lumina Admin Correspondent">
+                            </div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+                                <div class="form-group">
+                                    <label>Date of Birth</label>
+                                    <input type="date" class="form-input" value="1990-01-01">
+                                </div>
+                                <div class="form-group">
+                                    <label>Gender</label>
+                                    <select class="form-input">
+                                        <option>Male</option><option>Female</option><option>Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Bio / Catchphrase</label>
+                                <textarea class="form-input" rows="3">Citizen reporter dedicated to unadulterated facts.</textarea>
+                            </div>
+                        </div>
+                        <aside>
+                            <div class="upload-main-card" style="padding:1.5rem; text-align:center;">
+                                <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:1rem;">Your identity is protected.</p>
+                                <button class="pill-btn" style="width:100%;" onclick="saveSettings()">SAVE CHANGES</button>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+
+                <!-- CONTACT TAB -->
+                <div id="settings-contact" class="settings-content-panel" style="display:none;">
+                    <div class="upload-main-card">
+                        <div style="display:grid; grid-template-columns:1fr auto; align-items:center; gap:20px; margin-bottom:2rem;">
+                            <div class="form-group" style="margin:0;">
+                                <label>Email Address</label>
+                                <input type="email" class="form-input" id="edit-email" value="admin@luminanews.online">
+                            </div>
+                            <button class="pill-btn" style="height:fit-content; background:#10B981;" onclick="reverify('email')">RE-VERIFY</button>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr auto; align-items:center; gap:20px; margin-bottom:2rem;">
+                            <div class="form-group" style="margin:0;">
+                                <label>Phone Number</label>
+                                <input type="tel" class="form-input" id="edit-phone" value="+94 77 123 4567">
+                            </div>
+                            <button class="pill-btn" style="height:fit-content; background:#10B981;" onclick="reverify('phone')">RE-VERIFY</button>
+                        </div>
+                        <div class="form-group">
+                            <label>National ID / Passport Number</label>
+                            <input type="text" class="form-input" value="19900101XXXX" readonly style="opacity:0.6;">
+                            <p style="font-size:0.65rem; color:var(--primary); margin-top:5px;">* Identity document numbers cannot be changed without operational approval.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOCIAL TAB -->
+                <div id="settings-social" class="settings-content-panel" style="display:none;">
+                    <div class="upload-main-card">
+                        <h4 style="margin-bottom:1.5rem;">Social Integrations</h4>
+                        <div class="social-link-item">
+                            <i class="fa-brands fa-facebook"></i>
+                            <input type="url" class="form-input" placeholder="Facebook Profile URL" style="background:none; border:none; padding:0;">
+                        </div>
+                        <div class="social-link-item">
+                            <i class="fa-brands fa-linkedin"></i>
+                            <input type="url" class="form-input" placeholder="LinkedIn Profile URL" style="background:none; border:none; padding:0;">
+                        </div>
+                        <div class="social-link-item">
+                            <i class="fa-brands fa-x-twitter"></i>
+                            <input type="text" class="form-input" placeholder="X (Twitter) Handle" style="background:none; border:none; padding:0;">
+                        </div>
+                    </div>
+                    <div class="upload-main-card">
+                        <h4 style="margin-bottom:1.5rem;">Professional Status</h4>
+                        <div class="form-group">
+                            <label>Current Occupation</label>
+                            <input type="text" class="form-input" value="Lumina Admin">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECURITY TAB -->
+                <div id="settings-security" class="settings-content-panel" style="display:none;">
+                   <div class="upload-main-card" style="max-width:500px;">
+                        <div class="form-group"><label>New Master Access Key</label><input type="password" class="form-input" placeholder="••••••••"></div>
+                        <div class="form-group"><label>Security Question</label><select class="form-input"><option>First Pet Name</option><option>Mother's Maiden Name</option></select></div>
+                        <div class="form-group"><label>Answer</label><input type="text" class="form-input" placeholder="Your Answer"></div>
+                        <button class="pill-btn" style="width:100%;">UPDATE SECURITY HUB</button>
+                   </div>
+                </div>
+
+            </section>
         </main>
     </div>
 
     <script>
-        // AUTH PROTECTION
+        // NAVIGATION
+        function showSection(id) {
+            document.querySelectorAll('.side-nav li a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.section-panel').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-' + id).classList.add('active');
+            const targetNav = document.getElementById('nav-' + id) || document.querySelector(`.side-nav li a[onclick*="${id}"]`);
+            if (targetNav) targetNav.classList.add('active');
+        }
+
+        // SETTINGS TABS
+        function switchSettings(tab) {
+            document.querySelectorAll('.settings-tab-nav button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.settings-content-panel').forEach(p => p.style.display = 'none');
+            
+            event.target.classList.add('active');
+            document.getElementById('settings-' + tab).style.display = 'block';
+        }
+
+        function saveSettings() {
+            alert('Lumina Intelligence Hub: Profiles changes encrypted and saved.');
+        }
+
+        function reverify(type) {
+            alert(`A verification code has been sent to your ${type}. Enter it now to re-authorize your credentials.`);
+        }
+
+        // AUTH INITIAL
         const reporterId = localStorage.getItem('lumina_reporter_id');
         const reporterNick = localStorage.getItem('lumina_reporter_nick');
         if (!reporterId) window.location.href = 'pulse.html';
 
-        document.getElementById('user-display-nick').textContent = reporterNick;
-        document.getElementById('user-avatar').textContent = reporterNick ? reporterNick[0].toUpperCase() : 'A';
-        document.getElementById('set-nick').value = reporterNick;
-
-        // SECTION SWITCHING SYSTEM
-        function showSection(id) {
-            // Update active link
-            document.querySelectorAll('.side-nav li a').forEach(a => a.classList.remove('active'));
-            const targetNav = document.querySelector(`.side-nav li a[onclick*="${id}"]`);
-            if (targetNav) targetNav.classList.add('active');
-
-            // Show target section
-            document.querySelectorAll('.section-panel').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById('section-' + id).classList.add('active');
-        }
-
-        // UPLOAD FORM HANDLER
-        document.getElementById('pro-upload-form').onsubmit = (e) => {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> SYNCING PAYLOAD...';
-            
-            setTimeout(() => {
-                alert('Intelligence Payload Synced Successfully to the Hub.');
-                btn.innerHTML = '🚀 FINALIZE & SYNC';
-                showSection('overview');
-            }, 2000);
-        };
+        document.getElementById('edit-display-nick').innerHTML = (reporterNick || 'Admin') + ' <span class="verified-badge">VERIFIED</span>';
+        document.getElementById('edit-avatar-circle').textContent = (reporterNick || 'A')[0].toUpperCase();
     </script>
 </body>
 </html>
