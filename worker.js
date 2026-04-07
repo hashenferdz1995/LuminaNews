@@ -328,6 +328,42 @@ export default {
       }
     }
 
+    // 13. MEDIA UPLOAD ENGINE (Cloudflare R2 Integration)
+    if (url.pathname === "/api/upload" && request.method === "POST") {
+      try {
+        const formData = await request.formData();
+        const file = formData.get('file');
+        
+        if (!file) return new Response("No file provided", { status: 400, headers: corsHeaders });
+
+        const fileName = `${Date.now()}-${crypto.randomUUID()}-${file.name}`;
+        await env.MEDIA.put(fileName, file.stream(), {
+          httpMetadata: { contentType: file.type }
+        });
+
+        // NOTE: For public access, you might need an R2 custom domain or worker proxy
+        const publicUrl = `https://luminanews.online/api/media/${fileName}`;
+
+        return new Response(JSON.stringify({ status: 'ok', url: publicUrl }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
+    // Proxy for R2 Media (Serves files to public)
+    if (url.pathname.startsWith("/api/media/")) {
+      const key = url.pathname.replace("/api/media/", "");
+      const object = await env.MEDIA.get(key);
+      if (!object) return new Response("Not Found", { status: 404 });
+      
+      const headers = new Headers();
+      object.writeHttpMetadata(headers);
+      headers.set("etag", object.httpEtag);
+      headers.set("Access-Control-Allow-Origin", "*");
+
+      return new Response(object.body, { headers });
+    }
+
     // 8. MAIN NEWS API (Global & Category Fetch)
     if (url.pathname === "/api/news") {
       const category = url.searchParams.get("category") || 'all';

@@ -9,6 +9,10 @@ binding = "DB"
 database_name = "lumina_news_db"
 database_id = "37880e86-67aa-4de3-91b5-a1a89274c479"
 
+[[r2_buckets]]
+binding = 'MEDIA'
+bucket_name = 'lumina-news-media'
+
 # Explicit Routes to prevent Worker from taking over the whole domain
 [[routes]]
 pattern = "luminanews.online/api/*"
