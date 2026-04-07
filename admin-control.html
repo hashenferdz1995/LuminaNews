@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Controller | LuminaNews Admin</title>
+    <link rel="stylesheet" href="style.css?v=5.0">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --admin-red: #ff3e3e;
+            --admin-glass: rgba(10, 12, 16, 0.95);
+            --admin-accent: #00d2ff;
+        }
+
+        body { 
+            background: #020408; color: white; margin: 0; font-family: 'Outfit', sans-serif; 
+            background: radial-gradient(circle at 50% 50%, #0a0c10 0%, #000 100%);
+            min-height: 100vh;
+        }
+
+        /* LOGIN OVERLAY */
+        #admin-auth {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .auth-card {
+            background: var(--admin-glass); padding: 3rem; border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.05); width: 100%; max-width: 400px;
+            text-align: center; box-shadow: 0 0 50px rgba(0,210,255,0.1);
+        }
+
+        .admin-nav {
+            background: #05070a; border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 1rem 3rem; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .container { padding: 3rem; max-width: 1400px; margin: 0 auto; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 3rem; }
+        .stat-card { background: #0a0c10; padding: 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; background: #0a0c10; border-radius: 24px; overflow: hidden; }
+        th { text-align: left; padding: 20px; background: rgba(255,255,255,0.02); font-size: 0.75rem; color: var(--text-secondary); }
+        td { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.9rem; }
+
+        .btn-action { 
+            padding: 8px 16px; border-radius: 8px; border: none; font-weight: 800; cursor: pointer; font-size: 0.75rem;
+            transition: 0.3s; margin-right: 5px;
+        }
+        .btn-approve { background: #10B981; color: white; }
+        .btn-reject { background: #ff3e3e; color: white; }
+        .btn-view { background: #00d2ff; color: white; }
+
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 900; }
+        .badge-pending { background: #F59E0B; color: black; }
+        .badge-verified { background: #10B981; color: white; }
+
+        /* FORM */
+        .form-input { 
+            width: 100%; background: #05070a; border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; padding: 1rem; color: white; margin-top: 10px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- SECURE LOGIN -->
+    <div id="admin-auth">
+        <div class="auth-card">
+            <h1 style="font-size: 1.5rem; color: var(--admin-accent);">Lumina<span style="color:white">Admin</span></h1>
+            <p style="font-size: 0.8rem; margin-bottom: 2rem; opacity: 0.6;">Authorizing Master Node Access...</p>
+            <input type="password" id="admin-key" class="form-input" placeholder="Enter Mastery Private Key">
+            <button onclick="authorizeAdmin()" class="btn-action btn-view" style="width: 100%; margin-top: 20px; padding: 15px;">AUTHORIZE ACCESS</button>
+            <p id="auth-err" style="color: #ff3e3e; font-size: 0.7rem; margin-top: 15px;" class="hidden">Invalid Mastery Key. Access Denied.</p>
+        </div>
+    </div>
+
+    <!-- MAIN UI -->
+    <div id="admin-main" class="hidden">
+        <nav class="admin-nav">
+            <h2 style="font-size: 1.2rem;">Operational <span style="color: var(--admin-accent)">Command</span></h2>
+            <div style="display:flex; gap: 20px;">
+                <button onclick="window.location.reload()" style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-sync"></i> Sync Grid</button>
+                <button onclick="logoutAdmin()" style="color: #ff3e3e; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-power-off"></i> Terminate Session</button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="stat-grid">
+                <div class="stat-card"><h3>Active Reporters</h3><h2 id="total-reporters">0</h2></div>
+                <div class="stat-card"><h3>Pending Intel</h3><h2 id="pending-intel">0</h2></div>
+                <div class="stat-card"><h3>Global Reach</h3><h2 id="global-reach">0</h2></div>
+                <div class="stat-card"><h3>Ledger Volume</h3><h2>84.2K LUM</h2></div>
+            </div>
+
+            <!-- REPORTER VERIFICATION HUB -->
+            <section style="margin-bottom: 4rem;">
+                <h3 style="color: var(--admin-accent); text-transform: uppercase; letter-spacing: 1px;">Identity Verification Hub</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>NICKNAME</th>
+                            <th>EMAIL</th>
+                            <th>LEGAL IDENTITY</th>
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reporter-list">
+                        <!-- Dynamic Data -->
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- SUBMISSION MODERATION HUB -->
+            <section>
+                <h3 style="color: var(--admin-red); text-transform: uppercase; letter-spacing: 1px;">Intel Submission Moderation</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>REPORTER</th>
+                            <th>HEADLINE</th>
+                            <th>LOCATION</th>
+                            <th>MEDIA</th>
+                            <th>IMPACT</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="intel-list">
+                        <!-- Dynamic Data -->
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "https://luminanews.online/api";
+        const MASTER_KEY = "ADMIN123456"; // Default Private Key
+
+        function authorizeAdmin() {
+            const val = document.getElementById('admin-key').value;
+            if(val === MASTER_KEY) {
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-main').classList.remove('hidden');
+                loadAdminData();
+            } else {
+                document.getElementById('auth-err').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() { window.location.reload(); }
+
+        async function loadAdminData() {
+            // LOAD REPORTERS
+            try {
+                // In a real setup, we'd have a specific /api/admin/reporters endpoint
+                // For now, syncing with the simulated/live fetch
+                const rList = document.getElementById('reporter-list');
+                const iList = document.getElementById('intel-list');
+                
+                // Demo / Seed Data for Visual Review
+                rList.innerHTML = `
+                    <tr>
+                        <td>Admin Reporter</td>
+                        <td>admin@luminanews.online</td>
+                        <td>Verified Passport (0x...89)</td>
+                        <td><span class="badge badge-verified">VERIFIED</span></td>
+                        <td><button class="btn-action btn-reject">SUSPEND</button></td>
+                    </tr>
+                    <tr>
+                        <td>New_Node_99</td>
+                        <td>reporter_test@news.ai</td>
+                        <td>ID Sync Pending</td>
+                        <td><span class="badge badge-pending">PENDING</span></td>
+                        <td>
+                            <button class="btn-action btn-approve" onclick="alert('Reporter Verified')">VERIFY</button>
+                            <button class="btn-action btn-reject" onclick="alert('Access Rejected')">REJECT</button>
+                        </td>
+                    </tr>
+                `;
+
+                iList.innerHTML = `
+                    <tr>
+                        <td>Admin Reporter</td>
+                        <td>Port Activity Verified: Ops-9942</td>
+                        <td>Colombo Port</td>
+                        <td><a href="#" style="color:var(--admin-accent)">S-Intel View</a></td>
+                        <td>High (92%)</td>
+                        <td><button class="btn-action btn-approve">BOOST</button></td>
+                    </tr>
+                `;
+
+                document.getElementById('total-reporters').innerText = "14";
+                document.getElementById('pending-intel').innerText = "3";
+                document.getElementById('global-reach').innerText = "8.2M";
+
+            } catch(e) { console.error("Admin Load Error", e); }
+        }
+    </script>
+</body>
+</html>
