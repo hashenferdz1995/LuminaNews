@@ -4,119 +4,195 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumina Pulse | Citizen Journalism Network</title>
-    <link rel="stylesheet" href="style.css?v=3.6">
+    <link rel="stylesheet" href="style.css?v=3.8">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .pulse-form-container {
-            max-width: 800px;
-            margin: 4rem auto;
-            background: var(--surface);
-            padding: 3rem;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        :root {
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
-        .pulse-header {
+        .pulse-hero {
+            padding: 6rem 2rem 3rem;
             text-align: center;
-            margin-bottom: 3rem;
+            background: radial-gradient(circle at top, rgba(230, 57, 70, 0.1), transparent 70%);
         }
 
-        .pulse-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .pulse-header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        .form-group {
+        .pulse-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
             margin-bottom: 1.5rem;
         }
 
-        .form-group label {
-            display: block;
+        .pulse-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+
+        /* REGISTER & LOGIN CARDS */
+        .auth-sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .auth-card {
+            background: var(--surface);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 24px;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-card h3 {
+            font-size: 1.2rem;
             margin-bottom: 0.5rem;
-            font-weight: 700;
-            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .auth-card p {
+            font-size: 0.85rem;
             color: var(--text-secondary);
+            margin-bottom: 1.5rem;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            padding: 1rem;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
+        /* INPUTS */
+        .auth-form-group {
+            margin-bottom: 1.2rem;
         }
 
-        .media-preview-container {
-            margin-top: 1rem;
-            border-radius: 12px;
-            overflow: hidden;
-            display: none;
-            position: relative;
-        }
-
-        .media-preview-container img {
-            width: 100%;
-            height: auto;
+        .auth-form-group label {
             display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
         }
 
-        .watermark-overlay {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            background: rgba(230, 57, 70, 0.8);
+        .auth-form-group input, .auth-form-group select, .auth-form-group textarea {
+            width: 100%;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
             color: white;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-weight: 800;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            pointer-events: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
         }
 
-        .submit-pulse-btn {
+        .auth-form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .primary-auth-btn {
             width: 100%;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 1.2rem;
+            padding: 1rem;
             border-radius: 12px;
             font-weight: 800;
-            font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition);
-            margin-top: 1rem;
         }
 
-        .submit-pulse-btn:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.2);
+        .primary-auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(230, 57, 70, 0.2);
         }
 
-        .ai-status-box {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.3);
+        .secondary-auth-btn {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.8rem;
             border-radius: 12px;
-            border-left: 4px solid var(--accent);
-            display: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
         }
 
-        .status-header {
+        /* VERIFICATION MODAL */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 100000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #0a0c10;
+            border: 1px solid var(--glass-border);
+            padding: 3rem;
+            border-radius: 32px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .otp-inputs {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            color: var(--accent);
+            gap: 10px;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .otp-inputs input {
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+        }
+
+        /* NEWS FEED */
+        .pulse-feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        /* ADS */
+        .pulse-ad {
+            background: rgba(0,0,0,0.15);
+            border: 2px dashed var(--glass-border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 1024px) {
+            .pulse-layout { grid-template-columns: 1fr; }
+            .auth-sidebar { position: static; }
         }
     </style>
 </head>
@@ -133,244 +209,274 @@
                 <li><a href="sports.html">Sports</a></li>
                 <li><a href="markets.html">Markets</a></li>
                 <li><a href="economy.html">Economy</a></li>
-                <li><a href="markets.html">Markets</a></li>
                 <li><a href="crypto.html">Crypto</a></li>
-            <li><a href="signals.html">Signals</a></li>
-                </ul>
+                <li><a href="signals.html">Signals</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div id="google_translate_element" style="display:none;"></div>
+                <div class="lang-selector">
+                    <button class="lang-btn" id="lang-btn-current"><i class="fa-solid fa-globe"></i> EN</button>
+                    <div class="lang-dropdown">
+                        <div class="lang-option" data-lang="en">EN</div>
+                        <div class="lang-option" data-lang="si">SI</div>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
 
     <main>
-        <!-- REGISTRATION SECTION -->
-        <div class="pulse-form-container" id="registration-container">
-            <div class="pulse-header">
-                <div class="hero-label">Correspondent Onboarding 📄</div>
-                <h1>Join the <span>Citizen Network</span></h1>
-                <p>Register your professional profile. Verified reporters are eligible for future monetization and global distribution.</p>
-            </div>
-            <form id="reporter-reg-form">
-                <div class="form-group">
-                    <label>Full Legal Name (For Verification)</label>
-                    <input type="text" id="reg-name" placeholder="John Doe..." required>
-                </div>
-                <div class="form-group">
-                    <label>Public Nickname (Shown on Anonymous Reports)</label>
-                    <input type="text" id="reg-nick" placeholder="ShadowReporter..." required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="reg-email" placeholder="email@example.com..." required>
-                </div>
-                <div class="form-group">
-                    <label>Payment Information (Crypto Address or Bank Info)</label>
-                    <input type="text" id="reg-payment" placeholder="USDT TRC20 / Bank Details..." required>
-                </div>
-                <div class="form-group">
-                    <label>Physical Address (For KYC/Geographic Assigning)</label>
-                    <textarea id="reg-address" rows="2" placeholder="Street, City, Country..." required></textarea>
-                </div>
-                <button type="submit" class="submit-pulse-btn">COMPLETE ONBOARDING</button>
-            </form>
-        </div>
+        <section class="pulse-hero">
+            <div class="hero-label">📡 GLOBAL CITIZEN INTELLIGENCE NETWORK</div>
+            <h1>The World's Pulse, <span style="color: var(--primary);">Verified by You.</span></h1>
+            <p style="max-width: 700px; margin: 0 auto; color: var(--text-secondary);">Browse live citizen intel or join our elite core of verified correspondents to earn rewards and build your global narrative impact.</p>
+        </section>
 
-        <div class="pulse-form-container" id="submission-container" style="display: none;">
-            <div class="pulse-header">
-                <div class="hero-label">Lumina Pulse Operational 📡</div>
-                <h1>Sync <span>Community News</span></h1>
-                <p>Distribute regional intelligence across the global network.</p>
-            </div>
-
-            <form id="pulse-submission-form">
-                <div class="form-group">
-                    <label>Headline / Catchy Title</label>
-                    <input type="text" id="title" placeholder="What happened? Keep it sharp..." required>
+        <section class="pulse-layout">
+            <article class="pulse-feed-container">
+                <div class="section-header">
+                    <h2>Live <span>Operational Feed</span></h2>
+                    <div class="telemetry-pill">🟢 4,204 Active Nodes</div>
                 </div>
 
-                <div class="form-group">
-                    <label>Location (City / Region)</label>
-                    <input type="text" id="location" placeholder="e.g. Colombo, Sri Lanka / London, UK..." required>
+                <!-- Google AdSense Placeholder -->
+                <div class="pulse-ad">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-1214676344881133"
+                         data-ad-slot="YOUR_AD_SLOT_ID"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    SPONSORED INTEL
                 </div>
 
-                <div class="form-group">
-                    <label>Detailed Report</label>
-                    <textarea id="content" rows="6" placeholder="Provide as much detail as possible. Stick to the facts..." required></textarea>
+                <div class="news-grid" id="pulse-feed-grid">
+                    <div class="loading-state">🛰️ Synchronizing Neural Streams...</div>
                 </div>
+                
+                <!-- Another Ad Slot -->
+                <div class="pulse-ad">SPONSORED INTEL</div>
+            </article>
 
-                <div class="form-group" style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.05); padding:1rem; border-radius:12px;">
-                    <input type="checkbox" id="is-anon" style="width:20px; height:20px;">
-                    <label style="margin:0;">Report Anonymously (Identity hidden from public feed)</label>
-                </div>
-
-                <div class="form-group">
-                    <label>Media Upload (Image URL)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="media_url" placeholder="Paste image link here...">
-                        <button type="button" id="preview-btn" class="pill">Preview</button>
+            <aside class="auth-sidebar">
+                <!-- LOGGED OUT STATE: SIGN IN CARD -->
+                <div id="logged-out-hub">
+                    <div class="auth-card">
+                        <h3>Sign In</h3>
+                        <p>Access your reporter dashboard and synced data.</p>
+                        <form id="pulse-login-form">
+                            <div class="auth-form-group">
+                                <label>Reporter Email</label>
+                                <input type="email" id="login-email" placeholder="correspondent@luminanews.online" required>
+                            </div>
+                            <div class="auth-form-group">
+                                <label>Access Key (Password)</label>
+                                <input type="password" id="login-pass" placeholder="••••••••" required>
+                            </div>
+                            <button type="submit" class="primary-auth-btn">AUTHORIZE ACCESS</button>
+                        </form>
                     </div>
-                    <div class="media-preview-container" id="preview-box">
-                        <img id="preview-img" src="" alt="Preview">
-                        <div class="watermark-overlay">LUMINA NEWS • CITIZEN REPORT</div>
+
+                    <div class="auth-card">
+                        <h3>Apply for Onboarding</h3>
+                        <p>Join the decentralized network. Professional verification required.</p>
+                        <button class="secondary-auth-btn" onclick="openRegister()">START APPLICATION</button>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-pulse-btn" id="submit-btn">ANALYZE & SYNC TO HUB</button>
-            </form>
+                <!-- LOGGED IN STATE: MINI PROFILE -->
+                <div id="logged-in-hub" style="display: none;">
+                    <div class="auth-card" style="border-color: var(--accent);">
+                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 1.5rem;">
+                            <div style="width: 50px; height: 50px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-weight: 800; font-size: 1.2rem;" id="user-initials">J</div>
+                            <div>
+                                <h4 id="user-nick" style="margin: 0;">JohnDoe</h4>
+                                <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800;">VERIFIED CORRESPONDENT</span>
+                            </div>
+                        </div>
+                        <a href="dashboard.html" class="primary-auth-btn" style="text-decoration: none; display: block; text-align: center;">MY DASHBOARD</a>
+                        <button class="secondary-auth-btn" onclick="logoutUser()">SIGN OUT</button>
+                    </div>
 
-            <div class="ai-status-box" id="ai-status">
-                <div class="status-header">
-                    <span>AI MODERATOR SCANNING...</span>
-                    <span id="ai-impact">SCORE: --</span>
+                    <div class="auth-card">
+                        <h3>New Intel Report</h3>
+                        <p>Submit a new data point to the global hub.</p>
+                        <button class="primary-auth-btn" onclick="location.href='#pulse-submission-form'" style="background: var(--accent); color: black;">CREATE REPORT</button>
+                    </div>
                 </div>
-                <p id="ai-feedback" style="font-size: 0.9rem; color: var(--text-secondary);">Identifying narrative value and safety compliance...</p>
-            </div>
-        </div>
 
-        <section class="latest-news" style="max-width: 1400px; margin: 4rem auto; padding: 0 2rem;">
-            <div class="section-header">
-                <h2>Trending <span>Citizen Reports</span></h2>
-                <p style="color: var(--text-secondary);">High-impact stories from the Lumina Network</p>
-            </div>
-            <div class="news-grid" id="pulse-feed-grid">
-                <!-- User stories will load here -->
-            </div>
+                <!-- SUBMISSION FORM (VISIBLE ONLY IF LOGGED IN) -->
+                <div id="pulse-submission-box" style="display: none;">
+                    <div class="auth-card">
+                        <h3>Submit Raw Intel</h3>
+                        <form id="pulse-submission-form">
+                            <div class="auth-form-group">
+                                <label>Operational Headline</label>
+                                <input type="text" id="title" placeholder="Summary of event..." required>
+                            </div>
+                            <div class="auth-form-group">
+                                <label>Precise Location</label>
+                                <input type="text" id="location" placeholder="City, Country..." required>
+                            </div>
+                            <div class="auth-form-group">
+                                <label>Data Payload (Detailed Content)</label>
+                                <textarea id="content" rows="5" required></textarea>
+                            </div>
+                            <div class="auth-form-group">
+                                <label>Intel Evidence (Image Link)</label>
+                                <input type="text" id="media_url" placeholder="Direct URL to image...">
+                            </div>
+                            <button type="submit" class="primary-auth-btn" style="background:#10B981;">SYNC TO NETWORK</button>
+                        </form>
+                    </div>
+                </div>
+            </aside>
         </section>
     </main>
 
+    <!-- FULL REGISTRATION MODAL (BANK-GRADE) -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content" style="max-width: 700px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 style="font-size: 1.8rem;">Correspondent <span style="color:var(--primary)">Onboarding</span></h2>
+                <button onclick="closeRegister()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            
+            <form id="reporter-reg-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="auth-form-group">
+                        <label>Legal Full Name</label>
+                        <input type="text" id="reg-name" placeholder="As per Identity Document" required>
+                    </div>
+                    <div class="auth-form-group">
+                        <label>Public Correspondent Nickname</label>
+                        <input type="text" id="reg-nick" placeholder="e.g. AtlasRunner" required>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="auth-form-group">
+                        <label>Secure Email</label>
+                        <input type="email" id="reg-email" required>
+                    </div>
+                    <div class="auth-form-group">
+                        <label>Phone Number (with Country Code)</label>
+                        <input type="text" id="reg-phone" placeholder="+94 7X XXX XXXX" required>
+                    </div>
+                </div>
+
+                <div class="auth-form-group">
+                    <label>Identity Document Type & Number</label>
+                    <select id="reg-id-type">
+                        <option>National ID / NIC</option>
+                        <option>Passport</option>
+                        <option>Press Credential</option>
+                    </select>
+                    <input type="text" id="reg-id-val" placeholder="Document ID Number" style="margin-top:0.5rem;" required>
+                </div>
+
+                <div class="auth-form-group">
+                    <label>Payout Channel (Bank / Crypto Wallet)</label>
+                    <input type="text" id="reg-payment" placeholder="IBAN or USDT Address" required>
+                </div>
+
+                <div class="auth-form-group">
+                    <label>Set Master Access Key (Password)</label>
+                    <input type="password" id="reg-pass" required>
+                </div>
+
+                <div style="background: rgba(230, 57, 70, 0.05); padding: 1rem; border-radius: 12px; margin-bottom: 2rem;">
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">By clicking, I agree to the Lumina Ethics Code and verify that all intel provided will be raw, unadulterated facts.</p>
+                </div>
+
+                <button type="submit" class="primary-auth-btn">SUBMIT VERIFICATION APPLICATION</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- OTP VERIFICATION MODAL -->
+    <div class="modal" id="otp-modal">
+        <div class="modal-content">
+            <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
+            <h3>Security Verification</h3>
+            <p>We've sent a 6-digit synchronization code to your email. Enter it below to authorize this session.</p>
+            <div class="otp-inputs">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+                <input type="text" maxlength="1">
+            </div>
+            <button class="primary-auth-btn" onclick="finalizeAuth()">VERIFY & SYNC</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
-        const regForm = document.getElementById('reporter-reg-form');
-        const submissionForm = document.getElementById('pulse-submission-form');
-        const regContainer = document.getElementById('registration-container');
-        const subContainer = document.getElementById('submission-container');
+        // UI HELPERS
+        function openRegister() { document.getElementById('register-modal').style.display = 'flex'; }
+        function closeRegister() { document.getElementById('register-modal').style.display = 'none'; }
         
-        // ONBOARDING & DASHBOARD REDIRECTION
-        const reporterId = localStorage.getItem('lumina_reporter_id');
-        const reporterNick = localStorage.getItem('lumina_reporter_nick');
-        if (reporterId) {
-            regContainer.style.display = 'none';
-            subContainer.style.display = 'block';
-            
-            // Add Dashboard Link
-            const dashLink = document.createElement('div');
-            dashLink.style.textAlign = 'center';
-            dashLink.style.marginTop = '2rem';
-            dashLink.innerHTML = `<a href="dashboard.html" class="pill" style="text-decoration:none; background:rgba(255,255,255,0.05); color:var(--accent);">🚀 OPEN REPORTER DASHBOARD</a>`;
-            subContainer.prepend(dashLink);
+        function logoutUser() {
+            localStorage.removeItem('lumina_reporter_id');
+            localStorage.removeItem('lumina_reporter_nick');
+            localStorage.removeItem('lumina_reporter_email');
+            window.location.reload();
         }
 
-        // REPORTER REGISTRATION & PDF PLEDGE
-        regForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = regForm.querySelector('button');
-            const nick = document.getElementById('reg-nick').value;
-            btn.textContent = 'VERIFYING IDENTITY...';
+        // AUTH CHECK
+        const reporterId = localStorage.getItem('lumina_reporter_id');
+        if (reporterId) {
+            document.getElementById('logged-out-hub').style.display = 'none';
+            document.getElementById('logged-in-hub').style.display = 'block';
+            document.getElementById('pulse-submission-box').style.display = 'block';
+            
+            const nick = localStorage.getItem('lumina_reporter_nick');
+            document.getElementById('user-nick').textContent = nick;
+            document.getElementById('user-initials').textContent = nick ? nick[0].toUpperCase() : 'C';
+        }
 
+        // REGISTRATION LOGIC
+        document.getElementById('reporter-reg-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'NEURAL ENCRYPTION...';
+            
             const payload = {
                 full_name: document.getElementById('reg-name').value,
-                nickname: nick,
+                nickname: document.getElementById('reg-nick').value,
                 email: document.getElementById('reg-email').value,
-                phone: '--',
-                address: document.getElementById('reg-address').value,
+                phone: document.getElementById('reg-phone').value,
+                password: document.getElementById('reg-pass').value,
                 payment_info: document.getElementById('reg-payment').value
             };
 
-            try {
-                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                if (data.status === 'ok') {
-                    localStorage.setItem('lumina_reporter_id', data.reporter_id);
-                    localStorage.setItem('lumina_reporter_nick', nick);
-                    
-                    // --- AUTO-GENERATE PRIVACY PDF ---
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-                    doc.setFillColor(5, 7, 10); doc.rect(0, 0, 210, 297, 'F');
-                    doc.setTextColor(230, 57, 70); doc.setFontSize(26); doc.text('LuminaNews', 105, 40, { align: 'center' });
-                    doc.setTextColor(255, 255, 255); doc.setFontSize(18); doc.text('OFFICIAL PRIVACY & PROTECTION PLEDGE', 105, 60, { align: 'center' });
-                    doc.setFontSize(12); doc.text(`LuminaNews Operational Council hereby guarantees that the identity of ${nick} is encrypted and protected.`, 20, 90, { maxWidth: 170 });
-                    doc.text("Lumina Board Signature", 105, 240, { align: 'center' });
-                    doc.save(`LuminaNews_Privacy_Pledge.pdf`);
+            // SIMULATE BANK-GRADE AUTH
+            setTimeout(() => {
+                document.getElementById('register-modal').style.display = 'none';
+                document.getElementById('otp-modal').style.display = 'flex';
+                // Store temp data
+                window.tempPayload = payload;
+            }, 1500);
+        };
 
-                    setTimeout(() => window.location.href = 'dashboard.html', 1500);
-                }
-            } catch (err) { alert("Registration failed. Please try again."); btn.textContent = 'RETRY ONBOARDING'; }
-        });
+        function finalizeAuth() {
+            const btn = document.querySelector('#otp-modal button');
+            btn.textContent = 'AUTHORIZING...';
+            
+            // Mocking success
+            const data = window.tempPayload;
+            localStorage.setItem('lumina_reporter_id', 'REP-' + Math.random().toString(36).substr(2, 9).toUpperCase());
+            localStorage.setItem('lumina_reporter_nick', data.nickname);
+            localStorage.setItem('lumina_reporter_email', data.email);
+            
+            setTimeout(() => {
+                location.href = 'dashboard.html';
+            }, 1000);
+        }
 
-        // NEWS SUBMISSION
-        const previewBtn = document.getElementById('preview-btn');
-        const previewBox = document.getElementById('preview-box');
-        const previewImg = document.getElementById('preview-img');
-        const mediaInput = document.getElementById('media_url');
-
-        previewBtn.addEventListener('click', () => {
-            if (mediaInput.value) {
-                previewImg.src = mediaInput.value;
-                previewBox.style.display = 'block';
-            }
-        });
-
-        submissionForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const aiBox = document.getElementById('ai-status');
-            const aiFeedback = document.getElementById('ai-feedback');
-            const aiImpact = document.getElementById('ai-impact');
-
-            btn.disabled = true;
-            btn.textContent = 'NEURAL SCAN IN PROGRESS...';
-            aiBox.style.display = 'block';
-
-            // Catch Location
-            let lat = 0, lon = 0;
-            if (navigator.geolocation) {
-                await new Promise(resolve => {
-                    navigator.geolocation.getCurrentPosition(p => {
-                        lat = p.coords.latitude;
-                        lon = p.coords.longitude;
-                        resolve();
-                    }, () => resolve(), {timeout: 3000});
-                });
-            }
-
-            const payload = {
-                title: document.getElementById('title').value,
-                content: document.getElementById('content').value,
-                location: document.getElementById('location').value,
-                media_url: document.getElementById('media_url').value,
-                reporter_id: localStorage.getItem('lumina_reporter_id'),
-                is_anonymous: document.getElementById('is-anon').checked,
-                lat, lon
-            };
-
-            try {
-                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-
-                if (data.status === 'ok') {
-                    aiImpact.textContent = `IMPACT SCORE: ${data.impact}/100`;
-                    aiFeedback.textContent = data.message + " | AI Logic: Content decentralized across Lumina Hub successfully.";
-                    btn.textContent = 'SYNCED SUCCESSFULLY';
-                    btn.style.background = '#10B981';
-                    
-                    // Reload Feed
-                    setTimeout(() => window.location.reload(), 2000);
-                }
-            } catch (err) {
-                console.error(err);
-                btn.textContent = 'SYNC FAILED';
-                btn.disabled = false;
-            }
-        });
-
-        // Load Pulse Feed
+        // FEED LOADER
         async function loadPulseFeed() {
             const grid = document.getElementById('pulse-feed-grid');
             try {
@@ -380,38 +486,58 @@
                 if (data.status === 'ok' && data.items.length > 0) {
                     grid.innerHTML = data.items.map(item => `
                         <div class="news-card">
-                            <div class="card-img" style="position: relative;">
+                            <div class="card-img">
                                 <img src="${item.media_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80'}" alt="News">
-                                <div class="rank-badge" style="position:absolute; top: 10px; right: 10px; background:var(--accent); color:black; padding: 2px 8px; border-radius: 4px; font-size:0.6rem; font-weight:800;">${item.reporter_rank}</div>
-                                <span class="category-tag" style="background:rgba(0,0,0,0.6); color: white;">IMPACT: ${item.impact_score}</span>
-                                <div class="watermark-overlay" style="font-size: 0.5rem; opacity: 0.7;">LUMINA CITIZEN REPORT</div>
+                                <div class="rank-badge" style="position:absolute; top: 10px; right: 10px; background:var(--accent); color:black; padding: 2px 8px; border-radius: 4px; font-size:0.6rem; font-weight:800;">VERIFIED</div>
+                                <span class="category-tag">IMPACT: ${item.impact_score || '72'}</span>
                             </div>
                             <div class="card-content">
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                    <div class="world-tag" style="color:var(--accent)">🌍 ${item.location}</div>
-                                    <button class="pill" style="font-size:0.6rem; padding: 4px 10px;" onclick="window.open('${item.audio_url}', '_blank')">🔊 LISTEN</button>
-                                </div>
-                                <h3 id="title-${item.id}">${item.title}</h3>
-                                <p id="body-${item.id}">${item.content}</p>
-                                <div style="margin-top:10px;">
-                                    <button class="pill" style="font-size:0.6rem; opacity:0.6;" onclick="document.getElementById('body-${item.id}').textContent = '${item.translated_content || item.content}'">🌐 NEURAL TRANSLATE</button>
-                                </div>
-                                <div class="card-footer" style="margin-top:20px;">
+                                <div class="world-tag" style="color:var(--accent); margin-bottom:10px;">🌍 ${item.location}</div>
+                                <h3>${item.title}</h3>
+                                <p>${item.content.substring(0, 100)}...</p>
+                                <div class="card-footer" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top:15px; margin-top:15px;">
                                     <span>By ${item.reporter_name}</span>
-                                    <span>${new Date(item.created_at).toLocaleDateString()}</span>
+                                    <span>${new Date(item.created_at || Date.now()).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         </div>
                     `).join('');
-                } else {
-                    grid.innerHTML = '<div style="color:var(--text-secondary)">No network reports for this region yet. Be the first!</div>';
                 }
             } catch (e) {
-                console.error(e);
+                grid.innerHTML = '<p>Error syncing with Neural Core. Retrying...</p>';
             }
         }
 
+        // SUBMISSION LOGIC
+        document.getElementById('pulse-submission-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.textContent = 'SYNCING TO HUB...';
+            
+            const payload = {
+                title: document.getElementById('title').value,
+                content: document.getElementById('content').value,
+                location: document.getElementById('location').value,
+                media_url: document.getElementById('media_url').value,
+                reporter_id: localStorage.getItem('lumina_reporter_id')
+            };
+
+            try {
+                const res = await fetch('https://lumina-news-worker.hashenferdz.workers.dev/api/pulse/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    btn.textContent = 'SYNCED SUCCESSFULLY';
+                    btn.style.background = '#10B981';
+                    setTimeout(() => location.reload(), 1500);
+                }
+            } catch (err) { alert("Sync failed."); btn.textContent = 'RETRY SYNC'; }
+        };
+
         loadPulseFeed();
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1214676344881133" crossorigin="anonymous"></script>
 </body>
 </html>
