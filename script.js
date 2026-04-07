@@ -970,13 +970,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // 1. Inject Navigation Tab
             const navLinks = document.querySelector('.nav-links');
             if (navLinks) {
-                const localLi = document.createElement('li');
-                const isActive = window.location.pathname.includes('local.html') ? 'class="active"' : '';
-                localLi.innerHTML = `<a href="local.html" ${isActive}>${customTabName}</a>`;
-                if(navLinks.children.length > 1) {
-                    navLinks.insertBefore(localLi, navLinks.children[1]);
-                } else {
-                    navLinks.appendChild(localLi);
+                // Check if local tab already exists to prevent duplicates
+                const existingLocal = Array.from(navLinks.querySelectorAll('a')).find(a => a.getAttribute('href') === 'local.html' || a.textContent.includes('News'));
+                if (!existingLocal) {
+                    const localLi = document.createElement('li');
+                    const isActive = window.location.pathname.includes('local.html') ? 'class="active"' : '';
+                    localLi.innerHTML = `<a href="local.html" ${isActive}>${customTabName}</a>`;
+                    if(navLinks.children.length > 1) {
+                        navLinks.insertBefore(localLi, navLinks.children[1]);
+                    } else {
+                        navLinks.appendChild(localLi);
+                    }
+                } else if (window.location.pathname.includes('local.html')) {
+                    existingLocal.classList.add('active');
                 }
             }
 
