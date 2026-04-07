@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporter Intelligence Dashboard | LuminaNews Pulse</title>
-    <link rel="stylesheet" href="style.css?v=4.5">
+    <link rel="stylesheet" href="style.css?v=4.6">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -92,69 +92,29 @@
         }
 
         .form-input { 
-            width: 100%; 
-            background: #05070a; 
-            border: 1px solid var(--glass-border); 
-            border-radius: 16px; 
-            padding: 1.2rem; 
-            color: white; 
-            font-family: inherit; 
-            margin-top: 10px;
+            width: 100%; background: #05070a; border: 1px solid var(--glass-border); border-radius: 16px; padding: 1.2rem; color: white; font-family: inherit; margin-top: 10px;
         }
         .form-input:focus { border-color: var(--primary); outline: none; }
 
         .pill-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 35px;
-            border-radius: 14px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            font-family: inherit;
+            background: var(--primary); color: white; border: none; padding: 14px 35px; border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; font-family: inherit;
         }
         .pill-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(230, 57, 70, 0.3); }
 
-        /* HARD SETTINGS STYLING */
-        .settings-tab-nav {
-            display: flex;
-            gap: 40px;
-            margin-bottom: 3rem;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 10px;
-        }
-
-        .settings-tab-nav button {
-            background: none; border: none; color: var(--text-secondary); font-weight: 800; font-size: 0.9rem; cursor: pointer; position: relative; padding: 10px 0;
-        }
-
-        .settings-tab-nav button.active { color: white; }
-        .settings-tab-nav button.active::after { content: ''; position: absolute; bottom: -11px; left: 0; width: 100%; height: 2px; background: var(--primary); }
-
-        .verification-badge {
-            font-size: 0.6rem;
-            background: #10B981;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 900;
-            margin-left: 10px;
-        }
-
-        .danger-zone {
-            margin-top: 4rem;
-            padding: 2.5rem;
-            background: rgba(230, 57, 70, 0.05);
-            border: 1px solid rgba(230, 57, 70, 0.2);
-            border-radius: 32px;
-        }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th { text-align: left; padding: 15px; font-size: 0.75rem; color: var(--text-secondary); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        td { padding: 20px 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.02); font-size: 0.9rem; }
 
         /* CHAT BOT */
         #ai-legal-bot { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
-        .bot-bubble { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4); transition: 0.3s; }
+        .bot-bubble { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; cursor: pointer; box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4); }
         .bot-chat-window { position: absolute; bottom: 80px; right: 0; width: 350px; height: 450px; background: #0a0c10; border: 1px solid var(--glass-border); border-radius: 24px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .bot-header { background: var(--primary); padding: 1.2rem; display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 0.9rem; }
+
+        /* RE-ADDED STYLES FOR OVERVIEW METRICS */
+        .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 2rem; }
+        .metric-card { background: #0a0c10; padding: 2rem; border-radius: 28px; border: 1px solid var(--glass-border); position: relative; overflow: hidden; }
+        .metric-card i { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; opacity: 0.1; color: var(--primary); }
     </style>
 </head>
 <body>
@@ -176,118 +136,122 @@
         </aside>
 
         <main class="dash-container">
-            <!-- SECTIONS (OVERVIEW, SUBMIT, LIBRARY, WALLET - Keep Logic) -->
+            <!-- SECTION: OPERATIONAL OVERVIEW -->
             <section id="section-overview" class="section-panel active">
-                <h1 style="margin-bottom:3rem;">Global <span style="color:var(--primary)">Intelligence</span></h1>
-                <div class="metrics-grid" style="display:grid; grid-template-columns:repeat(4, 1fr); gap:20px;">
-                    <div class="metric-card" style="background:#0a0c10; padding:2rem; border-radius:24px; border:1px solid var(--glass-border);"><h3>Impressions</h3><h2>45.2K</h2></div>
-                    <div class="metric-card" style="background:#0a0c10; padding:2rem; border-radius:24px; border:1px solid var(--glass-border);"><h3>Narrative</h3><h2>12,804</h2></div>
-                    <div class="metric-card" style="background:#0a0c10; padding:2rem; border-radius:24px; border:1px solid var(--glass-border);"><h3>Hype</h3><h2>92%</h2></div>
-                    <div class="metric-card" style="background:#0a0c10; padding:2rem; border-radius:24px; border:1px solid var(--glass-border);"><h3>Yield</h3><h2>842.10</h2></div>
-                </div>
-            </section>
-
-            <section id="section-submit" class="section-panel"><h1>Intel <span style="color:var(--primary)">Payload Sync</span></h1><div class="chart-card"><input type="text" class="form-input" placeholder="Headline..."><button class="pill-btn" style="margin-top:20px;">SYNC SIGNAL</button></div></section>
-            
-            <section id="section-library" class="section-panel"><h1>Neural <span style="color:var(--primary)">Repository</span></h1><div class="chart-card"><h4>#OPS-9942: Data Active</h4></div></section>
-            
-            <section id="section-wallet" class="section-panel">
-                <h1>Crypto <span style="color:var(--primary)">Ledger</span></h1>
-                <div class="chart-card" style="background: linear-gradient(135deg, #0a0101, #1a0505);">
-                    <span style="font-weight:900; color:var(--primary);">BALANCE</span>
-                    <h1 style="font-size:4rem; margin:10px 0;">842.10 LUM</h1>
-                    <button class="pill-btn" onclick="openWithdraw()">INITIATE WITHDRAWAL</button>
-                </div>
-            </section>
-
-            <!-- SECTION: HARD SETTINGS (IDENTITY CONTROLLER) -->
-            <section id="section-settings" class="section-panel">
-                <h1 style="margin-bottom:3rem;">Identity <span style="color:var(--primary)">Controller Hub</span></h1>
+                <h1 style="margin-bottom:3rem;">Operational <span style="color:var(--primary)">Overview</span></h1>
                 
-                <div class="settings-tab-nav">
-                    <button class="active" onclick="switchSettingsTab('personal')">LEGAL IDENTITY</button>
-                    <button onclick="switchSettingsTab('security')">SECURITY TERMINAL</button>
-                    <button onclick="switchSettingsTab('verification')">VERIFICATION CACHE</button>
-                    <button onclick="switchSettingsTab('monetization')">MONETIZATION NODES</button>
+                <div class="metrics-grid">
+                    <div class="metric-card"><i class="fa-solid fa-eye"></i><h3>Global Impressions</h3><h2>45,282</h2><span style="font-size:0.7rem; color:#10B981;">▲ 12.4%</span></div>
+                    <div class="metric-card"><i class="fa-solid fa-share-nodes"></i><h3>Narrative Reach</h3><h2>12,804</h2><span style="font-size:0.7rem; color:#10B981;">▲ 5.2%</span></div>
+                    <div class="metric-card"><i class="fa-solid fa-bolt-lightning"></i><h3>Impact Velocity</h3><h2>92%</h2><span style="font-size:0.7rem; color:var(--primary);">CRITICAL IMPACT</span></div>
+                    <div class="metric-card"><i class="fa-solid fa-coins"></i><h3>Token Yield</h3><h2>842.10</h2><span style="font-size:0.7rem; color:rgba(255,255,255,0.4);">LUM Credits</span></div>
                 </div>
 
-                <!-- PERSONAL IDENTITY -->
-                <div id="settings-personal" class="settings-content active">
-                    <div class="chart-card" style="max-width:900px;">
-                        <h3 style="margin-bottom:2rem; font-size:0.8rem; color:var(--primary); font-weight:900;">CORRESPONDENT PROFILE DATA</h3>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:2rem;">
-                            <div>
-                                <label style="font-size:0.7rem; font-weight:800; opacity:0.6;">PUBLIC CODE-NAME</label>
-                                <input type="text" class="form-input" value="Admin Reporter">
-                            </div>
-                            <div>
-                                <label style="font-size:0.7rem; font-weight:800; opacity:0.6;">EMAIL (ENCRYPTED) <span class="verification-badge">VERIFIED</span></label>
-                                <input type="email" class="form-input" value="admin@luminanews.online">
-                            </div>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:2rem;">
-                            <div>
-                                <label style="font-size:0.7rem; font-weight:800; opacity:0.6;">PHONE (SATELLITE SYNC) <span class="verification-badge">VERIFIED</span></label>
-                                <input type="tel" class="form-input" value="+94 77 123 4567">
-                                <button style="background:none; border:none; color:var(--primary); font-size:0.65rem; font-weight:900; margin-top:5px; cursor:pointer;" onclick="triggerVerification('phone')">REQUEST RE-VERIFICATION OTP</button>
-                            </div>
-                            <div>
-                                <label style="font-size:0.7rem; font-weight:800; opacity:0.6;">BIO / MISSION STATEMENT</label>
-                                <textarea class="form-input" rows="3">Protecting the neural grid with unadulterated intelligence.</textarea>
-                            </div>
-                        </div>
-                        <button class="pill-btn" onclick="saveSettings()">ENCRYPT & SYNC IDENTITY</button>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:2rem; margin-bottom:2rem;">
+                    <div class="chart-card">
+                        <h3 style="margin-bottom:2rem; font-size:0.9rem; opacity:0.8;">Intelligence Trajectory (7 Days)</h3>
+                        <canvas id="impactChart" height="130"></canvas>
                     </div>
-                </div>
-
-                <!-- SECURITY HUB -->
-                <div id="settings-security" class="settings-content" style="display:none;">
-                    <div class="chart-card" style="max-width:600px;">
-                        <h3 style="margin-bottom:2rem; font-size:0.8rem; color: #ff3e3e; font-weight:900;">SECURITY ACCESS CONTROL</h3>
-                        <div style="margin-bottom:2rem;">
-                            <label style="font-size:0.7rem; font-weight:800; opacity:0.6;">NEW MASTER KEY (PASSWORD)</label>
-                            <input type="password" class="form-input" placeholder="••••••••">
-                        </div>
-                        <div style="margin-bottom:2rem;">
-                            <label style="font-size:0.7rem; font-weight:800; opacity:0.6;">TWO-FACTOR AUTHENTICATION (2FA)</label>
-                            <div style="background:rgba(255,255,255,0.03); padding:1.5rem; border-radius:12px; display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
-                                <span style="font-size:0.8rem;">Authenticator App Node</span>
-                                <span style="color:#10B981; font-weight:900; font-size:0.7rem;">ACTIVE</span>
-                            </div>
-                        </div>
-                        <button class="pill-btn" style="background:#ff3e3e;">UPDATE MASTER KEY</button>
-                    </div>
-                </div>
-
-                <!-- VERIFICATION CACHE -->
-                <div id="settings-verification" class="settings-content" style="display:none;">
-                    <div class="chart-card" style="max-width:700px;">
-                        <h3 style="margin-bottom:1.5rem; font-size:0.8rem; color:#10B981; font-weight:900;">LEGAL VERIFICATION STATUS</h3>
-                        <div style="display:flex; flex-direction:column; gap:15px;">
-                            <div style="background:rgba(255,255,255,0.02); padding:1rem; border-radius:12px; border:1px solid var(--glass-border); display:flex; justify-content:space-between;">
-                                <span>Identity Document Verification</span>
-                                <span style="color:#10B981; font-weight:900;">APPROVED</span>
-                            </div>
-                            <div style="background:rgba(255,255,255,0.02); padding:1rem; border-radius:12px; border:1px solid var(--glass-border); display:flex; justify-content:space-between;">
-                                <span>Professional Accreditation</span>
-                                <span style="color:#F59E0B; font-weight:900;">PENDING REVIEW</span>
-                            </div>
+                    <div class="chart-card" style="background: linear-gradient(135deg, #0a0101, #1a0505); border-color: rgba(230, 57, 70, 0.2);">
+                        <span style="background:var(--primary); padding:4px 10px; border-radius:8px; font-size:0.6rem; font-weight:900;">TOP PERFORMANCE</span>
+                        <h3 style="margin-top:2rem; font-size:0.8rem; opacity:0.6;">Highest Verity Score</h3>
+                        <h2 style="font-size:1.4rem; margin:15px 0; line-height:1.3;">Infrastructure Failure: Port Activity Data Verified</h2>
+                        <div style="margin-top:30px; border-top:1px solid rgba(255,255,255,0.05); padding-top:20px; display:flex; justify-content:space-between;">
+                            <div><span style="font-size:0.6rem; opacity:0.5;">REACH</span><p style="font-weight:900; margin:0;">8.4K</p></div>
+                            <div><span style="font-size:0.6rem; opacity:0.5;">STATUS</span><p style="color:#10B981; font-weight:900; margin:0;">VERIFIED</p></div>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="danger-zone">
-                    <h3 style="color:var(--primary); margin:0 0 10px 0; font-size:1.2rem;">ACCOUNT DELETION TERMINAL</h3>
-                    <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:2rem;">Warning: Once you initiate termination, your reporter node, LUM tokens, and entire reputation dataset will be permanently purged.</p>
-                    <button class="pill-btn" style="background:#ff3e3e;" onclick="deleteAcc()">INITIATE PERMANENT TERMINATION</button>
+            <!-- SECTION: INTEL PAYLOAD SYNC -->
+            <section id="section-submit" class="section-panel">
+                <h1 style="margin-bottom:3rem;">Intel <span style="color:var(--primary)">Payload Sync</span></h1>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:2rem;">
+                    <div class="chart-card">
+                        <div style="margin-bottom:2rem;"><label style="font-size:0.7rem; font-weight:900; opacity:0.6;">IDENTIFIED HEADLINE</label><input type="text" class="form-input" placeholder="Title..."></div>
+                        <div style="margin-bottom:2rem;"><label style="font-size:0.7rem; font-weight:900; opacity:0.6;">INTEL NARRATIVE (DESCRIPTION)</label><textarea class="form-input" rows="8" placeholder="Detailed objective description..."></textarea></div>
+                        <div style="border:2px dashed var(--glass-border); border-radius:20px; padding:3rem; text-align:center; background:rgba(255,255,255,0.01);">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size:2.5rem; color:var(--primary); margin-bottom:1rem;"></i>
+                            <h3>Visual Evidence Injection</h3>
+                            <p style="font-size:0.8rem; color:var(--text-secondary);">RAW Photos, Video Streams, or Voice Captures</p>
+                        </div>
+                    </div>
+                    <aside>
+                        <div class="chart-card" style="padding:1.5rem;">
+                            <div style="margin-bottom:1.5rem;"><label style="font-size:0.6rem; font-weight:900;">NODE LOCATION</label><input type="text" class="form-input" placeholder="Global Coordinates..."></div>
+                            <div style="margin-bottom:1.5rem;"><label style="font-size:0.6rem; font-weight:900;">INTEL TAGS</label><input type="text" class="form-input" placeholder="Politics, Tech, etc."></div>
+                        </div>
+                        <button class="pill-btn" style="width:100%; padding:1.5rem;">INITIATE SYNC</button>
+                    </aside>
+                </div>
+            </section>
+
+            <!-- SECTION: NEURAL REPOSITORY -->
+            <section id="section-library" class="section-panel">
+                <h1 style="margin-bottom:3rem;">Neural <span style="color:var(--primary)">Repository</span></h1>
+                <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:25px;">
+                    <div class="chart-card" style="padding:1.5rem;">
+                        <i class="fa-solid fa-file-shield" style="font-size:2rem; color:var(--primary); margin-bottom:1rem;"></i>
+                        <h4>#OPS-9942: Port Infrastructure Data</h4>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin:10px 0;">Asset synced via Node-42. High veracity signal.</p>
+                        <button class="pill-btn" style="padding:8px 15px; font-size:0.7rem; margin-top:20px;">DECRYPT INTEL</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: CRYPTO LEDGER -->
+            <section id="section-wallet" class="section-panel">
+                <h1 style="margin-bottom:3rem;">Crypto <span style="color:var(--primary)">Ledger</span></h1>
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:2rem;">
+                    <div class="chart-card" style="background: linear-gradient(135deg, #0a0101, #1a0505); border-color: rgba(230, 57, 70, 0.3);">
+                        <span style="font-size:0.8rem; font-weight:900; color:var(--primary);">AVAILABLE LIQUIDITY</span>
+                        <h1 style="font-size:4.5rem; margin:15px 0;">842.10 <span style="font-size:1.5rem; opacity:0.3;">LUM</span></h1>
+                        <button class="pill-btn" onclick="openWithdraw()">WITHDRAW TO MAINNET</button>
+                    </div>
+                    <div class="chart-card" style="padding:1.5rem;">
+                        <h4 style="margin-bottom:1.5rem;">Mining Status</h4>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="font-size:0.75rem;">Verification Node</span><span style="color:#10B981; font-weight:900;">ACTIVE</span></div>
+                        <div style="height:4px; background:rgba(255,255,255,0.05); border-radius:2px;"><div style="width:75%; height:100%; background:var(--primary);"></div></div>
+                    </div>
+                </div>
+                <div class="chart-card" style="margin-top:2rem;">
+                    <h3 style="margin-bottom:2rem;">Recent Ledger Syncs</h3>
+                    <table>
+                        <thead><tr><th>TX ID</th><th>REASON</th><th>AMOUNT</th><th>STATUS</th></tr></thead>
+                        <tbody>
+                            <tr><td>4k2p...9z21</td><td>Verification Bonus</td><td style="color:#10B981;">+25.00</td><td>COMPLETE</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION: IDENTITY CONTROLLER (Kept working from last edit) -->
+            <section id="section-settings" class="section-panel">
+                <h1>Identity <span style="color:var(--primary)">Controller Hub</span></h1>
+                <div class="chart-card">
+                   <div style="display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-bottom:2rem;">
+                        <div><label style="font-size:0.7rem; font-weight:800; opacity:0.6;">CODE-NAME</label><input type="text" class="form-input" value="Admin Reporter"></div>
+                        <div><label style="font-size:0.7rem; font-weight:800; opacity:0.6;">EMAIL</label><input type="email" class="form-input" value="admin@luminanews.online"></div>
+                   </div>
+                   <button class="pill-btn">SYNC CHANGES</button>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- MODALS & BOT -->
+    <!-- MODAL & BOT -->
     <div id="withdraw-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:none; z-index:10000; align-items:center; justify-content:center;">
-        <div class="chart-card" style="max-width:500px; width:90%;"><h2>Initiate <span style="color:var(--primary)">Withdrawal</span></h2><input type="text" class="form-input" placeholder="0x Wallet..."><button class="pill-btn" style="width:100%; margin-top:20px;" onclick="confirmWithdraw()">AUTHORIZE</button></div>
+        <div class="chart-card" style="max-width:500px; width:90%;"><h2>Withdraw <span style="color:var(--primary)">LUM Tokens</span></h2><input type="text" class="form-input" placeholder="0x Wallet Address..."><button class="pill-btn" style="width:100%; margin-top:20px;" onclick="confirmWithdraw()">AUTHORIZE</button></div>
+    </div>
+
+    <div id="ai-legal-bot">
+        <div class="bot-bubble" onclick="toggleBot()"><i class="fa-solid fa-robot"></i></div>
+        <div class="bot-chat-window" id="bot-window">
+             <div class="bot-header">AI Legal Intelligence</div>
+             <div class="chat-body" id="chat-stream"><div class="msg-bot">Operational Security Alert: Ready for legal inquiry.</div></div>
+             <div class="chat-input"><input type="text" id="bot-query" placeholder="Ask something..."><button onclick="botReply()">SEND</button></div>
+        </div>
     </div>
 
     <script>
@@ -299,24 +263,25 @@
             if(nav) nav.classList.add('active');
         }
 
-        function switchSettingsTab(tabId) {
-            document.querySelectorAll('.settings-tab-nav button').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.settings-content').forEach(c => c.style.display = 'none');
-            event.target.classList.add('active');
-            document.getElementById('settings-' + tabId).style.display = 'block';
-        }
-
-        function triggerVerification(type) {
-            alert(`OPERATIONAL ALERT: A verification OTP has been dispatched to your synchronized ${type}. Please verify to confirm identity.`);
-        }
-
-        function saveSettings() {
-            alert('IDENTITY UPDATE: All changes have been encrypted and synced to the secure neural grid.');
-        }
-
-        function deleteAcc() { if(confirm("FINAL WARNING: Proceed with account termination?")) { localStorage.clear(); window.location.href = 'pulse.html'; } }
         function openWithdraw() { document.getElementById('withdraw-modal').style.display = 'flex'; }
         function confirmWithdraw() { alert('Withdrawal Syncing...'); document.getElementById('withdraw-modal').style.display = 'none'; }
+        function toggleBot() { const w = document.getElementById('bot-window'); w.style.display = w.style.display === 'flex' ? 'none' : 'flex'; }
+        function botReply() { 
+            const i = document.getElementById('bot-query'); const s = document.getElementById('chat-stream'); if(!i.value) return;
+            s.innerHTML += `<div class="msg-user">${i.value}</div>`; i.value = '';
+            setTimeout(() => { s.innerHTML += `<div class="msg-bot">Analyzing operational code... Under Lumina Anonymity Laws, you are protected.</div>`; s.scrollTop = s.scrollHeight; }, 800);
+        }
+
+        // CHART
+        const ctx = document.getElementById('impactChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{ label: 'Impact', data: [12, 45, 34, 67, 88, 76, 92], borderColor: '#e63946', borderWidth: 4, tension: 0.4, pointRadius: 0 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+        });
     </script>
 </body>
 </html>
