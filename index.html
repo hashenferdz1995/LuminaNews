@@ -94,18 +94,40 @@
                 <li><a href="crypto.html">Crypto</a></li>
             <li><a href="signals.html">Signals</a></li>
                 </ul>
-            <div class="nav-actions">
-                <div id="weather-widget" class="weather-display">
-                    <span id="weather-icon">☁️</span>
-                    <span id="weather-temp">--°C</span>
-                    <span id="weather-location">Detecting...</span>
+                <div class="nav-actions">
+                    <!-- Google Translate Hidden Element -->
+                    <div id="google_translate_element" style="display:none;"></div>
+                    
+                    <!-- Premium Language Selector -->
+                    <div class="lang-selector">
+                        <button class="lang-btn" id="lang-btn-current">
+                            <i class="fa-solid fa-globe"></i> EN
+                        </button>
+                        <div class="lang-dropdown">
+                            <div class="lang-option" data-lang="en">English (US)</div>
+                            <div class="lang-option" data-lang="si">සිංහල (Sinhala)</div>
+                        </div>
+                    </div>
+
+                    <div id="weather-widget" class="weather-display">
+                        <span id="weather-icon">☁️</span>
+                        <span id="weather-temp">--°C</span>
+                        <span id="weather-location">Detecting...</span>
+                    </div>
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search news...">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                    <button class="subscribe-btn">Subscribe</button>
                 </div>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search news...">
-                    <button class="search-btn">🔍</button>
-                </div>
-                <button class="subscribe-btn">Subscribe</button>
-            </div>
+
+                <!-- Google Translate Script -->
+                <script type="text/javascript">
+                    function googleTranslateElementInit() {
+                        new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'si,en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
+                    }
+                </script>
+                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         </nav>
     </header>
 

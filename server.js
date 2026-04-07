@@ -8,6 +8,7 @@ const parser = new Parser();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static('.')); // Serve static files from the current directory
 
 // Initialize SQLite Database
 const db = new sqlite3.Database('./news_archive.db', (err) => {

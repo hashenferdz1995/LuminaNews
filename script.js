@@ -116,16 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
         "GBPUSD": { type: "forex", name: "GBP/USD", price: "1.3142", trend: "-0.1%", dir: "NEUTRAL", color: "#F59E0B", pos: "46%", logic: "BoE likely to hold rates, but economic softness in UK capping any significant rally." }
     };
 
-    let currentActiveAsset = "BTC"; // Built-in Fallback
+    let currentActiveAsset = "BTC"; // Default
     const currentPath = window.location.pathname.toLowerCase();
     
     // Automatically match the AI Trader Hub's starting asset to the page category
-    if (currentPath.includes('market')) {
+    if (currentPath.includes('markets') || currentPath.includes('stock')) {
         currentActiveAsset = "NVDA";
     } else if (currentPath.includes('economy')) {
         currentActiveAsset = "EURUSD";
     } else if (currentPath.includes('crypto')) {
         currentActiveAsset = "BTC";
+    } else if (currentPath.includes('signals')) {
+        currentActiveAsset = "BTC";
+    } else {
+        currentActiveAsset = "NVDA"; // General default for homepage/others if not crypto
     }
 
     function initAssetAnalyzer() {
@@ -1001,72 +1005,70 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } catch (e) {}
             }
+        } catch (e) {
+            console.error("Localization engine failed", e);
+        }
+    }
 
-            // --- 3. ULTIMATE CUSTOM GOOGLE TRANSLATE HUB ---
-            const navActions = document.querySelector('.nav-actions');
-            if (navActions) {
-                // Secret Hidden Google Widget
-                const secretDiv = document.createElement('div');
-                secretDiv.id = 'google_translate_element';
-                document.body.appendChild(secretDiv);
+    // Initialize Localization
+    initLocalization();
 
-                const script = document.createElement('script');
-                script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-                document.body.appendChild(script);
+    // 12. PREMIUM LANGUAGE SELECTOR LOGIC
+    const langBtn = document.getElementById('lang-btn-current');
+    const langDropdown = document.querySelector('.lang-dropdown');
+    const langOptions = document.querySelectorAll('.lang-option');
 
-                window.googleTranslateElementInit = function() {
-                    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-                };
+    if (langBtn && langDropdown) {
+        langBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            langDropdown.classList.toggle('show');
+        });
 
-                // Premium Visible Picker
-                const customPicker = document.createElement('div');
-                customPicker.className = 'lumina-lang-picker';
-                customPicker.id = 'custom-lang-hub';
-                customPicker.innerHTML = `
-                    <div class="lang-current" id="current-lang-select">🌐 English</div>
-                    <div class="lang-dropdown" id="lang-dropdown-menu">
-                        <div class="lang-option" data-lang="en">EN • English</div>
-                        <div class="lang-option" data-lang="si">SI • සිංහල</div>
-                        <div class="lang-option" data-lang="ta">TA • தமிழ்</div>
-                        <div class="lang-option" data-lang="hi">HI • हिन्दी</div>
-                        <div class="lang-option" data-lang="fr">FR • Français</div>
-                        <div class="lang-option" data-lang="de">DE • Deutsch</div>
-                        <div class="lang-option" data-lang="ru">RU • Русский</div>
-                    </div>
-                `;
-                navActions.insertBefore(customPicker, navActions.firstChild);
-
-                // Interaction Logic
-                const currentBtn = document.getElementById('current-lang-select');
-                const menu = document.getElementById('lang-dropdown-menu');
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const lang = opt.getAttribute('data-lang');
                 
-                currentBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    menu.classList.toggle('active');
-                };
+                // Update UI
+                langBtn.innerHTML = `<i class="fa-solid fa-globe"></i> ${lang.toUpperCase()}`;
+                langOptions.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                langDropdown.classList.remove('show');
 
-                document.querySelectorAll('.lang-option').forEach(opt => {
-                    opt.onclick = () => {
-                        const langCode = opt.getAttribute('data-lang');
-                        const langName = opt.textContent;
-                        
-                        // Bridge to Google
-                        const googleSelect = document.querySelector('.goog-te-combo');
-                        if (googleSelect) {
-                            googleSelect.value = langCode;
-                            googleSelect.dispatchEvent(new Event('change'));
-                            currentBtn.innerHTML = `🌐 ${langName.split('•')[1].trim()}`;
-                        } else {
-                            alert("Translate Engine initializing... Please wait 2 seconds.");
+                // Trigger Google Translate
+                const googleSelect = document.querySelector('.goog-te-combo');
+                if (googleSelect) {
+                    googleSelect.value = lang;
+                    googleSelect.dispatchEvent(new Event('change'));
+                } else {
+                    const checkInterval = setInterval(() => {
+                        const lateSelect = document.querySelector('.goog-te-combo');
+                        if (lateSelect) {
+                            lateSelect.value = lang;
+                            lateSelect.dispatchEvent(new Event('change'));
+                            clearInterval(checkInterval);
                         }
-                        menu.classList.remove('active');
-                    };
-                });
+                    }, 500);
+                    setTimeout(() => clearInterval(checkInterval), 5000);
+                }
+                
+                localStorage.setItem('lumina_lang', lang);
+            });
+        });
 
-                window.onclick = () => menu.classList.remove('active');
-            }
-        } catch(err) {
-            console.error("Localization engine failed", err);
+        document.addEventListener('click', () => {
+            langDropdown.classList.remove('show');
+        });
+
+        // Initialize from localStorage
+        const savedLang = localStorage.getItem('lumina_lang');
+        if (savedLang) {
+            setTimeout(() => {
+                langOptions.forEach(opt => {
+                    if (opt.getAttribute('data-lang') === savedLang) {
+                        opt.click();
+                    }
+                });
+            }, 1000);
         }
     }
 });
