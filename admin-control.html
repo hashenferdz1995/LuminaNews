@@ -117,6 +117,22 @@
                 </table>
             </section>
 
+            <!-- BLOG MANAGEMENT HUB -->
+            <section style="margin-bottom: 4rem;">
+                <h3 style="color: var(--admin-accent); text-transform: uppercase; letter-spacing: 1px;">Editorial Blog Manager</h3>
+                <div style="background: #0a0c10; padding: 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); margin-top: 1rem;">
+                    <form id="blog-form">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <input type="text" id="blog-title" class="form-input" placeholder="Article Headline..." required>
+                            <input type="text" id="blog-image" class="form-input" placeholder="Image URL (Unsplash/etc)...">
+                        </div>
+                        <input type="text" id="blog-tag" class="form-input" placeholder="Category Tag (e.g. Analysis, Opinion, Tech)..." style="width: 200px; margin-bottom: 15px;">
+                        <textarea id="blog-content" class="form-input" style="height: 200px; resize: vertical;" placeholder="Write your original human-authored content here... (AdSense Loves This)" required></textarea>
+                        <button type="button" onclick="submitBlogPost()" class="btn-action btn-approve" style="margin-top: 20px; padding: 15px 30px;">PUBLISH TO BLOG HUB</button>
+                    </form>
+                </div>
+            </section>
+
             <!-- SUBMISSION MODERATION HUB -->
             <section>
                 <h3 style="color: var(--admin-red); text-transform: uppercase; letter-spacing: 1px;">Intel Submission Moderation</h3>
@@ -155,6 +171,42 @@
         }
 
         function logoutAdmin() { window.location.reload(); }
+
+        async function submitBlogPost() {
+            const title = document.getElementById('blog-title').value;
+            const image = document.getElementById('blog-image').value;
+            const tag = document.getElementById('blog-tag').value || 'Editorial';
+            const content = document.getElementById('blog-content').value;
+
+            if(!title || !content) { alert('Title and Content are required!'); return; }
+
+            const postData = {
+                title: title,
+                media_url: image || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80',
+                location: tag,
+                content: content,
+                reporter_name: "Lumina Editor",
+                is_anonymous: 0
+            };
+
+            try {
+                // We use the 'pulse' submission endpoint but it will show up in our human-authored feeds
+                const res = await fetch(`${API_BASE}/pulse/submit`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData)
+                });
+                const result = await res.json();
+                if(result.status === 'ok') {
+                    alert('✨ Blog post published successfully! It will now appear on the Blog page.');
+                    document.getElementById('blog-form').reset();
+                } else {
+                    alert('Submission error: ' + result.message);
+                }
+            } catch(e) {
+                alert('Connection Error. Make sure your worker is online.');
+            }
+        }
 
         async function loadAdminData() {
             // LOAD REPORTERS
