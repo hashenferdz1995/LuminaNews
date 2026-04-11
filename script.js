@@ -409,12 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             newsGrid.appendChild(card);
 
-            if (index === 2 || index === 7) {
-                const ad = document.createElement('div');
-                ad.className = 'ad-placement in-feed-ad';
-                ad.innerHTML = '<span>SPONSORED REAL-TIME AD</span>';
-                newsGrid.appendChild(ad);
-            }
+
         });
     }
 
@@ -550,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => loadRealTimeNews(categoryKey), 5000);
             }
         } catch (err) {
-            newsGrid.innerHTML = '<div class="error-state">⚠️ Connection to Intelligence Hub Down.</div>';
+            newsGrid.innerHTML = '<div class="error-state">🛰️ Synchronizing with global news feed. Please wait...</div>';
         }
     }
 
