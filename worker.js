@@ -83,11 +83,14 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, x-nowpayments-sig, x-api-key",
       "Access-Control-Max-Age": "86400",
     };
 
     if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders });
+      return new Response(null, { 
+        headers: corsHeaders 
+      });
     }
 
     if (url.pathname === "/api/news") {
@@ -409,13 +412,30 @@ export default {
         
         if (admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
 
+        let genCount = parseInt(count);
+        if (isNaN(genCount) || genCount <= 0 || genCount > 2000) genCount = 10; // Safety limit
+
         const codes = [];
-        for (let i = 0; i < count; i++) {
+        let batchStmts = [];
+        
+        for (let i = 0; i < genCount; i++) {
           const randomPart = Math.random().toString(36).substring(2, 10).toUpperCase();
           const code = `LMN-${plan}D-${randomPart}`;
           codes.push(code);
-          await env.DB.prepare("INSERT INTO licenses (redeem_code, plan_days, status) VALUES (?, ?, 'available')")
-                   .bind(code, plan).run();
+          batchStmts.push(
+             env.DB.prepare("INSERT INTO licenses (redeem_code, plan_days, status) VALUES (?, ?, 'available')").bind(code, plan)
+          );
+          
+          // Execute in chunks of 100 to prevent D1 limits
+          if (batchStmts.length === 100) {
+             await env.DB.batch(batchStmts);
+             batchStmts = [];
+          }
+        }
+        
+        // Execute remaining
+        if (batchStmts.length > 0) {
+           await env.DB.batch(batchStmts);
         }
 
         return new Response(JSON.stringify({ status: 'ok', generated_codes: codes }), {
@@ -590,8 +610,34 @@ export default {
         const { admin_key } = body;
         if (admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
 
-        const { results } = await env.DB.prepare("SELECT * FROM licenses ORDER BY plan_days ASC, status ASC").all();
+        const { results } = await env.DB.prepare("SELECT * FROM licenses ORDER BY id DESC LIMIT 1000").all();
         return new Response(JSON.stringify({ status: 'ok', licenses: results }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
+    // 20. ADMIN: LIST ALL REPORTERS
+    if (url.pathname === "/api/admin/reporters/list" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        if (body.admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
+
+        const { results } = await env.DB.prepare("SELECT * FROM reporters ORDER BY id DESC LIMIT 500").all();
+        return new Response(JSON.stringify({ status: 'ok', reporters: results }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
+    // 21. ADMIN: LIST ALL SUBMISSIONS (Moderation)
+    if (url.pathname === "/api/admin/submissions/list" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        if (body.admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
+
+        const { results } = await env.DB.prepare("SELECT * FROM submissions ORDER BY created_at DESC LIMIT 500").all();
+        return new Response(JSON.stringify({ status: 'ok', submissions: results }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
       } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
