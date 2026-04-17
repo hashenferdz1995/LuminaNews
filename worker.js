@@ -643,6 +643,40 @@ export default {
       } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
     }
 
+    // 22. ADMIN: CREATE BLOG POST (Manual)
+    if (url.pathname === "/api/admin/blog/create" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { title, description, category, image, admin_key } = body;
+        if (admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
+
+        const now = new Date();
+        // Since we don't have a separate blog table yet, we can tag them as 'blog' in the articles table or use a dedicated table.
+        // I will create a dedicated table in the next step, but for now using 'articles' with category='blog'
+        await env.DB.prepare(
+          "INSERT INTO articles (title, description, category, image, pubDate, timestamp) VALUES (?, ?, 'blog', ?, ?, ?)"
+        ).bind(title, description, image, now.toISOString(), now.getTime()).run();
+
+        return new Response(JSON.stringify({ status: 'ok' }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
+    // 23. ADMIN: DELETE ARTICLE/BLOG
+    if (url.pathname === "/api/admin/article/delete" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { id, admin_key } = body;
+        if (admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
+
+        await env.DB.prepare("DELETE FROM articles WHERE id = ?").bind(id).run();
+        return new Response(JSON.stringify({ status: 'ok' }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
     // 20. CLIENT: CLAIM FREE TRIAL (3 Days - HWID Locked)
     if (url.pathname === "/api/license/free-trial" && request.method === "POST") {
       try {

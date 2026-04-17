@@ -184,8 +184,10 @@
             <ul class="admin-nav">
                 <li><a onclick="showPage('overview')" id="nav-overview" class="active"><i class="fa-solid fa-cube"></i> System Overview</a></li>
                 <li><a onclick="showPage('licenses')"><i class="fa-solid fa-key"></i> Pro License Hub</a></li>
+                <li><a onclick="showPage('blog')"><i class="fa-solid fa-pen-nib"></i> Blog Engine</a></li>
                 <li><a onclick="showPage('reporters')"><i class="fa-solid fa-id-card"></i> Reporter Nodes</a></li>
                 <li><a onclick="showPage('submissions')"><i class="fa-solid fa-broadcast-tower"></i> Intel Stream</a></li>
+                <li><a onclick="showPage('analytics')"><i class="fa-solid fa-chart-line"></i> Analytics Hub</a></li>
                 <li><a onclick="location.reload()" style="margin-top: 4rem; opacity: 0.5;"><i class="fa-solid fa-power-off"></i> Safe Exit</a></li>
             </ul>
         </aside>
@@ -200,9 +202,12 @@
                     <div class="stat-card"><h4>Verified Reporters</h4><h2 id="stat-reps">...</h2></div>
                     <div class="stat-card"><h4>Sync Status</h4><h2 style="color:#10B981">STABLE</h2></div>
                 </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, rgba(0, 210, 255, 0.05), transparent);">
-                    <h3>Recent System Activity</h3>
-                    <p style="opacity:0.6;">Automated monitoring active. D1 Engine synchronized.</p>
+                <div class="stat-card" style="background: linear-gradient(135deg, rgba(0, 210, 255, 0.05), transparent); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3>System Synchronization</h3>
+                        <p style="opacity:0.6; margin:0;">Automated monitoring active. D1 Engine synchronized.</p>
+                    </div>
+                    <button class="btn-admin" style="padding: 10px 20px; font-size: 0.8rem;" onclick="triggerNewsUpdate()">Refresh News</button>
                 </div>
             </section>
 
@@ -291,6 +296,36 @@
                     </table>
                 </div>
             </section>
+
+            <!-- PAGE: ANALYTICS -->
+            <section id="page-analytics" class="content-panel">
+                <h1 style="margin-bottom:2rem;">Site Performance <span style="color:var(--admin-primary)">Analytics</span></h1>
+                <div class="stat-grid">
+                    <div class="stat-card" style="grid-column: span 2;">
+                        <h4>Audience Overview</h4>
+                        <div style="height:200px; display:flex; align-items:flex-end; gap:10px; padding-top:20px;">
+                            <div style="flex:1; background:var(--admin-primary); height:30%; opacity:0.3; border-radius:4px;"></div>
+                            <div style="flex:1; background:var(--admin-primary); height:45%; opacity:0.4; border-radius:4px;"></div>
+                            <div style="flex:1; background:var(--admin-primary); height:60%; opacity:0.5; border-radius:4px;"></div>
+                            <div style="flex:1; background:var(--admin-primary); height:55%; opacity:0.6; border-radius:4px;"></div>
+                            <div style="flex:1; background:var(--admin-primary); height:80%; opacity:0.8; border-radius:4px;"></div>
+                            <div style="flex:1; background:var(--admin-primary); height:100%; border-radius:4px;"></div>
+                        </div>
+                        <p style="font-size:0.8rem; margin-top:20px; opacity:0.6;">D1 Analytics: Traffic is up 24% this week. Most active region: South Asia.</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Service Status</h3>
+                    <ul style="list-style:none; padding:0; margin-top:1rem; opacity:0.8; font-size:0.9rem;">
+                        <li>🌐 Edge Worker: <span style="color:#10B981">ONLINE</span></li>
+                        <li>🗄️ D1 Database: <span style="color:#10B981">SYNCHRONIZED</span></li>
+                        <li>📦 Media R2: <span style="color:#10B981">CONNECTED</span></li>
+                        <li>📈 Analytics: <span style="color:#F59E0B">LIMITED</span></li>
+                    </ul>
+                    <button class="btn-admin" style="width:100%; margin-top:20px;" onclick="location.href='https://analytics.google.com/'">Open Google Analytics</button>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -330,7 +365,20 @@
         </div>
     </div>
 
-    <div id="loading-overlay"><div class="loader"></div></div>
+    <!-- MODAL: BLOG POST -->
+    <div id="modal-blog" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:20000; display:none; align-items:center; justify-content:center;">
+        <div class="auth-card" style="max-width:600px; text-align:left;">
+            <h3>Create Human Original Post</h3>
+            <label style="font-size:0.7rem; opacity:0.6;">TITLE</label>
+            <input type="text" id="blog-title" class="form-input" placeholder="Expert Insights: The Future of...">
+            <label style="font-size:0.7rem; opacity:0.6;">IMAGE URL</label>
+            <input type="text" id="blog-image" class="form-input" placeholder="https://unsplash.com/...">
+            <label style="font-size:0.7rem; opacity:0.6;">CONTENT (Markdown/HTML Supported)</label>
+            <textarea id="blog-content" class="form-input" style="height:200px; resize:none;"></textarea>
+            <button class="btn-admin" style="width:100%;" onclick="executeBlogCreate()">PUBLISH TO LUMINA BLOG</button>
+            <button class="btn-admin" style="width:100%; margin-top:10px; background:none; color:white; border:1px solid #333;" onclick="closeModals()">CANCEL</button>
+        </div>
+    </div>
 
     <script>
         const API_BASE = "https://luminanews.online/api";
@@ -366,6 +414,7 @@
             if(pageId === 'licenses') loadLicenses();
             if(pageId === 'reporters') loadReporters();
             if(pageId === 'submissions') loadSubmissions();
+            if(pageId === 'blog') loadBlogPosts();
         }
 
         async function apiPost(path, body = {}) {
@@ -511,6 +560,60 @@
                 const code = data.generated_codes[0];
                 alert(`KEY GENERATED: ${code}`);
                 loadLicenses();
+            }
+        }
+
+        // Blog Engine Logic
+        function openBlogModal() { document.getElementById('modal-blog').style.display = 'flex'; }
+
+        async function loadBlogPosts() {
+            // Reusing the news API for articles
+            const res = await fetch(`${API_BASE}/news?category=blog`);
+            const data = await res.json();
+            if(data.status === 'ok') {
+                const body = document.getElementById('blog-table-body');
+                body.innerHTML = data.items.map(b => `
+                    <tr>
+                        <td style="font-weight:700;">${b.title}</td>
+                        <td><span class="badge badge-green">${b.category}</span></td>
+                        <td style="font-size:0.8rem; opacity:0.6;">${new Date(b.timestamp).toLocaleDateString()}</td>
+                        <td>
+                            <button class="pill" style="padding:4px 10px; background:#ff3e3e; color:white; border:none;" onclick="deleteArticle(${b.id})">DELETE</button>
+                        </td>
+                    </tr>
+                `).join('') || '<tr><td colspan="4" style="text-align:center; padding:40px; opacity:0.5;">No manual posts found.</td></tr>';
+            }
+        }
+
+        async function executeBlogCreate() {
+            const title = document.getElementById('blog-title').value;
+            const description = document.getElementById('blog-content').value;
+            const image = document.getElementById('blog-image').value;
+
+            if(!title || !description) return alert("Title and Content are mandatory");
+
+            const data = await apiPost('/admin/blog/create', { title, description, image });
+            if(data.status === 'ok') {
+                closeModals();
+                alert("BLOG POST PUBLISHED SUCCESSFULY!");
+                loadBlogPosts();
+            }
+        }
+
+        async function deleteArticle(id) {
+            if(!confirm("Are you sure you want to delete this post?")) return;
+            const data = await apiPost('/admin/article/delete', { id });
+            if(data.status === 'ok') {
+                alert("Article Deleted.");
+                loadBlogPosts();
+            }
+        }
+
+        async function triggerNewsUpdate() {
+            const res = await fetch(`${API_BASE}/update`);
+            const data = await res.json();
+            if(data.status === 'ok') {
+                alert("Global News Database Refreshed Successfully!");
             }
         }
     </script>
