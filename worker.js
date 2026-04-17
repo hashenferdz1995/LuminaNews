@@ -597,6 +597,52 @@ export default {
       } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
     }
 
+    // 20. CLIENT: CLAIM FREE TRIAL (3 Days - HWID Locked)
+    if (url.pathname === "/api/license/free-trial" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { hwid } = body;
+        
+        if (!hwid) return new Response("HWID required", { status: 400, headers: corsHeaders });
+
+        // 1. Check if this HWID already had a trial
+        const { results: existing } = await env.DB.prepare("SELECT * FROM licenses WHERE hwid = ?").bind(hwid).all();
+        if (existing.length > 0) {
+          return new Response(JSON.stringify({ error: "Trial or License already used on this machine!" }), { 
+            status: 403, headers: corsHeaders 
+          });
+        }
+
+        const now = new Date();
+        const planDays = 3;
+        const SECRET_SALT = "LUMINA_PRO_SECURE_SALT_2024";
+
+        let expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + planDays);
+        const expiryStr = expiryDate.toISOString().split('T')[0].replace(/-/g, '');
+        
+        // SIGN THE KEY
+        const rawData = `${hwid}|${expiryStr}${SECRET_SALT}`;
+        const msgUint8 = new TextEncoder().encode(rawData);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase().substring(0, 8);
+        const finalKey = `${expiryStr}-${signature}-${hwid.substring(0, 8)}`;
+
+        const trialCode = `TRIAL-${hwid.substring(0,6)}`;
+
+        // 2. Log it to DB
+        await env.DB.prepare(
+          "INSERT INTO licenses (redeem_code, plan_days, hwid, status, activated_at) VALUES (?, ?, ?, 'active', ?)"
+        ).bind(trialCode, planDays, hwid, now.toISOString()).run();
+
+        return new Response(JSON.stringify({ status: 'ok', key: finalKey, expiry: expiryDate.toDateString() }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
     return new Response("LuminaNews Cloudflare Hub - OK", { status: 200 });
   }
 };

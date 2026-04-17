@@ -458,7 +458,49 @@
                     } catch(e) { console.error("Polling error", e); }
                 }, 10000); // Check every 10 seconds
             }
+
+            async function claimTrial() {
+                const hwid = document.getElementById('trial-hwid').value.trim();
+                const display = document.getElementById('trial-display');
+                const keyText = document.getElementById('trial-key');
+
+                if(!hwid) { alert("Please enter your Machine ID (HWID)"); return; }
+
+                try {
+                    const res = await fetch('https://luminanews.online/api/license/free-trial', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ hwid })
+                    });
+                    const data = await res.json();
+
+                    if(data.status === 'ok') {
+                        display.classList.remove('hidden');
+                        keyText.innerText = data.key;
+                        alert("🎉 Enjoy your 3-day trial!");
+                    } else {
+                        alert(data.error || "Could not issue trial. Maybe you already used one?");
+                    }
+                } catch(e) { alert("Server error. Try again later."); }
+            }
         </script>
+
+        <!-- FREE TRIAL SECTION -->
+        <section style="padding: 60px 5%; background: #05070a;">
+            <div style="max-width: 600px; margin: 0 auto; background: rgba(255,255,255,0.02); padding: 40px; border-radius: 24px; border: 1px dashed var(--accent-gold); text-align: center;">
+                <h3 style="color: var(--accent-gold);"><i class="fa-solid fa-gift"></i> New Here? Try Lumina Pro Free</h3>
+                <p style="font-size: 0.9rem; color: #848e9c; margin-bottom: 25px;">Get full access for 3 days. No payment required. One trial per machine.</p>
+                
+                <input type="text" id="trial-hwid" style="width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #0b0e11; color: white;" placeholder="Enter Your Machine ID (HWID)">
+                <button onclick="claimTrial()" class="pro-btn" style="width: 100%; background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold);">CLAIM MY 3-DAY TRIAL</button>
+                
+                <div id="trial-display" class="hidden" style="margin-top: 20px; padding: 20px; background: rgba(252, 213, 53, 0.1); border: 1px solid var(--accent-gold); border-radius: 12px;">
+                    <p style="font-size: 0.8rem; color: var(--accent-gold); font-weight: bold;">YOUR TRIAL KEY IS READY:</p>
+                    <h2 id="trial-key" style="font-family: monospace; color: white; margin: 10px 0;">####-####-####</h2>
+                    <p style="font-size: 0.7rem; color: #848e9c;">Valid for 72 hours from this moment.</p>
+                </div>
+            </div>
+        </section>
 
         <section class="cta-section" id="activation-portal" style="background: #111;">
             <div class="cta-box" style="border-color: var(--accent-green); max-width: 600px;">
