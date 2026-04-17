@@ -262,7 +262,8 @@
                 if(result.status === 'ok') {
                     document.getElementById('codes-pool-display').classList.remove('hidden');
                     document.getElementById('output-codes').value = result.generated_codes.join('\n');
-                    alert('✨ Batch of ' + count + ' keys generated for ' + plan + ' days!');
+                    alert('✨ Batch of ' + count + ' keys generated successfully!');
+                    loadLicenseStock(); // Refresh the table automatically
                 } else {
                     alert('Error: ' + result.message);
                 }
