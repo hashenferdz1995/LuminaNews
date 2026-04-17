@@ -500,15 +500,16 @@ export default {
         const body = await request.json();
         const { plan_days, email } = body;
         
-        // Define Pricing (Modify these as you like)
-        let price = 10; // Default $10 for 30 days
+        // Define Pricing 
+        let price = 10;
         if (plan_days == 90) price = 25;
         if (plan_days == 365) price = 80;
         if (plan_days == 9999) price = 250;
 
         const orderId = `LMN-${Date.now()}`;
 
-        const npResponse = await fetch("https://api.nowpayments.io/v1/payment", {
+        // Switch to INVOICE API for multiple coins and better UI
+        const npResponse = await fetch("https://api.nowpayments.io/v1/invoice", {
           method: "POST",
           headers: {
             "x-api-key": NOW_API_KEY,
@@ -517,7 +518,6 @@ export default {
           body: JSON.stringify({
             price_amount: price,
             price_currency: "usd",
-            pay_currency: "usdttrc20", // Default to USDT TRC20 for low fees
             order_id: orderId,
             order_description: `Lumina Pro - ${plan_days} Days Plan`,
             ipn_callback_url: "https://luminanews.online/api/pay/webhook",
@@ -527,17 +527,22 @@ export default {
         });
 
         const paymentData = await npResponse.json();
+        
+        if (!paymentData.invoice_url) {
+           console.error("NowPayments Error:", paymentData);
+           return new Response(JSON.stringify({ status: 'error', message: paymentData.message || 'Payment initialization failed' }), { status: 400, headers: corsHeaders });
+        }
 
-        // Log Order to DB
+        // Log Order to DB (Status 'waiting' as NowPayments handles 'finished')
         await env.DB.prepare(
           "INSERT INTO orders (order_id, payment_id, status, plan_days, email) VALUES (?, ?, 'waiting', ?, ?)"
-        ).bind(orderId, paymentData.payment_id, plan_days, email).run();
+        ).bind(orderId, paymentData.id || paymentData.payment_id, plan_days, email).run();
 
-        return new Response(JSON.stringify({ status: 'ok', payment_url: paymentData.invoice_url || `https://nowpayments.io/payment/?iid=${paymentData.payment_id}`, order_id: orderId }), {
+        return new Response(JSON.stringify({ status: 'ok', payment_url: paymentData.invoice_url, order_id: orderId }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" }
         });
 
-      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+      } catch (err) { return new Response(JSON.stringify({ status: 'error', message: err.message }), { status: 500, headers: corsHeaders }); }
     }
 
     // 17. WEBHOOK: NOWPAYMENTS IPN (Secured)
