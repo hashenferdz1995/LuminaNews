@@ -151,6 +151,13 @@
         .loader { border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--admin-primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        .pill-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .pill { 
+            background: var(--admin-surface); border: 1px solid var(--admin-border); color: var(--text-secondary); 
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: 0.3s;
+        }
+        .pill:hover, .pill.active { background: var(--admin-primary); color: black; border-color: var(--admin-primary); }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -199,14 +206,28 @@
                 </div>
             </section>
 
-            <!-- PAGE: LICENSES -->
             <section id="page-licenses" class="content-panel">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
                     <h1>Lumina Pro <span style="color:var(--admin-primary)">License Engine</span></h1>
                     <div style="display:flex; gap:10px;">
                         <button class="btn-admin" style="background:#222; color:white;" onclick="openSingleGen()">+ Single Key</button>
                         <button class="btn-admin" onclick="openBulkGen()">+ Bulk Generate</button>
                     </div>
+                </div>
+
+                <div class="pill-group" id="filter-status">
+                    <div class="pill active" onclick="filterByStatus('all', this)">All Keys</div>
+                    <div class="pill" onclick="filterByStatus('available', this)">New (Available)</div>
+                    <div class="pill" onclick="filterByStatus('active', this)">Active (Used)</div>
+                </div>
+
+                <div class="pill-group" id="filter-plan">
+                    <div class="pill active" onclick="filterByPlan('all', this)">All Plans</div>
+                    <div class="pill" onclick="filterByPlan('3', this)">3 Days</div>
+                    <div class="pill" onclick="filterByPlan('30', this)">30 Days</div>
+                    <div class="pill" onclick="filterByPlan('90', this)">90 Days</div>
+                    <div class="pill" onclick="filterByPlan('365', this)">1 Year</div>
+                    <div class="pill" onclick="filterByPlan('9999', this)">Lifetime</div>
                 </div>
                 
                 <div class="data-table-container">
@@ -314,6 +335,8 @@
     <script>
         const API_BASE = "https://luminanews.online/api";
         let ADMIN_KEY = "";
+        let ALL_LICENSES = [];
+        let CURRENT_FILTERS = { status: 'all', plan: 'all' };
 
         // AUTH logic
         function authorizeAdmin() {
@@ -384,18 +407,46 @@
         async function loadLicenses() {
             const data = await apiPost('/admin/license/list');
             if(data.status === 'ok') {
-                const body = document.getElementById('license-table-body');
-                body.innerHTML = data.licenses.map(l => `
-                    <tr>
-                        <td style="font-family:monospace; color:var(--admin-primary)">${l.redeem_code}</td>
-                        <td>${l.plan_days} Days</td>
-                        <td><span class="badge ${l.status === 'available' ? 'badge-green' : 'badge-orange'}">${l.status}</span></td>
-                        <td style="opacity:0.5;">${l.hwid || 'N/A'}</td>
-                        <td style="font-size:0.8rem;">${l.activated_at ? new Date(l.activated_at).toLocaleString() : '-'}</td>
-                    </tr>
-                `).join('');
-                document.getElementById('stat-lics').innerText = data.licenses.filter(l => l.status === 'active').length;
+                ALL_LICENSES = data.licenses;
+                renderLicenses();
+                document.getElementById('stat-lics').innerText = ALL_LICENSES.filter(l => l.status === 'active').length;
             }
+        }
+
+        function filterByStatus(val, el) {
+            document.querySelectorAll('#filter-status .pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            CURRENT_FILTERS.status = val;
+            renderLicenses();
+        }
+
+        function filterByPlan(val, el) {
+            document.querySelectorAll('#filter-plan .pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            CURRENT_FILTERS.plan = val;
+            renderLicenses();
+        }
+
+        function renderLicenses() {
+            const body = document.getElementById('license-table-body');
+            let filtered = ALL_LICENSES;
+
+            if(CURRENT_FILTERS.status !== 'all') {
+                filtered = filtered.filter(l => l.status === CURRENT_FILTERS.status);
+            }
+            if(CURRENT_FILTERS.plan !== 'all') {
+                filtered = filtered.filter(l => l.plan_days.toString() === CURRENT_FILTERS.plan);
+            }
+
+            body.innerHTML = filtered.map(l => `
+                <tr>
+                    <td style="font-family:monospace; color:var(--admin-primary)">${l.redeem_code}</td>
+                    <td>${l.plan_days} Days</td>
+                    <td><span class="badge ${l.status === 'available' ? 'badge-green' : 'badge-orange'}">${l.status}</span></td>
+                    <td style="opacity:0.5;">${l.hwid || 'N/A'}</td>
+                    <td style="font-size:0.8rem;">${l.activated_at ? new Date(l.activated_at).toLocaleString() : '-'}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" style="text-align:center; opacity:0.5; padding:40px;">No keys found matching these filters.</td></tr>';
         }
 
         async function loadReporters() {
