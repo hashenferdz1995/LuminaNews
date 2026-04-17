@@ -152,6 +152,28 @@
                     </tbody>
                 </table>
             </section>
+
+            <!-- LUMINA PRO BULK LICENSE HUB -->
+            <section style="margin-bottom: 4rem;">
+                <h3 style="color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px;">Lumina Pro Bulk Keys Pool</h3>
+                <div style="background: #0a0c10; padding: 2rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); margin-top: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                        <input type="number" id="lic-count" class="form-input" placeholder="Count (e.g. 50)..." value="10">
+                        <select id="lic-plan" class="form-input">
+                            <option value="30">30 Days Plan</option>
+                            <option value="90">90 Days Plan</option>
+                            <option value="365">1 Year Plan</option>
+                            <option value="9999">Lifetime Plan</option>
+                        </select>
+                        <button onclick="generateBulkCodes()" class="btn-action btn-approve" style="padding: 10px;">GENERATE POOL</button>
+                    </div>
+                    
+                    <div id="codes-pool-display" class="hidden" style="margin-top: 20px;">
+                        <textarea id="output-codes" class="form-input" style="height: 150px; font-family: 'Consolas'; font-size: 0.8rem;" readonly></textarea>
+                        <button onclick="copyPool()" class="btn-action btn-view" style="margin-top: 10px;">COPY TO CLIPBOARD</button>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -171,6 +193,35 @@
         }
 
         function logoutAdmin() { window.location.reload(); }
+
+        async function generateBulkCodes() {
+            const plan = document.getElementById('lic-plan').value;
+            const count = document.getElementById('lic-count').value || 10;
+            const admin_key = document.getElementById('admin-key').value;
+
+            try {
+                const res = await fetch(`${API_BASE}/admin/license/bulk-generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ plan, count, admin_key })
+                });
+                const result = await res.json();
+                if(result.status === 'ok') {
+                    document.getElementById('codes-pool-display').classList.remove('hidden');
+                    document.getElementById('output-codes').value = result.generated_codes.join('\n');
+                    alert('✨ Batch of ' + count + ' keys generated for ' + plan + ' days!');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch(e) { alert('Connection Error.'); }
+        }
+
+        function copyPool() {
+            const area = document.getElementById('output-codes');
+            area.select();
+            document.execCommand('copy');
+            alert('Pool copied to clipboard! Save this in Excel.');
+        }
 
         async function submitBlogPost() {
             const title = document.getElementById('blog-title').value;

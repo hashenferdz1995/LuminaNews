@@ -328,18 +328,194 @@
             </div>
         </section>
 
-        <section class="cta-section">
-            <div class="cta-box">
-                <h2>Deploy Your Trading Army Today</h2>
-                <p>Stop fighting the markets manually. Professional traders use weapons. Lumina Pro is yours.</p>
-                <div class="price-tag" style="font-size: 3rem; font-weight: 800; color: var(--accent-gold); margin: 20px 0;">
-                    $199 <span style="font-size: 1rem; color: #848e9c;">(Lifetime License)</span>
+        <section class="pricing-section" id="buy-now" style="padding: 100px 5%; text-align: center; background: #0b0e11;">
+            <div class="hero-badge">Membership Plans</div>
+            <h2 style="font-size: 2.5rem; margin-bottom: 50px;">Lock in Your Advantage</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+                <!-- Starter -->
+                <div style="background: rgba(255,255,255,0.02); padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;" onmouseover="this.style.borderColor='var(--accent-gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+                    <h3>Starter</h3>
+                    <h2 style="color: var(--accent-gold); font-size: 2.5rem; margin: 20px 0;">$10 <span style="font-size: 1rem; color: #848e9c;">/ 30 Days</span></h2>
+                    <ul style="list-style: none; padding: 0; text-align: left; font-size: 0.9rem; line-height: 2;">
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Full Bot Access</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> All Themes Unlocked</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Telegram Alerts</li>
+                    </ul>
+                    <button onclick="initPayment(30)" class="pro-btn" style="width: 100%; font-size: 1rem;">BUY WITH CRYPTO</button>
                 </div>
-                <a href="#" class="pro-btn">Get Lumina Pro Now</a>
-                <p style="margin-top: 20px; font-size: 0.9rem;">Instant Digital Delivery | Full User Guide Included</p>
+
+                <!-- Professional -->
+                <div style="background: rgba(252, 213, 53, 0.05); padding: 50px; border-radius: 24px; border: 2px solid var(--accent-gold); transition: 0.3s; position: relative; transform: scale(1.05);">
+                    <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent-gold); color: black; padding: 5px 15px; border-radius: 20px; font-size: 0.7rem; font-weight: 900;">BEST VALUE</div>
+                    <h3>Professional</h3>
+                    <h2 style="color: var(--accent-gold); font-size: 2.5rem; margin: 20px 0;">$25 <span style="font-size: 1rem; color: #848e9c;">/ 90 Days</span></h2>
+                    <ul style="list-style: none; padding: 0; text-align: left; font-size: 0.9rem; line-height: 2;">
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Everything in Starter</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Priority Support</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> VIP Signal Access</li>
+                    </ul>
+                    <button onclick="initPayment(90)" class="pro-btn" style="width: 100%; font-size: 1rem; background: white;">BUY WITH CRYPTO</button>
+                </div>
+
+                <!-- Annual -->
+                <div style="background: rgba(255,255,255,0.02); padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;" onmouseover="this.style.borderColor='var(--accent-gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+                    <h3>Annual</h3>
+                    <h2 style="color: var(--accent-gold); font-size: 2.5rem; margin: 20px 0;">$80 <span style="font-size: 1rem; color: #848e9c;">/ 1 Year</span></h2>
+                    <ul style="list-style: none; padding: 0; text-align: left; font-size: 0.9rem; line-height: 2;">
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Unlimited Updates</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Trading Portfolio Tool</li>
+                        <li><i class="fa-solid fa-check" style="color: var(--accent-green);"></i> Early Beta Access</li>
+                    </ul>
+                    <button onclick="initPayment(365)" class="pro-btn" style="width: 100%; font-size: 1rem;">BUY WITH CRYPTO</button>
+                </div>
+            </div>
+
+            <!-- PAYMENT OVERLAY -->
+            <div id="payment-overlay" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+                <div style="background: #1e2329; padding: 40px; border-radius: 24px; max-width: 450px; width: 90%; text-align: center; border: 1px solid var(--accent-gold);">
+                    <div id="payment-step-1">
+                        <i class="fa-solid fa-shield-bitcoin" style="font-size: 3rem; color: var(--accent-gold); margin-bottom: 20px;"></i>
+                        <h3>Secure Crypto Checkout</h3>
+                        <p style="color: #848e9c; margin-bottom: 30px;">Please enter your email to receive order confirmation.</p>
+                        <input type="email" id="pay-email" style="width: 100%; padding: 15px; background: #0b0e11; border: 1px solid #333; border-radius: 8px; color: white; margin-bottom: 20px;" placeholder="Email Address">
+                        <button onclick="startProcessing()" class="pro-btn" style="width: 100%;">CONTINUE TO PAYMENT</button>
+                        <button onclick="closePayment()" style="background:none; border:none; color:#848e9c; margin-top: 15px; cursor:pointer;">Cancel</button>
+                    </div>
+
+                    <div id="payment-step-2" class="hidden">
+                        <div class="loader" style="border: 4px solid #333; border-top: 4px solid var(--accent-gold); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                        <h3>Awaiting Payment</h3>
+                        <p id="payment-instruction">Please complete the payment in the new window. This page will update automatically once confirmed.</p>
+                        <div id="redeem-code-success" class="hidden" style="margin-top: 30px; padding: 20px; background: rgba(14, 203, 129, 0.1); border: 1px solid var(--accent-green); border-radius: 12px;">
+                            <p style="color: var(--accent-green); font-weight: bold;">PAYMENT CONFIRMED!</p>
+                            <p style="font-size: 0.8rem; margin: 10px 0;">Your Redeem Code:</p>
+                            <h2 id="final-redeem-code" style="font-family: monospace; color: white; letter-spacing: 2px;">XXXX-XXXX-XXXX</h2>
+                            <button onclick="window.location.reload()" class="pro-btn" style="padding: 10px 20px; font-size: 0.8rem;">GO TO ACTIVATION</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <style>
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            .hidden { display: none !important; }
+        </style>
+
+        <script>
+            let currentPlanDays = 0;
+            let currentOrderId = null;
+
+            function initPayment(days) {
+                currentPlanDays = days;
+                document.getElementById('payment-overlay').classList.remove('hidden');
+                document.getElementById('payment-step-1').classList.remove('hidden');
+                document.getElementById('payment-step-2').classList.add('hidden');
+            }
+
+            function closePayment() {
+                document.getElementById('payment-overlay').classList.add('hidden');
+            }
+
+            async function startProcessing() {
+                const email = document.getElementById('pay-email').value;
+                if(!email) { alert("Email is required for receipt!"); return; }
+
+                document.getElementById('payment-step-1').classList.add('hidden');
+                document.getElementById('payment-step-2').classList.remove('hidden');
+
+                try {
+                    const res = await fetch('https://luminanews.online/api/pay/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ plan_days: currentPlanDays, email: email })
+                    });
+                    const data = await res.json();
+                    
+                    if(data.status === 'ok') {
+                        currentOrderId = data.order_id;
+                        window.open(data.payment_url, '_blank');
+                        startPolling();
+                    } else {
+                        alert("Error creating invoice. Try again.");
+                    }
+                } catch(e) { alert("Connection error."); }
+            }
+
+            function startPolling() {
+                const checkInterval = setInterval(async () => {
+                    try {
+                        const res = await fetch(`https://luminanews.online/api/pay/check-status?order_id=${currentOrderId}`);
+                        const data = await res.json();
+                        
+                        if(data.status === 'completed') {
+                            clearInterval(checkInterval);
+                            document.getElementById('payment-instruction').classList.add('hidden');
+                            document.getElementById('redeem-code-success').classList.remove('hidden');
+                            document.getElementById('final-redeem-code').innerText = data.redeem_code;
+                        }
+                    } catch(e) { console.error("Polling error", e); }
+                }, 10000); // Check every 10 seconds
+            }
+        </script>
+
+        <section class="cta-section" id="activation-portal" style="background: #111;">
+            <div class="cta-box" style="border-color: var(--accent-green); max-width: 600px;">
+                <h2 style="color: var(--accent-green);">Activation Portal</h2>
+                <p>Already purchased Lumina Pro? Generate your hardware-locked license key here.</p>
+                
+                <div style="text-align: left; margin-top: 30px;">
+                    <label style="color: #848e9c; font-size: 0.9rem;">Your Redeem Code</label>
+                    <input type="text" id="user-code" style="width: 100%; padding: 15px; margin: 10px 0 20px; border-radius: 8px; border: 1px solid #333; background: #0b0e11; color: white;" placeholder="LMN-XXXX-XXXX">
+                    
+                    <label style="color: #848e9c; font-size: 0.9rem;">Your Machine ID (HWID)</label>
+                    <input type="text" id="user-hwid" style="width: 100%; padding: 15px; margin: 10px 0 20px; border-radius: 8px; border: 1px solid #333; background: #0b0e11; color: white;" placeholder="XXXX-XXXX-XXXX-XXXX">
+                    
+                    <button onclick="redeemLicense()" class="pro-btn" style="width: 100%; background: var(--accent-green); border: none; cursor: pointer;">ACTIVATE MY BOT</button>
+                    
+                    <div id="key-display" class="hidden" style="margin-top: 30px; padding: 20px; background: rgba(14, 203, 129, 0.1); border: 1px solid var(--accent-green); border-radius: 12px; text-align: center;">
+                        <p style="font-size: 0.8rem; color: #848e9c; margin-bottom: 10px;">YOUR PERMANENT LICENSE KEY:</p>
+                        <h3 id="final-key" style="color: var(--accent-green); font-family: 'Consolas', monospace; font-size: 1.4rem;">####-####-####</h3>
+                        <p style="font-size: 0.7rem; color: #848e9c; margin-top: 10px;">Copy this key and paste it into the bot's activation window.</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
+
+    <script>
+        async function redeemLicense() {
+            const code = document.getElementById('user-code').value.trim();
+            const hwid = document.getElementById('user-hwid').value.trim();
+            const keyDisplay = document.getElementById('key-display');
+            const finalKeyText = document.getElementById('final-key');
+
+            if (!code || !hwid) {
+                alert("Please enter both your Redeem Code and HWID.");
+                return;
+            }
+
+            try {
+                const response = await fetch('https://luminanews.online/api/license/redeem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code, hwid })
+                });
+
+                const data = await response.json();
+                if (data.status === 'ok') {
+                    keyDisplay.classList.remove('hidden');
+                    finalKeyText.innerText = data.key;
+                    alert("✨ Bot Activated! Copy your key below.");
+                } else {
+                    alert(data.error || "Redemption failed. Please check your code.");
+                }
+            } catch (error) {
+                alert("Server connection error. Please try again later.");
+            }
+        }
+    </script>
 
     <footer>
         <div class="footer-grid">
