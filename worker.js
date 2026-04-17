@@ -583,6 +583,20 @@ export default {
       } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
     }
 
+    // 19. ADMIN: LIST ALL LICENSES (Stock Monitor)
+    if (url.pathname === "/api/admin/license/list" && request.method === "POST") {
+      try {
+        const body = await request.json();
+        const { admin_key } = body;
+        if (admin_key !== "ADMIN123456") return new Response("Unauthorized", { status: 401 });
+
+        const { results } = await env.DB.prepare("SELECT * FROM licenses ORDER BY plan_days ASC, status ASC").all();
+        return new Response(JSON.stringify({ status: 'ok', licenses: results }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" }
+        });
+      } catch (err) { return new Response(err.message, { status: 500, headers: corsHeaders }); }
+    }
+
     return new Response("LuminaNews Cloudflare Hub - OK", { status: 200 });
   }
 };
